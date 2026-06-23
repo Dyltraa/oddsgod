@@ -73,22 +73,24 @@
     .panel-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
 
     /* ── PICKS TABLE ── */
-    .pick-row{display:grid;grid-template-columns:54px 1fr 60px 60px;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border)}
+    .pick-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
     .pick-row:last-child{border-bottom:none}
+    .pick-row:hover{background:#161616}
     .pick-row.flash{animation:rowFlash 0.6s ease}
     @keyframes rowFlash{0%,100%{background:transparent}50%{background:rgba(201,168,76,0.07)}}
-    .sport-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:2px 5px;border-radius:3px;text-align:center}
+    .sport-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:2px 5px;border-radius:3px;text-align:center;flex-shrink:0;width:36px}
     .b-nba{background:rgba(59,130,246,0.15);color:#60a5fa}
     .b-nfl{background:rgba(201,168,76,0.15);color:var(--gold)}
     .b-mlb{background:rgba(46,204,113,0.12);color:var(--green)}
-    .pick-teams{font-weight:600;font-size:12px;color:var(--white);line-height:1.3}
+    .pick-info{flex:1;min-width:0}
+    .pick-teams{font-weight:600;font-size:12px;color:var(--white);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .pick-time{font-size:10px;color:var(--muted);margin-top:1px;font-family:'JetBrains Mono',monospace}
-    .pick-line-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2)}
-    .pick-call{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--gold)}
-    .conf-wrap{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 0 2px}
-    .conf-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+    .pick-line-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);flex-shrink:0;width:46px;text-align:center}
+    .pick-call{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0;width:74px;text-align:right}
+    .conf-wrap{flex-shrink:0;width:70px;display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+    .conf-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
     .conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 0.8s ease}
-    .conf-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);width:28px;text-align:right;flex-shrink:0}
+    .conf-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);text-align:right}
 
     /* ── ODDS TABLE ── */
     .odds-head-row{display:grid;grid-template-columns:1fr 56px 56px 56px 60px;gap:6px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)}
@@ -346,11 +348,12 @@
             <div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> <span id="picks-ts">Just now</span></div>
           </div>
           <!-- picks header -->
-          <div style="display:grid;grid-template-columns:54px 1fr 60px 60px;gap:8px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)">
-            <span class="oh" style="text-align:left">Sport</span>
-            <span class="oh" style="text-align:left">Matchup</span>
-            <span class="oh">Line</span>
-            <span class="oh">Pick</span>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)">
+            <span class="oh" style="width:36px;flex-shrink:0;text-align:left">Sport</span>
+            <span class="oh" style="flex:1;text-align:left">Matchup</span>
+            <span class="oh" style="width:46px;text-align:center">Line</span>
+            <span class="oh" style="width:74px;text-align:right">Pick</span>
+            <span class="oh" style="width:70px;text-align:right">Conf</span>
           </div>
           <div id="picks-body"></div>
         </div>
@@ -542,17 +545,17 @@ function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)) }
 // ── RENDER PICKS (clickable) ──
 function renderPicks(){
   document.getElementById('picks-body').innerHTML = liveOdds.map(g=>`
-    <div class="pick-row" id="pr-${g.id}" onclick="openExplainer('${g.id}')" style="cursor:pointer">
-      <div><div class="sport-badge ${bc(g.sport)}">${g.sport}</div></div>
-      <div>
+    <div class="pick-row" id="pr-${g.id}" onclick="openExplainer('${g.id}')">
+      <div class="sport-badge ${bc(g.sport)}">${g.sport}</div>
+      <div class="pick-info">
         <div class="pick-teams">${g.away} vs ${g.home}</div>
         <div class="pick-time">${g.time} ET</div>
       </div>
       <div class="pick-line-val">${fmtSpread(g.spreadLive)}</div>
       <div class="pick-call">${g.pick} →</div>
       <div class="conf-wrap">
-        <div class="conf-bar"><div class="conf-fill" style="width:${g.conf}%"></div></div>
         <div class="conf-pct">${g.conf}%</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:${g.conf}%"></div></div>
       </div>
     </div>
   `).join('');
