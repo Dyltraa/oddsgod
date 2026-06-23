@@ -29,7 +29,9 @@
     /* HERO */
     .hero{background:var(--dark);border-bottom:1px solid var(--border);padding:32px 24px}
     .hero-inner{max-width:1100px;margin:0 auto;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap}
-    .team-logo{width:100px;height:100px;border-radius:12px;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);flex-shrink:0;border:2px solid var(--border)}
+    .team-logo{width:100px;height:100px;border-radius:12px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);flex-shrink:0;border:2px solid var(--border);overflow:hidden;padding:8px}
+    .team-logo img{width:100%;height:100%;object-fit:contain}
+    .team-logo .tl-fallback{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold)}
     .hero-info{flex:1;min-width:200px}
     .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,72px);line-height:0.92;letter-spacing:0.02em;color:var(--white)}
     .hero-sub{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
@@ -78,7 +80,9 @@
     .player-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer;text-decoration:none}
     .player-row:last-child{border-bottom:none}
     .player-row:hover{background:#161616}
-    .player-avatar-sm{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--black);flex-shrink:0}
+    .player-avatar-sm{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);flex-shrink:0;overflow:hidden;border:1px solid var(--border);position:relative}
+    .player-avatar-sm img{width:140%;height:140%;object-fit:cover;object-position:top center;position:absolute;top:-4px;left:-20%}
+    .player-avatar-sm .sm-fallback{position:relative;z-index:1}
     .player-info{flex:1}
     .player-name-link{font-size:13px;font-weight:600;color:var(--white)}
     .player-pos-team{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px}
@@ -117,7 +121,7 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="team-logo" id="t-logo">DEN</div>
+    <div class="team-logo" id="t-logo"><span class="tl-fallback" id="t-logo-text">—</span></div>
     <div class="hero-info">
       <div class="hero-name" id="t-name">Denver Nuggets</div>
       <div class="hero-sub">
@@ -197,7 +201,7 @@
 <script>
 const TEAMS = {
   'denver-nuggets': {
-    name:'Denver Nuggets', abbr:'DEN', sport:'NBA', conf:'Northwest Division · Western Conference',
+    name:'Denver Nuggets', abbr:'DEN', logoUrl:'https://cdn.nba.com/logos/nba/1610612743/global/L/logo.svg', sport:'NBA', conf:'Northwest Division · Western Conference',
     heroStats:[{val:'18-7',lbl:'Record'},{val:'56%',lbl:'ATS%'},{val:'+8.4',lbl:'Avg Margin'},{val:'224.1',lbl:'Avg Total'}],
     records:[{val:'18-7',lbl:'Overall'},{val:'14-11',lbl:'ATS'},{val:'12-13',lbl:'O/U'},{val:'10-3',lbl:'Home'},{val:'8-4',lbl:'Away'}],
     seasonStats:[
@@ -266,7 +270,7 @@ const TEAMS = {
   },
 
   'kansas-city-chiefs': {
-    name:'Kansas City Chiefs', abbr:'KC', sport:'NFL', conf:'AFC West · American Football Conference',
+    name:'Kansas City Chiefs', abbr:'KC', logoUrl:'https://static.www.nfl.com/image/private/f_auto/league/ujshjqvmnxce8m4obmvs', sport:'NFL', conf:'AFC West · American Football Conference',
     heroStats:[{val:'9-2',lbl:'Record'},{val:'64%',lbl:'ATS%'},{val:'+7.2',lbl:'Avg Margin'},{val:'47.8',lbl:'Avg Total'}],
     records:[{val:'9-2',lbl:'Overall'},{val:'7-4',lbl:'ATS'},{val:'5-6',lbl:'O/U'},{val:'5-0',lbl:'Home'},{val:'4-2',lbl:'Away'}],
     seasonStats:[
@@ -335,7 +339,7 @@ const TEAMS = {
   },
 
   'los-angeles-dodgers': {
-    name:'Los Angeles Dodgers', abbr:'LAD', sport:'MLB', conf:'NL West · National League',
+    name:'Los Angeles Dodgers', abbr:'lad', sport:'MLB', espnLeague:'mlb', conf:'NL West · National League',
     heroStats:[{val:'58-25',lbl:'Record'},{val:'60%',lbl:'ATS%'},{val:'+1.8',lbl:'Run Diff'},{val:'8.2',lbl:'Avg Total'}],
     records:[{val:'58-25',lbl:'Overall'},{val:'50-33',lbl:'ATS'},{val:'40-43',lbl:'O/U'},{val:'30-12',lbl:'Home'},{val:'28-13',lbl:'Away'}],
     seasonStats:[
@@ -411,7 +415,19 @@ function getTeamId() {
 function renderTeam(id) {
   const t = TEAMS[id] || TEAMS['denver-nuggets'];
   document.title = `OddsGod — ${t.name}`;
-  document.getElementById('t-logo').textContent  = t.abbr;
+  // Set team logo
+  const logoEl = document.getElementById('t-logo');
+  const logoFallback = document.getElementById('t-logo-text');
+  if(logoFallback) logoFallback.textContent = t.abbr;
+  const oldLogoImg = logoEl.querySelector('img');
+  if(oldLogoImg) oldLogoImg.remove();
+  if(t.logoUrl) {
+    const img = document.createElement('img');
+    img.src = t.logoUrl;
+    img.alt = t.name;
+    img.onerror = function(){ this.style.display='none'; if(logoFallback) logoFallback.style.display=''; };
+    logoEl.insertBefore(img, logoFallback);
+  }
   document.getElementById('t-name').textContent  = t.name;
   document.getElementById('t-conf').textContent  = t.conf;
   const sportBadge = document.getElementById('t-sport');
@@ -487,8 +503,18 @@ function renderTeam(id) {
   document.getElementById('t-roster-body').innerHTML = t.roster.map(p=>{
     const dc = p.inj==='out'?'dot-out':p.inj==='questionable'?'dot-q':'dot-ok';
     const slug = p.name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    const playerPhotos = {
+      'nikola-jokic':'https://cdn.nba.com/headshots/nba/latest/1040x760/203999.png',
+      'jamal-murray':'https://cdn.nba.com/headshots/nba/latest/1040x760/203999.png',
+      'aaron-gordon':'https://cdn.nba.com/headshots/nba/latest/1040x760/203932.png',
+      'shohei-ohtani':'https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/660271/headshot/67/current',
+      'mookie-betts':'https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/605141/headshot/67/current',
+      'freddie-freeman':'https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/518692/headshot/67/current',
+    };
+    const photoSrc = playerPhotos[slug];
+    const imgHtml = photoSrc ? `<img src="${photoSrc}" alt="${p.name}" onerror="this.style.display='none'"/>` : '';
     return `<a href="/player?id=${slug}" class="player-row">
-      <div class="player-avatar-sm">${p.initials}</div>
+      <div class="player-avatar-sm">${imgHtml}<span class="sm-fallback">${p.initials}</span></div>
       <div class="player-info">
         <div class="player-name-link">${p.name}</div>
         <div class="player-pos-team">${p.pos} · ${t.abbr}</div>

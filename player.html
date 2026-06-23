@@ -29,7 +29,9 @@
     /* HERO */
     .hero{background:var(--dark);border-bottom:1px solid var(--border);padding:32px 24px}
     .hero-inner{max-width:1100px;margin:0 auto;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap}
-    .player-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--black);flex-shrink:0;border:3px solid var(--gold-dim)}
+    .player-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);flex-shrink:0;border:3px solid var(--gold-dim);overflow:hidden;position:relative}
+    .player-avatar img{width:130%;height:130%;object-fit:cover;object-position:top center;position:absolute;top:-5px;left:-15%}
+    .player-avatar .fallback{position:relative;z-index:1}
     .hero-info{flex:1;min-width:200px}
     .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);line-height:0.95;letter-spacing:0.02em;color:var(--white)}
     .hero-sub{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
@@ -133,7 +135,7 @@
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="player-avatar" id="p-avatar">LJ</div>
+    <div class="player-avatar" id="p-avatar"><span class="av-fallback" id="p-avatar-text">LJ</span></div>
     <div class="hero-info">
       <div class="hero-name" id="p-name">LeBron James</div>
       <div class="hero-sub">
@@ -214,7 +216,7 @@
 // ── PLAYER DATA ──
 const PLAYERS = {
   'lebron-james': {
-    name:'LeBron James', initials:'LJ', team:'Los Angeles Lakers', pos:'SF', sport:'NBA',
+    name:'LeBron James', initials:'LJ', photoUrl:'https://cdn.nba.com/headshots/nba/latest/1040x760/2544.png', team:'Los Angeles Lakers', pos:'SF', sport:'NBA',
     injury:{ status:'out', note:'Ankle sprain', detail:'Rolled left ankle in practice Thursday. Expected to miss 1-2 weeks.', impact:'Line impact: LAL ML moves from -110 to +130. Spread shifts from -3 to +4.5. Significant under lean on LAL team total.' },
     heroStats:[{val:'25.4',lbl:'PPG'},{val:'7.8',lbl:'RPG'},{val:'8.2',lbl:'APG'},{val:'52%',lbl:'FG%'}],
     seasonStats:[
@@ -270,7 +272,7 @@ const PLAYERS = {
   },
 
   'nikola-jokic': {
-    name:'Nikola Jokic', initials:'NJ', team:'Denver Nuggets', pos:'C', sport:'NBA',
+    name:'Nikola Jokic', initials:'NJ', photoUrl:'https://cdn.nba.com/headshots/nba/latest/1040x760/203999.png', team:'Denver Nuggets', pos:'C', sport:'NBA',
     injury:{ status:'probable', note:'None', detail:'Fully healthy. Expected to play full minutes tonight.', impact:'No line impact. DEN spread of -6 vs LAL reflects full Jokic availability.' },
     heroStats:[{val:'29.1',lbl:'PPG'},{val:'13.5',lbl:'RPG'},{val:'10.2',lbl:'APG'},{val:'58%',lbl:'FG%'}],
     seasonStats:[
@@ -326,7 +328,7 @@ const PLAYERS = {
   },
 
   'patrick-mahomes': {
-    name:'Patrick Mahomes', initials:'PM', team:'Kansas City Chiefs', pos:'QB', sport:'NFL',
+    name:'Patrick Mahomes', initials:'PM', photoUrl:'https://static.www.nfl.com/image/private/f_auto,q_auto/league/eqhvzrqjvdnqoouoakpw', team:'Kansas City Chiefs', pos:'QB', sport:'NFL',
     injury:{ status:'questionable', note:'Knee', detail:'Limited in practice Wednesday and Thursday. Game-time decision for Sunday.', impact:'If OUT: KC spread moves from -3 to +3.5. Total drops ~3 pts. Significant sharp action expected on BUF.' },
     heroStats:[{val:'312',lbl:'Pass Yds'},{val:'2.4',lbl:'TD/G'},{val:'108.2',lbl:'QBR'},{val:'68%',lbl:'Comp%'}],
     seasonStats:[
@@ -398,7 +400,19 @@ function renderPlayer(id) {
 
   // hero
   document.title = `OddsGod — ${p.name}`;
-  document.getElementById('p-avatar').textContent = p.initials;
+  // Set avatar image
+  const avatarEl = document.getElementById('p-avatar');
+  const fallbackEl = document.getElementById('p-avatar-text');
+  if(fallbackEl) fallbackEl.textContent = p.initials;
+  const oldImg = avatarEl.querySelector('img');
+  if(oldImg) oldImg.remove();
+  if(p.photoUrl) {
+    const img = document.createElement('img');
+    img.src = p.photoUrl;
+    img.alt = p.name;
+    img.onerror = function(){ this.style.display='none'; if(fallbackEl) fallbackEl.style.display=''; };
+    avatarEl.insertBefore(img, fallbackEl);
+  }
   document.getElementById('p-name').textContent   = p.name;
   document.getElementById('p-team').textContent   = p.team;
   document.getElementById('p-pos').textContent    = p.pos;
