@@ -1541,132 +1541,118 @@ function renderSchedFull(filter='TODAY'){
     </div>`).join('')}`).join('');
 }
 
-// ── NEWS FEED ENGINE ──
-const NEWS_SOURCES = [
-  { name:'ESPN',       sport:'NFL', headline:'Patrick Mahomes listed as questionable with knee injury ahead of Sunday showdown vs Bills', age:'12m' },
-  { name:'NFL.com',    sport:'NFL', headline:'Eagles offensive line suffers blow as star guard ruled out for Monday Night Football',      age:'28m' },
-  { name:'ESPN',       sport:'NBA', headline:'LeBron James officially ruled out tonight vs Nuggets, ankle injury worse than reported',    age:'41m' },
-  { name:'NBA.com',    sport:'NBA', headline:'Stephen Curry upgraded to probable after missing last two games with left knee soreness',   age:'1h'  },
-  { name:'MLB.com',    sport:'MLB', headline:'Aaron Judge placed on 10-day IL with hamstring strain, out indefinitely for Yankees',      age:'1h'  },
-  { name:'The Athletic',sport:'NBA',headline:'Nuggets roll into LA as heavy favorites, Jokic expected to play full minutes tonight',     age:'2h'  },
-  { name:'ESPN',       sport:'MLB', headline:'Dodgers ace confirmed as starter tonight vs Giants at Oracle Park, bullpen fully rested',  age:'2h'  },
-  { name:'NFL.com',    sport:'NFL', headline:'Cowboys backup QB takes over as starter with Prescott on IR, reshaping Dallas line',       age:'3h'  },
-  { name:'Bleacher Report',sport:'NBA',headline:'Warriors sharp money surging on over total, public split shifting dramatically',       age:'3h'  },
-  { name:'MLB.com',    sport:'MLB', headline:'Weather alert: Fenway Park wind gusting 18mph out to left, could affect NYY vs BOS total',age:'4h'  },
-  { name:'The Athletic',sport:'NFL',headline:'Bills defense ranked top-3 against run this week, KC faces stiff challenge without Mahomes',age:'4h'},
-  { name:'ESPN',       sport:'MLB', headline:'Mookie Betts returns to Dodgers lineup after wrist evaluation, expected to play tonight',  age:'5h'  },
+// ── NEWS FEED ENGINE (Real RSS) ──
+const RSS_FEEDS = [
+  { name:'ESPN NFL',      sport:'NFL', url:'https://www.espn.com/espn/rss/nfl/news' },
+  { name:'ESPN NBA',      sport:'NBA', url:'https://www.espn.com/espn/rss/nba/news' },
+  { name:'ESPN MLB',      sport:'MLB', url:'https://www.espn.com/espn/rss/mlb/news' },
+  { name:'CBS Sports',    sport:'NFL', url:'https://www.cbssports.com/rss/headlines/nfl' },
+  { name:'CBS Sports',    sport:'NBA', url:'https://www.cbssports.com/rss/headlines/nba' },
+  { name:'CBS Sports',    sport:'MLB', url:'https://www.cbssports.com/rss/headlines/mlb' },
+  { name:'Yahoo Sports',  sport:'NFL', url:'https://sports.yahoo.com/nfl/rss.xml' },
+  { name:'Yahoo Sports',  sport:'NBA', url:'https://sports.yahoo.com/nba/rss.xml' },
 ];
 
-let newsCache = {};
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+let allArticles = [];
 let newsFilter = 'ALL';
 
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const m = Math.floor(diff/60000);
+  if(m < 1)  return 'Just now';
+  if(m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if(h < 24) return `${h}h ago`;
+  return `${Math.floor(h/24)}d ago`;
+}
+
+function sportBadge(sport) {
+  return `<span class="sport-badge ${bc(sport)}">${sport}</span>`;
+}
+
+function renderArticles(articles, bodyId) {
+  const body = document.getElementById(bodyId);
+  if(!body) return;
+  if(!articles.length) {
+    body.innerHTML = `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">
+      <div style="font-size:24px;margin-bottom:8px">📡</div>No articles found.</div>`;
+    return;
+  }
+  body.innerHTML = articles.map((a, i) => `
+    <a href="${a.link}" target="_blank" rel="noopener noreferrer" class="news-item" style="display:block;text-decoration:none" data-sport="${a.sport}">
+      <div class="news-meta">
+        <span class="news-source">${a.source}</span>
+        ${sportBadge(a.sport)}
+        <span class="news-time">${timeAgo(a.pubDate)}</span>
+      </div>
+      <div class="news-headline">${a.title}</div>
+      ${a.description ? `<div class="news-summary">${a.description.replace(/<[^>]*>/g,'').slice(0,140)}...</div>` : ''}
+      <div class="news-tags" style="margin-top:6px">
+        <span class="news-impact impact-low" style="background:rgba(201,168,76,0.08);color:var(--muted2)">↗ Read Full Article</span>
+      </div>
+    </a>
+  `).join('');
+}
+
 async function loadNews(bodyId, btnId, count) {
-  const btn = document.getElementById(btnId);
+  const btn  = document.getElementById(btnId);
   const body = document.getElementById(bodyId);
   if(!body) return;
 
-  // spinner
   if(btn){ btn.classList.add('spinning'); btn.disabled=true; }
 
-  // show skeleton loading state
-  const items = NEWS_SOURCES.slice(0, count);
-  body.innerHTML = items.map((n,i)=>`
-    <div class="news-item loading" id="ni-${bodyId}-${i}">
+  // skeleton
+  body.innerHTML = Array(count).fill(0).map(()=>`
+    <div class="news-item" style="pointer-events:none">
       <div class="news-meta">
-        <span class="news-source">${n.name}</span>
-        <span class="news-sport-badge sport-badge ${bc(n.sport)}">${n.sport}</span>
-        <span class="news-time">${n.age} ago</span>
+        <span class="news-source" style="background:var(--border);color:transparent;border-radius:3px">Loading source</span>
+        <span class="news-time" style="background:var(--border);color:transparent;border-radius:3px">0m ago</span>
       </div>
-      <div class="news-headline">${n.headline}</div>
-      <div class="news-summary skeleton"></div>
-      <div class="news-tags" style="margin-top:8px">
-        <span class="news-impact impact-low">Analyzing...</span>
-      </div>
+      <div class="news-headline" style="background:var(--border);color:transparent;border-radius:3px;height:18px;margin-bottom:4px">Loading headline text here...</div>
+      <div class="news-summary skeleton" style="height:32px"></div>
     </div>
   `).join('');
 
-  // Call Claude API for each item (batched prompt for all)
-  const prompt = `You are a sports betting analyst. For each of these ${items.length} sports news headlines, provide:
-1. A 1-2 sentence plain-English summary written for bettors (not generic fans)
-2. A betting impact level: HIGH, MEDIUM, or LOW
-3. A specific betting impact note (e.g. "Affects LAL spread by +1.5", "NYY ML moves from -130 to -145", "OVER total likely to drop 2 pts")
-4. The main game/team tag affected
-
-Headlines:
-${items.map((n,i)=>`${i+1}. [${n.sport}] ${n.headline}`).join('\n')}
-
-Respond ONLY with a JSON array of ${items.length} objects, each with keys: summary, impact (HIGH/MEDIUM/LOW), impactNote, gameTag. No markdown, no extra text.`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        messages:[{role:'user', content:prompt}]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.find(c=>c.type==='text')?.text || '[]';
-    const clean = text.replace(/```json|```/g,'').trim();
-    const analyses = JSON.parse(clean);
+    // fetch all feeds in parallel
+    const fetches = RSS_FEEDS.map(feed =>
+      fetch(`${RSS2JSON}${encodeURIComponent(feed.url)}`)
+        .then(r => r.json())
+        .then(data => {
+          if(data.status !== 'ok') return [];
+          return (data.items || []).slice(0, 5).map(item => ({
+            title:      item.title || '',
+            link:       item.link  || '#',
+            description:item.description || item.content || '',
+            pubDate:    item.pubDate || new Date().toISOString(),
+            source:     feed.name,
+            sport:      feed.sport,
+          }));
+        })
+        .catch(() => [])
+    );
 
-    // render each item with AI analysis
-    analyses.forEach((a, i) => {
-      const n = items[i];
-      const el = document.getElementById(`ni-${bodyId}-${i}`);
-      if(!el) return;
-      const impactCls = a.impact==='HIGH'?'impact-high':a.impact==='MEDIUM'?'impact-med':'impact-low';
-      const impactIcon = a.impact==='HIGH'?'🔴':a.impact==='MEDIUM'?'🟡':'⚪';
-      el.classList.remove('loading');
-      el.innerHTML = `
-        <div class="news-meta">
-          <span class="news-source">${n.name}</span>
-          <span class="sport-badge ${bc(n.sport)}">${n.sport}</span>
-          <span class="news-time">${n.age} ago</span>
-        </div>
-        <div class="news-headline">${n.headline}</div>
-        <div class="news-summary">${a.summary}</div>
-        <div class="news-tags">
-          <span class="news-impact ${impactCls}">${impactIcon} ${a.impact} IMPACT</span>
-          <span class="news-game-tag">📌 ${a.gameTag}</span>
-          <span class="news-impact impact-pos" style="background:rgba(201,168,76,0.08);color:var(--muted2);font-weight:400">${a.impactNote}</span>
-        </div>`;
-      el.onclick = () => el.classList.toggle('expanded');
-      // store in cache
-      newsCache[`${bodyId}-${i}`] = { ...n, ...a };
-    });
+    const results = await Promise.all(fetches);
+    allArticles = results.flat()
+      .filter(a => a.title)
+      .sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-    // update stats if full view
-    if(bodyId==='full-news-body'){
-      const high = analyses.filter(a=>a.impact==='HIGH').length;
-      const countEl = document.getElementById('news-count');
-      const highEl  = document.getElementById('news-high');
-      const lastEl  = document.getElementById('news-last-refresh');
-      if(countEl) countEl.textContent = analyses.length;
-      if(highEl)  highEl.textContent  = high;
-      if(lastEl){ const n=new Date(); lastEl.textContent=`${n.getHours()%12||12}:${String(n.getMinutes()).padStart(2,'0')} ${n.getHours()>=12?'PM':'AM'}`; }
-    }
+    const toShow = allArticles.slice(0, count);
+    renderArticles(toShow, bodyId);
+
+    // update stats
+    const countEl = document.getElementById('news-count');
+    const lastEl  = document.getElementById('news-last-refresh');
+    if(countEl) countEl.textContent = allArticles.length;
+    if(lastEl){ const n=new Date(); lastEl.textContent=`${n.getHours()%12||12}:${String(n.getMinutes()).padStart(2,'0')} ${n.getHours()>=12?'PM':'AM'}`; }
 
   } catch(err) {
-    body.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">
+    body.innerHTML = `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">
       <div style="font-size:24px;margin-bottom:8px">📡</div>
-      News feed unavailable — using cached headlines.<br>
+      Couldn't load news feed right now.<br>
       <button class="news-refresh-btn" style="margin-top:12px" onclick="loadNews('${bodyId}','${btnId}',${count})">Try Again</button>
     </div>`;
-    // fallback: render without AI analysis
-    body.innerHTML = items.map(n=>`
-      <div class="news-item">
-        <div class="news-meta">
-          <span class="news-source">${n.name}</span>
-          <span class="sport-badge ${bc(n.sport)}">${n.sport}</span>
-          <span class="news-time">${n.age} ago</span>
-        </div>
-        <div class="news-headline">${n.headline}</div>
-        <div class="news-summary" style="color:var(--muted);font-style:italic">AI analysis unavailable</div>
-        <div class="news-tags"><span class="news-impact impact-low">⚪ PENDING</span></div>
-      </div>`).join('');
   } finally {
     if(btn){ btn.classList.remove('spinning'); btn.disabled=false; }
   }
@@ -1676,26 +1662,24 @@ function filterNews(el, filter) {
   el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   newsFilter = filter;
-  document.querySelectorAll('#full-news-body .news-item').forEach(item => {
-    const sport = item.querySelector('.sport-badge')?.textContent;
-    const impact = item.querySelector('.news-impact')?.textContent;
-    if(filter==='ALL') { item.style.display=''; return; }
-    if(filter==='HIGH') { item.style.display = impact?.includes('HIGH') ? '' : 'none'; return; }
-    item.style.display = sport===filter ? '' : 'none';
-  });
+  const body = document.getElementById('full-news-body');
+  if(!body) return;
+  const filtered = filter==='ALL' ? allArticles : allArticles.filter(a=>a.sport===filter);
+  renderArticles(filtered.slice(0,20), 'full-news-body');
 }
 
 // auto-load dashboard news panel on page load
 window.addEventListener('load', () => {
-  setTimeout(() => loadNews('dash-news-body','dash-news-refresh',4), 800);
+  setTimeout(() => loadNews('dash-news-body','dash-news-refresh',4), 600);
 });
 
 // auto-refresh every 10 min
 setInterval(() => {
   loadNews('dash-news-body','dash-news-refresh',4);
   const newsView = document.getElementById('view-news');
-  if(newsView?.classList.contains('active')) loadNews('full-news-body','full-news-refresh',12);
+  if(newsView?.classList.contains('active')) loadNews('full-news-body','full-news-refresh',20);
 }, 600000);
+
 
 
 </script>
