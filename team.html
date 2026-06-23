@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OddsGod — Team Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --black:#080808;--dark:#0d0d0d;--card:#111;--card2:#141414;
+      --border:#1e1e1e;--border2:#252525;
+      --gold:#C9A84C;--gold-lt:#E8C96A;--gold-dim:#7A6330;
+      --white:#F0F0F0;--muted:#666;--muted2:#888;
+      --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;
+    }
+    html,body{min-height:100%;background:var(--black);color:var(--white);font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:rgba(8,8,8,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.08em;color:var(--gold);text-decoration:none}
+    .nav-back{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:none;transition:color 0.2s}
+    .nav-back:hover{color:var(--white)}
+    .live-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:20px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green)}
+    .ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:lping 1.6s ease-out infinite;flex-shrink:0}
+    @keyframes lping{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.6)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+    .b-nba{background:rgba(59,130,246,0.15);color:#60a5fa}
+    .b-nfl{background:rgba(201,168,76,0.15);color:var(--gold)}
+    .b-mlb{background:rgba(46,204,113,0.12);color:var(--green)}
+
+    /* HERO */
+    .hero{background:var(--dark);border-bottom:1px solid var(--border);padding:32px 24px}
+    .hero-inner{max-width:1100px;margin:0 auto;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap}
+    .team-logo{width:100px;height:100px;border-radius:12px;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);flex-shrink:0;border:2px solid var(--border)}
+    .hero-info{flex:1;min-width:200px}
+    .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,72px);line-height:0.92;letter-spacing:0.02em;color:var(--white)}
+    .hero-sub{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .hero-conference{font-size:13px;color:var(--muted2)}
+    .hero-sport-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+    .record-row{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+    .record-pill{background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:6px 14px;text-align:center}
+    .rp-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:0.02em;line-height:1}
+    .rp-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+    .hero-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-left:auto;align-self:center}
+    .hs-item{text-align:center;padding:14px 18px;border-right:1px solid var(--border);background:var(--card)}
+    .hs-item:last-child{border-right:none}
+    .hs-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:0.02em;line-height:1}
+    .hs-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+    /* TABS */
+    .tabs{border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto}
+    .tab-btn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:14px 18px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color 0.2s,border-color 0.2s}
+    .tab-btn:hover{color:var(--white)}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+    .page-content{max-width:1100px;margin:0 auto;padding:24px}
+    .tab-view{display:none;flex-direction:column;gap:20px}
+    .tab-view.active{display:flex}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border)}
+    .panel-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.06em;color:var(--white)}
+    .panel-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+    .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+    .sc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .sc-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:0.02em}
+    .sc-sub{font-size:11px;color:var(--muted);margin-top:3px}
+    .game-table{width:100%;border-collapse:collapse}
+    .game-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:8px 14px;text-align:left;background:var(--dark);border-bottom:1px solid var(--border);white-space:nowrap}
+    .game-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);vertical-align:middle}
+    .game-table tr:last-child td{border-bottom:none}
+    .game-table tr:hover td{background:#161616}
+    td.bright{color:var(--white);font-weight:600}
+    td.gold{color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:600}
+    td.green{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:600}
+    td.red{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:600}
+    .result-w{background:rgba(46,204,113,0.15);color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px}
+    .result-l{background:rgba(231,76,60,0.15);color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px}
+    .player-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer;text-decoration:none}
+    .player-row:last-child{border-bottom:none}
+    .player-row:hover{background:#161616}
+    .player-avatar-sm{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--black);flex-shrink:0}
+    .player-info{flex:1}
+    .player-name-link{font-size:13px;font-weight:600;color:var(--white)}
+    .player-pos-team{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px}
+    .player-stat{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:0.02em;text-align:center;width:50px}
+    .player-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:center;width:50px}
+    .inj-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .dot-out{background:var(--red);box-shadow:0 0 5px rgba(231,76,60,0.5)}
+    .dot-q{background:#F59E0B}
+    .dot-ok{background:var(--green)}
+    .trend-row{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border)}
+    .trend-row:last-child{border-bottom:none}
+    .trend-label{font-size:12px;color:var(--muted2);width:160px;flex-shrink:0}
+    .trend-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .trend-fill-pos{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 1s ease}
+    .trend-fill-neg{height:100%;border-radius:3px;background:linear-gradient(90deg,#7f1d1d,var(--red));transition:width 1s ease}
+    .trend-val{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;width:36px;text-align:right;flex-shrink:0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .next-game-box{padding:20px 18px;border-bottom:1px solid var(--border)}
+    .ng-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+    .ng-matchup{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--white);letter-spacing:0.02em;line-height:1;margin-bottom:6px}
+    .ng-detail{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+    .odds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin:0 18px 18px}
+    .og-item{background:var(--card2);padding:12px;text-align:center}
+    .og-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--gold)}
+    .og-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+    @media(max-width:700px){.two-col{grid-template-columns:1fr}.hero-stats{width:100%;margin-left:0}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/dashboard" class="nav-logo">OddsGod</a>
+  <a href="/dashboard" class="nav-back">← Back to Dashboard</a>
+  <div class="live-pill"><span class="ldot"></span> LIVE DATA</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="team-logo" id="t-logo">DEN</div>
+    <div class="hero-info">
+      <div class="hero-name" id="t-name">Denver Nuggets</div>
+      <div class="hero-sub">
+        <span class="hero-conference" id="t-conf">Northwest Division · Western Conference</span>
+        <span class="hero-sport-badge b-nba" id="t-sport">NBA</span>
+      </div>
+      <div class="record-row" id="t-records"></div>
+    </div>
+    <div class="hero-stats" id="t-hero-stats"></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="showTab('schedule')">Schedule</button>
+  <button class="tab-btn" onclick="showTab('roster')">Roster</button>
+  <button class="tab-btn" onclick="showTab('betting')">Betting Trends</button>
+</div>
+
+<div class="page-content">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="tab-view active">
+    <div class="stat-cards" id="t-season-stats"></div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">📅 Next Game</div><div class="panel-tag" id="t-next-tag">Tonight</div></div>
+        <div class="next-game-box" id="t-next-game"></div>
+        <div class="panel-head" style="border-top:1px solid var(--border)"><div class="panel-title" style="font-size:13px">Current Lines</div></div>
+        <div class="odds-grid" id="t-odds-grid"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">📊 Team Betting Record</div><div class="panel-tag">This Season</div></div>
+        <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px" id="t-bet-record"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">⚡ Last 5 Games</div><div class="panel-tag">Recent Form</div></div>
+      <table class="game-table"><thead id="t-log-head"></thead><tbody id="t-log-short"></tbody></table>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div id="tab-schedule" class="tab-view">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📋 Full Schedule</div><div class="panel-tag">This Season</div></div>
+      <table class="game-table"><thead id="t-log-head2"></thead><tbody id="t-log-full"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ROSTER -->
+  <div id="tab-roster" class="tab-view">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">👥 Active Roster</div><div class="panel-tag" id="t-roster-inj"></div></div>
+      <div id="t-roster-body"></div>
+    </div>
+  </div>
+
+  <!-- BETTING TRENDS -->
+  <div id="tab-betting" class="tab-view">
+    <div class="stat-cards" id="t-bet-stats"></div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📈 Betting Trends</div><div class="panel-tag">Last 10 Games</div></div>
+      <div id="t-trend-bars"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">🎯 Situational ATS Record</div><div class="panel-tag">This Season</div></div>
+      <table class="game-table">
+        <thead><tr><th>Situation</th><th>ATS Record</th><th>ATS%</th><th>Trend</th></tr></thead>
+        <tbody id="t-situational"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TEAMS = {
+  'denver-nuggets': {
+    name:'Denver Nuggets', abbr:'DEN', sport:'NBA', conf:'Northwest Division · Western Conference',
+    heroStats:[{val:'18-7',lbl:'Record'},{val:'56%',lbl:'ATS%'},{val:'+8.4',lbl:'Avg Margin'},{val:'224.1',lbl:'Avg Total'}],
+    records:[{val:'18-7',lbl:'Overall'},{val:'14-11',lbl:'ATS'},{val:'12-13',lbl:'O/U'},{val:'10-3',lbl:'Home'},{val:'8-4',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Points Per Game',    val:'118.4',sub:'3rd in NBA',       color:'var(--gold)'},
+      {lbl:'Points Allowed',     val:'110.0',sub:'Top 10 defense',   color:'var(--green)'},
+      {lbl:'Rebound Margin',     val:'+4.2', sub:'2nd in NBA',       color:'var(--gold)'},
+      {lbl:'Assist/TO Ratio',    val:'2.24', sub:'Top 5 NBA',        color:'var(--white)'},
+      {lbl:'3PT Made Per Game',  val:'14.2', sub:'League average',   color:'var(--white)'},
+      {lbl:'Pace',               val:'101.2',sub:'Slightly above avg',color:'var(--muted2)'},
+    ],
+    nextGame:{ opponent:'LAL', location:'@ Crypto.com Arena', time:'9:00 PM ET', spread:'DEN -6', ml:'-250', ou:'224.5' },
+    betRecord:[
+      {label:'Overall ATS',      val:'14-11', pct:56, pos:true},
+      {label:'Home ATS',         val:'8-4',   pct:67, pos:true},
+      {label:'Away ATS',         val:'6-7',   pct:46, pos:false},
+      {label:'Favorite ATS',     val:'10-8',  pct:56, pos:true},
+      {label:'Dog ATS',          val:'4-3',   pct:57, pos:true},
+      {label:'Over/Under',       val:'12-13', pct:48, pos:false},
+    ],
+    logHeaders:['Date','Opponent','Result','Pts','Opp','ATS','Total','Spread'],
+    gameLog:[
+      ['Jun 18','@ LAL','W 115-108','115','108','✓ -6','223 U','DEN -6'],
+      ['Jun 15','vs GSW','W 128-110','128','110','✓ -8','238 O','DEN -8'],
+      ['Jun 12','@ PHX','W 119-104','119','104','✓ -5','223 U','DEN -5'],
+      ['Jun 10','vs SAC','W 122-108','122','108','✓ -7','230 O','DEN -7'],
+      ['Jun 7', '@ POR','W 138-112','138','112','✓ -12','250 O','DEN -12'],
+      ['Jun 4', 'vs UTA','W 125-115','125','115','✗ -15','240 O','DEN -15'],
+      ['Jun 1', '@ MEM','W 118-107','118','107','✓ -8','225 O','DEN -8'],
+      ['May 29','vs OKC','W 121-110','121','110','✗ -10','231 O','DEN -10'],
+      ['May 26','@ MIN','L 108-114','108','114','✗ -3','222 U','DEN -3'],
+      ['May 23','vs LAL','W 117-111','117','111','✓ -4','228 O','DEN -4'],
+    ],
+    roster:[
+      {name:'Nikola Jokic',   initials:'NJ', pos:'C',  ppg:'29.1',rpg:'13.5',apg:'10.2',inj:'ok'},
+      {name:'Jamal Murray',   initials:'JM', pos:'PG', ppg:'22.4',rpg:'4.2', apg:'6.8', inj:'ok'},
+      {name:'Michael Porter', initials:'MP', pos:'SF', ppg:'17.8',rpg:'7.1', apg:'1.4', inj:'questionable'},
+      {name:'Aaron Gordon',   initials:'AG', pos:'PF', ppg:'13.2',rpg:'6.8', apg:'3.1', inj:'ok'},
+      {name:'Kentavious Pope',initials:'KP', pos:'SG', ppg:'10.4',rpg:'3.2', apg:'1.8', inj:'ok'},
+      {name:'Reggie Jackson', initials:'RJ', pos:'PG', ppg:'8.2', rpg:'2.1', apg:'3.4', inj:'ok'},
+      {name:'Peyton Watson',  initials:'PW', pos:'SF', ppg:'6.1', rpg:'3.4', apg:'0.8', inj:'ok'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10',   val:'7-3',  sub:'70% cover rate',  color:'var(--green)'},
+      {lbl:'Overs Last 10', val:'6-4',  sub:'60% over rate',   color:'var(--gold)'},
+      {lbl:'Home ATS L5',   val:'4-1',  sub:'80% at home',     color:'var(--green)'},
+      {lbl:'Win Streak',    val:'W9',   sub:'Current',         color:'var(--green)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',     val:70, pos:true},
+      {label:'Over Rate',          val:60, pos:true},
+      {label:'Win % as Favorite',  val:80, pos:true},
+      {label:'Home ATS Rate',      val:80, pos:true},
+      {label:'Away ATS Rate',      val:46, pos:false},
+      {label:'Q4 Cover Rate',      val:75, pos:true},
+    ],
+    situational:[
+      ['As Home Favorite',  '8-4',  '67%','↑ Strong'],
+      ['As Away Favorite',  '6-5',  '55%','→ Neutral'],
+      ['After Win',         '10-7', '59%','↑ Solid'],
+      ['After Loss',        '4-4',  '50%','→ Neutral'],
+      ['Vs .500+ Teams',    '7-8',  '47%','↓ Weaker'],
+      ['In Divisional',     '5-2',  '71%','↑ Strong'],
+      ['2nd Night B2B',     '2-3',  '40%','↓ Fade'],
+      ['O/U in B2B',        '4-1 O','80%','↑ Bet Over'],
+    ],
+  },
+
+  'kansas-city-chiefs': {
+    name:'Kansas City Chiefs', abbr:'KC', sport:'NFL', conf:'AFC West · American Football Conference',
+    heroStats:[{val:'9-2',lbl:'Record'},{val:'64%',lbl:'ATS%'},{val:'+7.2',lbl:'Avg Margin'},{val:'47.8',lbl:'Avg Total'}],
+    records:[{val:'9-2',lbl:'Overall'},{val:'7-4',lbl:'ATS'},{val:'5-6',lbl:'O/U'},{val:'5-0',lbl:'Home'},{val:'4-2',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Points Per Game',  val:'28.4',sub:'5th in NFL',       color:'var(--gold)'},
+      {lbl:'Points Allowed',   val:'21.2',sub:'3rd best defense', color:'var(--green)'},
+      {lbl:'Yards Per Game',   val:'371', sub:'Top 10 offense',   color:'var(--white)'},
+      {lbl:'Turnover Margin',  val:'+8',  sub:'2nd in NFL',       color:'var(--green)'},
+      {lbl:'3rd Down Conv%',   val:'48%', sub:'2nd in NFL',       color:'var(--gold)'},
+      {lbl:'Red Zone TD%',     val:'68%', sub:'Top 5 NFL',        color:'var(--gold)'},
+    ],
+    nextGame:{ opponent:'BUF', location:'@ Highmark Stadium', time:'4:25 PM ET', spread:'KC -3', ml:'-168', ou:'47.5' },
+    betRecord:[
+      {label:'Overall ATS',    val:'7-4',  pct:64, pos:true},
+      {label:'Home ATS',       val:'4-1',  pct:80, pos:true},
+      {label:'Away ATS',       val:'3-3',  pct:50, pos:false},
+      {label:'Favorite ATS',   val:'5-4',  pct:56, pos:true},
+      {label:'Dog ATS',        val:'2-0',  pct:100,pos:true},
+      {label:'Over/Under',     val:'5-6',  pct:45, pos:false},
+    ],
+    logHeaders:['Date','Opponent','Result','Pts','Opp','ATS','Total','Spread'],
+    gameLog:[
+      ['Jun 15','@ BUF',  'L 24-31','24','31','✗ -3', '55 O','KC -3'],
+      ['Jun 8', 'vs LAR', 'W 35-17','35','17','✓ -7', '52 O','KC -7'],
+      ['Jun 1', '@ LV',   'W 28-14','28','14','✓ -9', '42 U','KC -9'],
+      ['May 25','vs DEN', 'W 31-24','31','24','✓ -4', '55 O','KC -4'],
+      ['May 18','@ CLE',  'W 27-20','27','20','✓ -6', '47 U','KC -6'],
+      ['May 11','vs DAL', 'W 42-21','42','21','✓ -3', '63 O','KC -3'],
+      ['May 4', '@ PIT',  'L 17-23','17','23','✗ -7', '40 U','KC -7'],
+      ['Apr 27','vs NE',  'W 38-15','38','15','✓ -10','53 O','KC -10'],
+      ['Apr 20','@ MIA',  'W 31-28','31','28','✗ -8', '59 O','KC -8'],
+      ['Apr 13','vs LV',  'W 27-10','27','10','✓ -10','37 U','KC -10'],
+    ],
+    roster:[
+      {name:'Patrick Mahomes',  initials:'PM',pos:'QB',ppg:'312 Yds',rpg:'2.4 TDs',apg:'68% Comp',inj:'questionable'},
+      {name:'Travis Kelce',     initials:'TK',pos:'TE',ppg:'82 Yds', rpg:'5.8 Rec', apg:'1.2 TDs', inj:'ok'},
+      {name:'Davante Adams',    initials:'DA',pos:'WR',ppg:'74 Yds', rpg:'5.2 Rec', apg:'0.7 TDs', inj:'ok'},
+      {name:'Isiah Pacheco',    initials:'IP',pos:'RB',ppg:'78 Yds', rpg:'18.2 Car',apg:'0.6 TDs', inj:'ok'},
+      {name:'DeAndre Hopkins',  initials:'DH',pos:'WR',ppg:'61 Yds', rpg:'4.1 Rec', apg:'0.4 TDs', inj:'ok'},
+      {name:'Chris Jones',      initials:'CJ',pos:'DT',ppg:'1.8 Sks',rpg:'5.2 TFL', apg:'8 QB Hit', inj:'ok'},
+      {name:'Patrick Smith',    initials:'PS',pos:'LB',ppg:'1.1 Sks',rpg:'4.8 TKL', apg:'2 PD',    inj:'ok'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10', val:'7-3',  sub:'70% cover rate',  color:'var(--green)'},
+      {lbl:'Unders Last 10',val:'6-4',sub:'60% under rate',  color:'var(--gold)'},
+      {lbl:'Home ATS L5', val:'4-1',  sub:'80% at home',     color:'var(--green)'},
+      {lbl:'Mahomes TDs', val:'28',   sub:'Season total',    color:'var(--gold)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',    val:64, pos:true},
+      {label:'Under Rate',        val:55, pos:true},
+      {label:'Win % as Favorite', val:78, pos:true},
+      {label:'Home ATS Rate',     val:80, pos:true},
+      {label:'Away ATS Rate',     val:50, pos:false},
+      {label:'Cover in Playoffs', val:75, pos:true},
+    ],
+    situational:[
+      ['As Home Favorite', '4-1',  '80%','↑ Strong'],
+      ['As Away Favorite', '3-3',  '50%','→ Neutral'],
+      ['After Win',        '6-3',  '67%','↑ Solid'],
+      ['After Loss',       '1-1',  '50%','→ Neutral'],
+      ['In AFC Games',     '4-2',  '67%','↑ Strong'],
+      ['Primetime Games',  '3-1',  '75%','↑ Strong'],
+      ['2nd Half ATS',     '6-4',  '60%','↑ Slight edge'],
+      ['Vs Playoff Teams', '3-3',  '50%','→ Even'],
+    ],
+  },
+
+  'los-angeles-dodgers': {
+    name:'Los Angeles Dodgers', abbr:'LAD', sport:'MLB', conf:'NL West · National League',
+    heroStats:[{val:'58-25',lbl:'Record'},{val:'60%',lbl:'ATS%'},{val:'+1.8',lbl:'Run Diff'},{val:'8.2',lbl:'Avg Total'}],
+    records:[{val:'58-25',lbl:'Overall'},{val:'50-33',lbl:'ATS'},{val:'40-43',lbl:'O/U'},{val:'30-12',lbl:'Home'},{val:'28-13',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Runs Per Game',     val:'5.8', sub:'2nd in MLB',       color:'var(--gold)'},
+      {lbl:'ERA',               val:'3.12',sub:'1st in MLB',        color:'var(--green)'},
+      {lbl:'Batting Average',   val:'.271',sub:'3rd in MLB',        color:'var(--white)'},
+      {lbl:'Home Runs',         val:'124', sub:'Season total',      color:'var(--gold)'},
+      {lbl:'WHIP',              val:'1.08',sub:'Top 3 in MLB',      color:'var(--green)'},
+      {lbl:'OPS',               val:'.812',sub:'2nd in MLB',        color:'var(--gold)'},
+    ],
+    nextGame:{ opponent:'SF', location:'@ Oracle Park', time:'9:40 PM ET', spread:'LAD -1.5', ml:'-165', ou:'7.5' },
+    betRecord:[
+      {label:'Overall ATS',    val:'50-33',pct:60, pos:true},
+      {label:'Home ATS',       val:'26-14',pct:65, pos:true},
+      {label:'Away ATS',       val:'24-19',pct:56, pos:true},
+      {label:'Favorite ATS',   val:'38-27',pct:58, pos:true},
+      {label:'Dog ATS',        val:'12-6', pct:67, pos:true},
+      {label:'Over/Under',     val:'40-43',pct:48, pos:false},
+    ],
+    logHeaders:['Date','Opponent','Result','R','RA','ATS','Total','Line'],
+    gameLog:[
+      ['Jun 18','@ SF',  'W 7-3', '7','3','✓ -1.5','10 O','LAD -1.5'],
+      ['Jun 15','vs ATL','W 5-2', '5','2','✓ -1.5','7 U', 'LAD -1.5'],
+      ['Jun 12','@ COL','W 11-4','11','4','✓ -2.5','15 O','LAD -2.5'],
+      ['Jun 10','vs SD', 'W 4-1', '4','1','✓ -1.5','5 U', 'LAD -1.5'],
+      ['Jun 7', '@ ARI','L 3-5', '3','5','✗ -1.5','8 O', 'LAD -1.5'],
+      ['Jun 4', 'vs SF', 'W 6-2', '6','2','✓ -1.5','8 O', 'LAD -1.5'],
+      ['Jun 1', '@ MIL','W 8-5', '8','5','✓ -1.5','13 O','LAD -1.5'],
+      ['May 29','vs CHC','W 5-1', '5','1','✓ -1.5','6 U', 'LAD -1.5'],
+      ['May 26','@ NYM','L 2-4', '2','4','✗ -1.5','6 U', 'LAD -1.5'],
+      ['May 23','vs COL','W 9-2', '9','2','✓ -2.5','11 O','LAD -2.5'],
+    ],
+    roster:[
+      {name:'Shohei Ohtani',   initials:'SO',pos:'DH', ppg:'.312',rpg:'28 HR', apg:'72 RBI',  inj:'ok'},
+      {name:'Mookie Betts',    initials:'MB',pos:'SS', ppg:'.295',rpg:'18 HR', apg:'61 RBI',  inj:'questionable'},
+      {name:'Freddie Freeman', initials:'FF',pos:'1B', ppg:'.301',rpg:'14 HR', apg:'84 RBI',  inj:'ok'},
+      {name:'Will Smith',      initials:'WS',pos:'C',  ppg:'.272',rpg:'11 HR', apg:'42 RBI',  inj:'ok'},
+      {name:'Max Muncy',       initials:'MM',pos:'3B', ppg:'.241',rpg:'16 HR', apg:'38 RBI',  inj:'ok'},
+      {name:'Tyler Glasnow',   initials:'TG',pos:'SP', ppg:'3.02',rpg:'9.8 K9',apg:'1-0 L10', inj:'ok'},
+      {name:'Yoshinobu Yamamoto',initials:'YY',pos:'SP',ppg:'2.86',rpg:'10.2 K9',apg:'2-0 L5',inj:'ok'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10', val:'8-2', sub:'80% cover rate', color:'var(--green)'},
+      {lbl:'Overs Last 10',val:'5-5',sub:'50% over rate',  color:'var(--white)'},
+      {lbl:'Win Streak',   val:'W7', sub:'Current',        color:'var(--green)'},
+      {lbl:'Run Line ATS', val:'60%',sub:'Season',         color:'var(--gold)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',   val:60, pos:true},
+      {label:'Over Rate',        val:48, pos:false},
+      {label:'Win % as Fav',     val:72, pos:true},
+      {label:'Home ATS Rate',    val:65, pos:true},
+      {label:'Away ATS Rate',    val:56, pos:true},
+      {label:'1st Inning Score', val:55, pos:true},
+    ],
+    situational:[
+      ['As Home Favorite',  '26-14','65%','↑ Strong'],
+      ['As Away Favorite',  '22-17','56%','↑ Slight'],
+      ['Starter ERA <3.00', '18-5', '78%','↑ Very Strong'],
+      ['After Win',         '42-18','70%','↑ Strong'],
+      ['After Loss',        '16-7', '70%','↑ Bounce back'],
+      ['Vs NL West',        '22-8', '73%','↑ Dominant'],
+      ['Day Games',         '16-9', '64%','↑ Solid'],
+      ['Extra Innings',     '4-2',  '67%','↑ Slight'],
+    ],
+  },
+};
+
+function getTeamId() {
+  return new URLSearchParams(window.location.search).get('id') || 'denver-nuggets';
+}
+
+function renderTeam(id) {
+  const t = TEAMS[id] || TEAMS['denver-nuggets'];
+  document.title = `OddsGod — ${t.name}`;
+  document.getElementById('t-logo').textContent  = t.abbr;
+  document.getElementById('t-name').textContent  = t.name;
+  document.getElementById('t-conf').textContent  = t.conf;
+  const sportBadge = document.getElementById('t-sport');
+  sportBadge.textContent = t.sport;
+  sportBadge.className   = `hero-sport-badge ${t.sport==='NBA'?'b-nba':t.sport==='NFL'?'b-nfl':'b-mlb'}`;
+
+  document.getElementById('t-records').innerHTML = t.records.map(r=>`
+    <div class="record-pill"><div class="rp-val">${r.val}</div><div class="rp-lbl">${r.lbl}</div></div>
+  `).join('');
+
+  document.getElementById('t-hero-stats').innerHTML = t.heroStats.map(s=>`
+    <div class="hs-item"><div class="hs-val">${s.val}</div><div class="hs-lbl">${s.lbl}</div></div>
+  `).join('');
+
+  document.getElementById('t-season-stats').innerHTML = t.seasonStats.map(s=>`
+    <div class="stat-card">
+      <div class="sc-label">${s.lbl}</div>
+      <div class="sc-val" style="color:${s.color}">${s.val}</div>
+      <div class="sc-sub">${s.sub}</div>
+    </div>
+  `).join('');
+
+  // next game
+  const ng = t.nextGame;
+  document.getElementById('t-next-game').innerHTML=`
+    <div class="ng-label">Next Game</div>
+    <div class="ng-matchup">${t.abbr} vs ${ng.opponent}</div>
+    <div class="ng-detail">${ng.location} · ${ng.time}</div>`;
+  document.getElementById('t-odds-grid').innerHTML=`
+    <div class="og-item"><div class="og-val">${ng.spread}</div><div class="og-lbl">Spread</div></div>
+    <div class="og-item"><div class="og-val">${ng.ml}</div><div class="og-lbl">Moneyline</div></div>
+    <div class="og-item"><div class="og-val">${ng.ou}</div><div class="og-lbl">O/U</div></div>`;
+
+  // bet record bars
+  document.getElementById('t-bet-record').innerHTML = t.betRecord.map(r=>`
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:130px;font-size:12px;color:var(--muted2);flex-shrink:0">${r.label}</div>
+      <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+        <div style="height:100%;border-radius:3px;width:0%;transition:width 1s ease;background:${r.pos?'linear-gradient(90deg,var(--gold-dim),var(--gold))':'linear-gradient(90deg,#7f1d1d,var(--red))'}" data-w="${r.pct}%"></div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:${r.pos?'var(--gold)':'var(--red)'};width:36px;text-align:right">${r.pct}%</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:36px">${r.val}</div>
+    </div>
+  `).join('');
+  setTimeout(()=>document.querySelectorAll('[data-w]').forEach(el=>el.style.width=el.dataset.w),50);
+
+  // game log
+  const headHtml = `<tr>${t.logHeaders.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  document.getElementById('t-log-head').innerHTML  = headHtml;
+  document.getElementById('t-log-head2').innerHTML = headHtml;
+  const logRows = t.gameLog.map(row=>`<tr>
+    <td>${row[0]}</td>
+    <td class="bright">${row[1]}</td>
+    <td><span class="${row[2].startsWith('W')?'result-w':'result-l'}">${row[2].startsWith('W')?'W':'L'}</span> ${row[2].slice(2)}</td>
+    <td class="gold">${row[3]}</td>
+    <td>${row[4]}</td>
+    <td style="color:${row[5].startsWith('✓')?'var(--green)':'var(--red)'};font-family:'JetBrains Mono',monospace;font-weight:600">${row[5]}</td>
+    <td>${row[6]}</td>
+    <td style="color:var(--muted);font-size:11px">${row[7]}</td>
+  </tr>`).join('');
+  document.getElementById('t-log-short').innerHTML = t.gameLog.slice(0,5).map(row=>`<tr>
+    <td>${row[0]}</td><td class="bright">${row[1]}</td>
+    <td><span class="${row[2].startsWith('W')?'result-w':'result-l'}">${row[2].startsWith('W')?'W':'L'}</span> ${row[2].slice(2)}</td>
+    <td class="gold">${row[3]}</td><td>${row[4]}</td>
+    <td style="color:${row[5].startsWith('✓')?'var(--green)':'var(--red)'};font-family:'JetBrains Mono',monospace;font-weight:600">${row[5]}</td>
+    <td>${row[6]}</td><td style="color:var(--muted);font-size:11px">${row[7]}</td>
+  </tr>`).join('');
+  document.getElementById('t-log-full').innerHTML = logRows;
+
+  // roster
+  const injCount = t.roster.filter(p=>p.inj!=='ok').length;
+  document.getElementById('t-roster-inj').textContent = injCount>0?`${injCount} injury reports`:'All clear';
+  document.getElementById('t-roster-body').innerHTML = t.roster.map(p=>{
+    const dc = p.inj==='out'?'dot-out':p.inj==='questionable'?'dot-q':'dot-ok';
+    const slug = p.name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    return `<a href="/player?id=${slug}" class="player-row">
+      <div class="player-avatar-sm">${p.initials}</div>
+      <div class="player-info">
+        <div class="player-name-link">${p.name}</div>
+        <div class="player-pos-team">${p.pos} · ${t.abbr}</div>
+      </div>
+      <div><div class="player-stat">${p.ppg}</div><div class="player-stat-lbl">${t.sport==='MLB'?'AVG':'PPG'}</div></div>
+      <div><div class="player-stat">${p.rpg}</div><div class="player-stat-lbl">${t.sport==='MLB'?'HR':'RPG'}</div></div>
+      <div><div class="player-stat">${p.apg}</div><div class="player-stat-lbl">${t.sport==='MLB'?'RBI':'APG'}</div></div>
+      <div class="inj-dot ${dc}" style="margin-left:4px" title="${p.inj}"></div>
+    </a>`;
+  }).join('');
+
+  // bet trend stats
+  document.getElementById('t-bet-stats').innerHTML = t.trendStats.map(s=>`
+    <div class="stat-card">
+      <div class="sc-label">${s.lbl}</div>
+      <div class="sc-val" style="color:${s.color}">${s.val}</div>
+      <div class="sc-sub">${s.sub}</div>
+    </div>
+  `).join('');
+
+  // trend bars
+  document.getElementById('t-trend-bars').innerHTML = t.trendBars.map(tb=>`
+    <div class="trend-row">
+      <div class="trend-label">${tb.label}</div>
+      <div class="trend-track"><div class="${tb.pos?'trend-fill-pos':'trend-fill-neg'}" style="width:0%" data-w="${tb.val}%"></div></div>
+      <div class="trend-val" style="color:${tb.pos?'var(--gold)':'var(--red)'}">${tb.val}%</div>
+    </div>
+  `).join('');
+  setTimeout(()=>document.querySelectorAll('.trend-fill-pos,.trend-fill-neg').forEach(el=>el.style.width=el.dataset.w),50);
+
+  // situational
+  document.getElementById('t-situational').innerHTML = t.situational.map(r=>`<tr>
+    <td class="bright">${r[0]}</td>
+    <td class="gold">${r[1]}</td>
+    <td style="color:${parseFloat(r[2])>=60?'var(--green)':parseFloat(r[2])<=45?'var(--red)':'var(--muted2)'};font-family:'JetBrains Mono',monospace;font-weight:600">${r[2]}</td>
+    <td style="color:${r[3].startsWith('↑')?'var(--green)':r[3].startsWith('↓')?'var(--red)':'var(--muted)'}">${r[3]}</td>
+  </tr>`).join('');
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+renderTeam(getTeamId());
+</script>
+</body>
+</html>
