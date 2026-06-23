@@ -126,7 +126,7 @@
 
 <nav>
   <a href="/dashboard" class="nav-logo">OddsGod</a>
-  <a href="#" onclick="history.back();return false;" class="nav-back">← Back</a>
+  <a href="#" onclick="goBack();return false;" class="nav-back">← Back</a>
   <div class="nav-right">
     <div class="live-pill"><span class="ldot"></span> LIVE DATA</div>
   </div>
@@ -528,7 +528,26 @@ function showTab(name) {
 }
 
 // init
+// Store referrer so back button works correctly
+if(document.referrer && document.referrer.includes(window.location.hostname)) {
+  sessionStorage.setItem('playerPageRef', document.referrer);
+}
+
+function goBack() {
+  const ref = sessionStorage.getItem('playerPageRef');
+  sessionStorage.removeItem('playerPageRef');
+  if(ref && ref.includes(window.location.hostname)) {
+    window.location.href = ref;
+  } else {
+    window.location.href = '/dashboard';
+  }
+}
+
 renderPlayer(getPlayerId());
+
+window.addEventListener('pageshow', function(e) {
+  if(e.persisted) renderPlayer(getPlayerId());
+});
 </script>
 </body>
 </html>

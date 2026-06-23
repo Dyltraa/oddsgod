@@ -115,7 +115,7 @@
 
 <nav>
   <a href="/dashboard" class="nav-logo">OddsGod</a>
-  <a href="#" onclick="history.back();return false;" class="nav-back">← Back</a>
+  <a href="#" onclick="goBack();return false;" class="nav-back">← Back</a>
   <div class="live-pill"><span class="ldot"></span> LIVE DATA</div>
 </nav>
 
@@ -408,8 +408,188 @@ const TEAMS = {
   },
 };
 
+
+  'los-angeles-lakers': {
+    name:'Los Angeles Lakers', abbr:'LAL', logoUrl:'https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg', sport:'NBA', conf:'Pacific Division · Western Conference',
+    heroStats:[{val:'13-12',lbl:'Record'},{val:'44%',lbl:'ATS%'},{val:'-2.1',lbl:'Avg Margin'},{val:'225.8',lbl:'Avg Total'}],
+    records:[{val:'13-12',lbl:'Overall'},{val:'11-14',lbl:'ATS'},{val:'14-11',lbl:'O/U'},{val:'7-6',lbl:'Home'},{val:'6-7',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Points Per Game',    val:'112.4',sub:'18th in NBA',      color:'var(--muted2)'},
+      {lbl:'Points Allowed',     val:'114.5',sub:'Below average',    color:'var(--red)'},
+      {lbl:'Rebound Margin',     val:'+0.8', sub:'Average',          color:'var(--muted2)'},
+      {lbl:'Assist/TO Ratio',    val:'1.88', sub:'League average',   color:'var(--muted2)'},
+      {lbl:'3PT Made Per Game',  val:'12.1', sub:'Below average',    color:'var(--muted2)'},
+      {lbl:'Pace',               val:'100.4',sub:'Average',          color:'var(--muted2)'},
+    ],
+    nextGame:{ opponent:'DEN', location:'vs Crypto.com Arena', time:'9:00 PM ET', spread:'LAL +6', ml:'+210', ou:'224.5' },
+    betRecord:[
+      {label:'Overall ATS',val:'11-14',pct:44,pos:false},{label:'Home ATS',val:'5-7',pct:42,pos:false},
+      {label:'Away ATS',val:'6-7',pct:46,pos:false},{label:'As Dog ATS',val:'8-9',pct:47,pos:false},
+      {label:'Fav ATS',val:'3-5',pct:38,pos:false},{label:'Over/Under',val:'14-11',pct:56,pos:true},
+    ],
+    logHeaders:['Date','Opponent','Result','Pts','Opp','ATS','Total','Spread'],
+    gameLog:[
+      ['Jun 18','vs DEN','L 108-115','108','115','✗ +6','223 U','LAL +6'],
+      ['Jun 15','@ GSW','W 121-109','121','109','✓ +4','230 O','LAL +4'],
+      ['Jun 12','vs PHX','W 118-112','118','112','✗ -2','230 O','LAL -2'],
+      ['Jun 10','@ SAC','L 105-112','105','112','✗ +3','217 U','LAL +3'],
+      ['Jun 7', 'vs POR','W 131-110','131','110','✓ -8','241 O','LAL -8'],
+      ['Jun 4', '@ UTA','W 122-118','122','118','✓ -1','240 O','LAL -1'],
+      ['Jun 1', 'vs MEM','L 99-104', '99','104','✓ +3','203 U','LAL +3'],
+      ['May 29','@ OKC','W 115-108','115','108','✗ +1','223 O','LAL +1'],
+      ['May 26','vs MIN','W 119-113','119','113','✓ +2','232 O','LAL +2'],
+      ['May 23','@ DEN','L 111-117','111','117','✓ +4','228 O','LAL +4'],
+    ],
+    roster:[
+      {name:'LeBron James',   initials:'LJ',pos:'SF',ppg:'25.4',rpg:'7.8',apg:'8.2',inj:'out'},
+      {name:'Anthony Davis',  initials:'AD',pos:'C', ppg:'24.1',rpg:'12.2',apg:'3.1',inj:'ok'},
+      {name:'Austin Reaves',  initials:'AR',pos:'SG',ppg:'16.8',rpg:'4.2',apg:'5.1',inj:'ok'},
+      {name:'D'Angelo Russell',initials:'DR',pos:'PG',ppg:'14.2',rpg:'2.8',apg:'6.4',inj:'ok'},
+      {name:'Rui Hachimura',  initials:'RH',pos:'PF',ppg:'11.4',rpg:'4.8',apg:'1.2',inj:'ok'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10',val:'4-6', sub:'40% cover rate', color:'var(--red)'},
+      {lbl:'Overs Last 10',val:'7-3',sub:'70% over rate', color:'var(--green)'},
+      {lbl:'LeBron OUT',  val:'0-3', sub:'Record without', color:'var(--red)'},
+      {lbl:'Streak',      val:'L2',  sub:'Current',        color:'var(--red)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',  val:44,pos:false},{label:'Over Rate',val:56,pos:true},
+      {label:'Win % as Dog',    val:47,pos:false},{label:'Home ATS', val:42,pos:false},
+      {label:'Away ATS Rate',   val:46,pos:false},{label:'Without LeBron',val:30,pos:false},
+    ],
+    situational:[
+      ['As Home Favorite','3-5','38%','↓ Fade'],['As Away Dog','5-6','45%','→ Neutral'],
+      ['After Win','6-5','55%','→ Slight'],['After Loss','5-9','36%','↓ Fade'],
+      ['LeBron Active','8-5','62%','↑ Strong'],['LeBron Inactive','0-3','0%','↓ Strong fade'],
+      ['Vs Playoff Teams','4-9','31%','↓ Fade'],['In OT Games','2-1','67%','↑ Slight'],
+    ],
+  },
+
+  'new-york-yankees': {
+    name:'New York Yankees', abbr:'NYY', logoUrl:'https://www.mlbstatic.com/team-logos/team-cap-on-light/147.svg', sport:'MLB', conf:'AL East · American League',
+    heroStats:[{val:'52-31',lbl:'Record'},{val:'55%',lbl:'ATS%'},{val:'+1.2',lbl:'Run Diff'},{val:'8.8',lbl:'Avg Total'}],
+    records:[{val:'52-31',lbl:'Overall'},{val:'46-37',lbl:'ATS'},{val:'42-41',lbl:'O/U'},{val:'28-14',lbl:'Home'},{val:'24-17',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Runs Per Game',   val:'5.2',sub:'6th in MLB',  color:'var(--gold)'},
+      {lbl:'ERA',             val:'3.81',sub:'Top 10 MLB', color:'var(--green)'},
+      {lbl:'Batting Average', val:'.258',sub:'8th in MLB', color:'var(--white)'},
+      {lbl:'Home Runs',       val:'108', sub:'3rd in MLB', color:'var(--gold)'},
+      {lbl:'WHIP',            val:'1.19',sub:'Top 15 MLB', color:'var(--white)'},
+      {lbl:'OPS',             val:'.778',sub:'7th in MLB', color:'var(--gold)'},
+    ],
+    nextGame:{ opponent:'BOS', location:'@ Fenway Park', time:'7:10 PM ET', spread:'NYY -1.5', ml:'-145', ou:'8.5' },
+    betRecord:[
+      {label:'Overall ATS',val:'46-37',pct:55,pos:true},{label:'Home ATS',val:'24-17',pct:59,pos:true},
+      {label:'Away ATS',val:'22-20',pct:52,pos:true},{label:'Favorite ATS',val:'34-26',pct:57,pos:true},
+      {label:'Dog ATS',val:'12-11',pct:52,pos:true},{label:'Over/Under',val:'42-41',pct:51,pos:true},
+    ],
+    logHeaders:['Date','Opponent','Result','R','RA','ATS','Total','Line'],
+    gameLog:[
+      ['Jun 18','@ BOS','W 6-3','6','3','✓ -1.5','9 O','NYY -1.5'],
+      ['Jun 15','vs TB', 'W 4-2','4','2','✓ -1.5','6 U','NYY -1.5'],
+      ['Jun 12','@ BAL','L 3-5','3','5','✗ -1.5','8 O','NYY -1.5'],
+      ['Jun 10','vs TOR','W 7-1','7','1','✓ -1.5','8 O','NYY -1.5'],
+      ['Jun 7', '@ TB', 'W 5-3','5','3','✓ -1.5','8 U','NYY -1.5'],
+      ['Jun 4', 'vs BOS','W 8-4','8','4','✓ -1.5','12 O','NYY -1.5'],
+      ['Jun 1', '@ TOR','L 2-4','2','4','✗ -1.5','6 U','NYY -1.5'],
+      ['May 29','vs BAL','W 5-2','5','2','✓ -1.5','7 U','NYY -1.5'],
+      ['May 26','@ DET','W 9-3','9','3','✓ -1.5','12 O','NYY -1.5'],
+      ['May 23','vs CWS','W 6-1','6','1','✓ -2.5','7 U','NYY -2.5'],
+    ],
+    roster:[
+      {name:'Gerrit Cole',    initials:'GC',pos:'SP',ppg:'3.12',rpg:'10.1 K9',apg:'2-0 L5',inj:'ok'},
+      {name:'Juan Soto',      initials:'JS',pos:'RF',ppg:'.291',rpg:'22 HR',  apg:'68 RBI', inj:'ok'},
+      {name:'Giancarlo Stanton',initials:'GS',pos:'DH',ppg:'.241',rpg:'19 HR',apg:'52 RBI',inj:'ok'},
+      {name:'Anthony Volpe',  initials:'AV',pos:'SS',ppg:'.248',rpg:'11 HR',  apg:'44 RBI', inj:'ok'},
+      {name:'Aaron Judge',    initials:'AJ',pos:'CF',ppg:'.298',rpg:'24 HR',  apg:'61 RBI', inj:'out'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10',val:'7-3', sub:'70% cover rate',color:'var(--green)'},
+      {lbl:'Overs Last 10',val:'6-4',sub:'60% over rate',color:'var(--gold)'},
+      {lbl:'Win Streak',  val:'W4', sub:'Current',       color:'var(--green)'},
+      {lbl:'Judge OUT',   val:'3-2', sub:'Record without',color:'var(--muted2)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',val:55,pos:true},{label:'Over Rate',val:51,pos:true},
+      {label:'Home ATS Rate', val:59,pos:true},{label:'Away ATS Rate',val:52,pos:true},
+      {label:'vs AL East',    val:62,pos:true},{label:'With Judge',val:60,pos:true},
+    ],
+    situational:[
+      ['As Home Favorite','24-17','59%','↑ Strong'],['As Away Favorite','18-15','55%','↑ Slight'],
+      ['After Win','32-18','64%','↑ Strong'],['After Loss','14-19','42%','↓ Fade'],
+      ['Gerrit Cole Starts','12-3','80%','↑ Very Strong'],['Judge Active','34-18','65%','↑ Strong'],
+      ['Vs AL East','22-10','69%','↑ Dominant'],['Day Games','14-8','64%','↑ Solid'],
+    ],
+  },
+
+  'boston-red-sox': {
+    name:'Boston Red Sox', abbr:'BOS', logoUrl:'https://www.mlbstatic.com/team-logos/team-cap-on-light/111.svg', sport:'MLB', conf:'AL East · American League',
+    heroStats:[{val:'38-45',lbl:'Record'},{val:'45%',lbl:'ATS%'},{val:'-0.6',lbl:'Run Diff'},{val:'9.1',lbl:'Avg Total'}],
+    records:[{val:'38-45',lbl:'Overall'},{val:'37-46',lbl:'ATS'},{val:'44-39',lbl:'O/U'},{val:'20-22',lbl:'Home'},{val:'18-23',lbl:'Away'}],
+    seasonStats:[
+      {lbl:'Runs Per Game',   val:'4.6',sub:'18th in MLB', color:'var(--muted2)'},
+      {lbl:'ERA',             val:'4.52',sub:'Below avg',  color:'var(--red)'},
+      {lbl:'Batting Average', val:'.248',sub:'20th in MLB',color:'var(--muted2)'},
+      {lbl:'Home Runs',       val:'84',  sub:'Below avg',  color:'var(--muted2)'},
+      {lbl:'WHIP',            val:'1.38',sub:'Below avg',  color:'var(--red)'},
+      {lbl:'OPS',             val:'.731',sub:'18th in MLB',color:'var(--muted2)'},
+    ],
+    nextGame:{ opponent:'NYY', location:'vs Fenway Park', time:'7:10 PM ET', spread:'BOS +1.5', ml:'+125', ou:'8.5' },
+    betRecord:[
+      {label:'Overall ATS',val:'37-46',pct:45,pos:false},{label:'Home ATS',val:'18-23',pct:44,pos:false},
+      {label:'Away ATS',val:'19-23',pct:45,pos:false},{label:'As Dog ATS',val:'24-28',pct:46,pos:false},
+      {label:'Fav ATS',val:'13-18',pct:42,pos:false},{label:'Over/Under',val:'44-39',pct:53,pos:true},
+    ],
+    logHeaders:['Date','Opponent','Result','R','RA','ATS','Total','Line'],
+    gameLog:[
+      ['Jun 18','vs NYY','L 3-6','3','6','✗ +1.5','9 O','BOS +1.5'],
+      ['Jun 15','@ NYM','L 2-5','2','5','✗ +1.5','7 U','BOS +1.5'],
+      ['Jun 12','vs BAL','W 5-3','5','3','✓ -1.5','8 O','BOS -1.5'],
+      ['Jun 10','@ TOR','L 3-6','3','6','✗ +1.5','9 O','BOS +1.5'],
+      ['Jun 7', 'vs TB', 'W 4-2','4','2','✓ +1.5','6 U','BOS +1.5'],
+      ['Jun 4', '@ NYY','L 4-8','4','8','✗ +1.5','12 O','BOS +1.5'],
+      ['Jun 1', 'vs CLE','W 6-4','6','4','✓ -1.5','10 O','BOS -1.5'],
+      ['May 29','@ BAL','L 1-4','1','4','✗ +1.5','5 U','BOS +1.5'],
+      ['May 26','vs DET','W 7-3','7','3','✓ -1.5','10 O','BOS -1.5'],
+      ['May 23','@ TB', 'L 2-5','2','5','✗ +1.5','7 U','BOS +1.5'],
+    ],
+    roster:[
+      {name:'Rafael Devers',  initials:'RD',pos:'3B',ppg:'.271',rpg:'16 HR',apg:'58 RBI',inj:'ok'},
+      {name:'Triston Casas',  initials:'TC',pos:'1B',ppg:'.241',rpg:'12 HR',apg:'41 RBI',inj:'ok'},
+      {name:'Jarren Duran',   initials:'JD',pos:'CF',ppg:'.281',rpg:'8 HR', apg:'38 RBI',inj:'ok'},
+      {name:'Brayan Bello',   initials:'BB',pos:'SP',ppg:'4.21',rpg:'8.2 K9',apg:'1-2 L5',inj:'ok'},
+      {name:'Chris Sale',     initials:'CS',pos:'SP',ppg:'3.88',rpg:'9.4 K9',apg:'2-1 L5',inj:'questionable'},
+    ],
+    trendStats:[
+      {lbl:'ATS Last 10',val:'4-6', sub:'40% cover rate',color:'var(--red)'},
+      {lbl:'Overs Last 10',val:'6-4',sub:'60% over rate',color:'var(--gold)'},
+      {lbl:'Losing Streak',val:'L2', sub:'Current',      color:'var(--red)'},
+      {lbl:'Home Record', val:'20-22',sub:'Below .500',   color:'var(--red)'},
+    ],
+    trendBars:[
+      {label:'ATS Cover Rate',val:45,pos:false},{label:'Over Rate',val:53,pos:true},
+      {label:'Home ATS Rate', val:44,pos:false},{label:'Away ATS Rate',val:45,pos:false},
+      {label:'vs AL East',    val:38,pos:false},{label:'Bullpen Hold Rate',val:42,pos:false},
+    ],
+    situational:[
+      ['As Home Underdog','10-12','45%','→ Neutral'],['As Away Dog','14-16','47%','→ Neutral'],
+      ['After Win','16-14','53%','→ Slight'],['After Loss','21-32','40%','↓ Fade'],
+      ['Sale Starts','9-4','69%','↑ Strong'],['Fenway Day Games','8-6','57%','↑ Slight'],
+      ['Vs AL East','12-20','38%','↓ Fade'],['High Total (9+)',  '18-12','60%','↑ Bet Over'],
+    ],
+  },
+};
 function getTeamId() {
-  return new URLSearchParams(window.location.search).get('id') || 'denver-nuggets';
+  const id = new URLSearchParams(window.location.search).get('id') || 'denver-nuggets';
+  // Normalize aliases from dashboard slugs
+  const aliases = {
+    'la-lakers':'los-angeles-lakers',
+    'la-dodgers':'los-angeles-dodgers',
+    'sf-giants':'san-francisco-giants',
+    'la-clippers':'los-angeles-clippers',
+  };
+  return aliases[id] || id;
 }
 
 function renderTeam(id) {
@@ -561,7 +741,26 @@ function showTab(name) {
   event.currentTarget.classList.add('active');
 }
 
+// Store where we came from
+if(document.referrer && !sessionStorage.getItem('teamPageRef')) {
+  sessionStorage.setItem('teamPageRef', document.referrer);
+}
+
+function goBack() {
+  const ref = sessionStorage.getItem('teamPageRef');
+  sessionStorage.removeItem('teamPageRef');
+  if(ref && ref.includes(window.location.hostname)) {
+    window.location.href = ref;
+  } else {
+    window.location.href = '/dashboard';
+  }
+}
+
 renderTeam(getTeamId());
+
+window.addEventListener('pageshow', function(e) {
+  if(e.persisted) renderTeam(getTeamId());
+});
 
 // Re-render if user navigates back/forward to this page
 window.addEventListener('pageshow', function(e) {
