@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OddsGod — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --black:#080808;--dark:#0d0d0d;--card:#141414;--border:#1e1e1e;
+      --gold:#C9A84C;--gold-lt:#E8C96A;--gold-dim:#7A6330;
+      --white:#F5F5F5;--muted:#777;--green:#2ECC71;
+    }
+    html,body{height:100%}
+    body{
+      background:var(--black);color:var(--white);
+      font-family:'Inter',sans-serif;
+      -webkit-font-smoothing:antialiased;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      min-height:100vh;padding:24px;overflow:hidden;
+    }
+
+    canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4}
+
+    /* glow */
+    .glow{
+      position:fixed;width:600px;height:600px;border-radius:50%;
+      background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 70%);
+      top:50%;left:50%;transform:translate(-50%,-50%);
+      animation:pulse 4s ease-in-out infinite;pointer-events:none;z-index:0;
+    }
+    @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.5}}
+
+    .login-wrap{
+      position:relative;z-index:1;
+      width:100%;max-width:400px;
+      animation:fadeUp 0.6s ease forwards;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    .login-logo{
+      font-family:'Bebas Neue',sans-serif;font-size:42px;
+      letter-spacing:0.08em;color:var(--gold);
+      text-align:center;margin-bottom:6px;
+      text-decoration:none;display:block;
+    }
+    .login-tagline{
+      text-align:center;font-family:'JetBrains Mono',monospace;
+      font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+      color:var(--muted);margin-bottom:40px;
+    }
+
+    .login-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:8px;padding:36px 32px;
+      box-shadow:0 0 60px rgba(0,0,0,0.6);
+    }
+
+    .login-card h2{
+      font-family:'Bebas Neue',sans-serif;font-size:28px;
+      letter-spacing:0.06em;color:var(--white);margin-bottom:6px;
+    }
+    .login-card p{font-size:13px;color:var(--muted);margin-bottom:28px;}
+
+    .field{margin-bottom:18px}
+    .field label{
+      display:block;font-size:11px;font-weight:600;
+      letter-spacing:0.1em;text-transform:uppercase;
+      color:var(--muted);margin-bottom:7px;
+    }
+    .field input{
+      width:100%;background:#0f0f0f;border:1px solid var(--border);
+      border-radius:4px;padding:12px 14px;
+      color:var(--white);font-family:'Inter',sans-serif;font-size:14px;
+      outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+    }
+    .field input:focus{
+      border-color:var(--gold-dim);
+      box-shadow:0 0 0 3px rgba(201,168,76,0.08);
+    }
+    .field input::placeholder{color:#333}
+
+    .forgot{
+      display:block;text-align:right;font-size:12px;
+      color:var(--muted);text-decoration:none;margin-top:-10px;margin-bottom:24px;
+      transition:color 0.2s;
+    }
+    .forgot:hover{color:var(--gold)}
+
+    .btn-login{
+      width:100%;padding:14px;border:none;border-radius:4px;cursor:pointer;
+      font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
+      letter-spacing:0.08em;text-transform:uppercase;
+      background:linear-gradient(135deg,#C9A84C,#E8C96A,#C9A84C);
+      background-size:200%;color:var(--black);
+      animation:gradShift 3s ease infinite;
+      transition:transform 0.15s,box-shadow 0.2s;
+    }
+    .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.4)}
+    @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+    .divider{
+      display:flex;align-items:center;gap:12px;
+      margin:22px 0;color:#2a2a2a;font-size:12px;
+    }
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    .btn-demo{
+      width:100%;padding:13px;border:1px solid var(--border);border-radius:4px;
+      background:transparent;color:var(--muted);cursor:pointer;
+      font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+      letter-spacing:0.04em;text-decoration:none;display:block;text-align:center;
+      transition:border-color 0.2s,color 0.2s;
+    }
+    .btn-demo:hover{border-color:var(--gold-dim);color:var(--gold-lt)}
+
+    .signup-line{
+      text-align:center;font-size:13px;color:var(--muted);margin-top:22px;
+    }
+    .signup-line a{color:var(--gold);text-decoration:none;font-weight:600}
+    .signup-line a:hover{color:var(--gold-lt)}
+
+    /* live dot */
+    .live-strip{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      font-family:'JetBrains Mono',monospace;font-size:10px;
+      letter-spacing:0.14em;color:var(--muted);margin-top:28px;
+    }
+    .ldot{width:6px;height:6px;border-radius:50%;background:var(--green);
+      box-shadow:0 0 0 0 rgba(46,204,113,0.5);animation:lping 1.6s ease-out infinite}
+    @keyframes lping{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.6)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="glow"></div>
+
+<div class="login-wrap">
+  <a href="index.html" class="login-logo">OddsGod</a>
+  <div class="login-tagline">Beat the Book</div>
+
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+    <p>Sign in to access your picks and live data.</p>
+
+    <div class="field">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••"/>
+    </div>
+    <a href="#" class="forgot">Forgot password?</a>
+
+    <button class="btn-login" onclick="window.location.href='dashboard.html'">Sign In</button>
+
+    <div class="divider">or</div>
+
+    <a href="dashboard.html" class="btn-demo">👁 Preview as Guest</a>
+
+    <div class="signup-line">No account? <a href="#">Get started free</a></div>
+  </div>
+
+  <div class="live-strip">
+    <span class="ldot"></span> Live odds updating now across 38+ books
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H,dots=[];
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+function r(a,b){return Math.random()*(b-a)+a}
+class Dot{constructor(){this.reset()}reset(){this.x=r(0,W);this.y=r(0,H);this.vx=r(-0.15,0.15);this.vy=r(-0.15,0.15);this.rad=r(0.5,1.6);this.a=r(0.1,0.45)}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset()}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.rad,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${this.a})`;ctx.fill()}}
+for(let i=0;i<80;i++)dots.push(new Dot());
+function loop(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.update();d.draw()});requestAnimationFrame(loop)}
+loop();
+</script>
+</body>
+</html>

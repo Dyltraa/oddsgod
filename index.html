@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OddsGod — Beat the Book</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #080808;
+      --dark:    #0d0d0d;
+      --card:    #141414;
+      --border:  #1e1e1e;
+      --gold:    #C9A84C;
+      --gold-lt: #E8C96A;
+      --gold-dim:#7A6330;
+      --white:   #F5F5F5;
+      --muted:   #777777;
+      --green:   #2ECC71;
+      --red:     #E74C3C;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS PARTICLES ── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .nav-logo::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .nav-logo:hover::after { transform: scaleX(1); }
+
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--gold) !important;
+      color: var(--black) !important;
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-weight: 700 !important;
+      transition: background 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold-lt) !important;
+      box-shadow: 0 0 18px rgba(201,168,76,0.4) !important;
+      color: var(--black) !important;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* Animated radial pulse behind hero */
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      animation: glowPulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { transform: translate(-50%, -55%) scale(1);   opacity: 1; }
+      50%       { transform: translate(-50%, -55%) scale(1.15); opacity: 0.6; }
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 36px; height: 1px;
+      background: var(--gold-dim);
+    }
+
+    /* Live dot */
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(46,204,113,0.5);
+      animation: livePing 1.6s ease-out infinite;
+    }
+    @keyframes livePing {
+      0%   { box-shadow: 0 0 0 0 rgba(46,204,113,0.6); }
+      70%  { box-shadow: 0 0 0 8px rgba(46,204,113,0); }
+      100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); }
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(78px, 15vw, 168px);
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards;
+    }
+
+    .hero h1 .gold-word {
+      color: var(--gold);
+      display: block;
+      position: relative;
+    }
+
+    /* Shimmer sweep on the gold word */
+    .hero h1 .gold-word::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3.5s 1.2s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+
+    /* Typewriter sub */
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      max-width: 500px;
+      margin: 28px auto 44px;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.7s forwards;
+    }
+    .hero-sub strong { color: var(--white); font-weight: 600; }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.9s forwards;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #C9A84C, #E8C96A, #C9A84C);
+      background-size: 200%;
+      color: var(--black);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 15px 34px;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background-position 0.4s, transform 0.15s, box-shadow 0.3s;
+      animation: gradShift 3s ease infinite;
+    }
+    @keyframes gradShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.45);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      padding: 15px 30px;
+      border-radius: 4px;
+      border: 1px solid #333;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold-dim);
+      color: var(--gold-lt);
+      box-shadow: 0 0 14px rgba(201,168,76,0.15);
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--dark);
+      padding: 11px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .ticker-wrap::before, .ticker-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .ticker-wrap::before { left: 0;  background: linear-gradient(to right, var(--dark), transparent); }
+    .ticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--dark), transparent); }
+
+    .ticker-track {
+      display: flex;
+      gap: 52px;
+      animation: ticker 22s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .tick-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .tick-team { color: var(--white); font-weight: 600; }
+    .tick-line { color: var(--muted); }
+    .tick-edge { color: var(--gold); font-weight: 600; }
+    .tick-up   { color: var(--green); font-weight: 700; }
+    .tick-dot  { width: 3px; height: 3px; background: #333; border-radius: 50%; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--dark);
+      position: relative;
+      z-index: 1;
+    }
+    .stat-item {
+      flex: 1;
+      max-width: 220px;
+      text-align: center;
+      padding: 36px 24px;
+      border-right: 1px solid var(--border);
+      transition: background 0.25s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: #111; }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      color: var(--gold);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      margin-top: 7px;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* stagger children */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0.05s; }
+    .reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.15s; }
+    .reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.25s; }
+    .reveal-stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.35s; }
+    .reveal-stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.45s; }
+    .reveal-stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:0.55s; }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 96px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6.5vw, 76px);
+      line-height: 0.93;
+      letter-spacing: 0.02em;
+      margin-bottom: 52px;
+      color: var(--white);
+    }
+    .section-title em { font-style: normal; color: var(--gold); }
+
+    /* ── FEATURES GRID ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .feature-card {
+      background: var(--card);
+      padding: 38px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s, transform 0.25s;
+      cursor: default;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .feature-card:hover { background: #1a1a1a; transform: translateY(-3px); }
+    .feature-card:hover::before { transform: scaleX(1); }
+
+    .feature-icon {
+      font-size: 30px;
+      margin-bottom: 18px;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .feature-card:hover .feature-icon { transform: scale(1.15) rotate(-4deg); }
+
+    .feature-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+    /* ── PICKS ── */
+    .picks-section {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 96px 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .picks-inner { max-width: 1100px; margin: 0 auto; }
+
+    .picks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 52px;
+    }
+
+    .pick-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .pick-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .pick-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold-dim);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 20px rgba(201,168,76,0.08);
+    }
+
+    .pick-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .pick-sport {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .pick-confidence {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green);
+      background: rgba(46,204,113,0.1);
+      padding: 3px 9px;
+      border-radius: 3px;
+      animation: confPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes confPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); }
+      50%      { box-shadow: 0 0 8px 2px rgba(46,204,113,0.2); }
+    }
+
+    .pick-matchup {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .pick-detail { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    .pick-call {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 4px;
+      padding: 12px 16px;
+    }
+    .pick-call-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .pick-call-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .blur-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 25%, rgba(20,20,20,0.97) 65%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 24px;
+    }
+    .picks-locked { position: relative; }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 52px;
+    }
+
+    .price-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 38px 32px;
+      position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    }
+    .price-card.featured {
+      border-color: var(--gold);
+      background: #111009;
+      box-shadow: 0 0 0 1px var(--gold-dim), 0 0 40px rgba(201,168,76,0.07);
+    }
+    .price-card.featured:hover {
+      box-shadow: 0 0 0 1px var(--gold), 0 16px 48px rgba(201,168,76,0.18);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -13px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--black);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 20px;
+    }
+
+    .price-tier {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .price-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 60px;
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .price-amount sup { font-size: 26px; vertical-align: super; }
+    .price-period { font-size: 13px; color: var(--muted); margin-bottom: 30px; }
+
+    .price-features { list-style: none; margin-bottom: 34px; }
+    .price-features li {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .price-features li:last-child { border-bottom: none; }
+    .price-features li::before { content: '✓'; color: var(--gold); font-weight: 700; font-size: 12px; flex-shrink: 0; }
+    .price-features li.locked { color: #3a3a3a; }
+    .price-features li.locked::before { content: '—'; color: #2a2a2a; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 100px 24px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: glowPulse 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 104px);
+      letter-spacing: 0.02em;
+      line-height: 0.93;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .cta-section h2 span { color: var(--gold); }
+    .cta-section p { font-size: 16px; color: var(--muted); max-width: 400px; margin: 0 auto 40px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.08em; color: var(--gold); }
+    .footer-note { font-size: 12px; color: #3a3a3a; }
+
+    /* ── UTILITIES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 16px; }
+      .nav-links { display: none; }
+      .stats-strip { flex-wrap: wrap; }
+      .stat-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">OddsGod</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#picks">Today's Picks</a></li>
+    <li><a href="login.html">Pricing</a></li>
+    <li><a href="login.html" class="nav-cta">Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow"><span class="live-dot"></span> Live Data · Updated Now</div>
+  <h1>
+    STOP
+    <span class="gold-word" data-text="GUESSING.">GUESSING.</span>
+  </h1>
+  <p class="hero-sub">
+    Real-time odds, line movement, AI picks, and injury intel — all in one place.<br />
+    Built for bettors who actually <strong>study</strong>.
+  </p>
+  <div class="hero-actions">
+    <a href="login.html" class="btn-primary">Get Free Access</a>
+    <a href="#features" class="btn-secondary">See How It Works</a>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="tick-item"><span class="tick-team">LAL -4.5</span><span class="tick-line">ML -190</span><span class="tick-edge">+6.2% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">KC -3</span><span class="tick-line">O/U 47.5</span><span class="tick-up">↑ Sharp Money</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">NYY ML</span><span class="tick-line">-145</span><span class="tick-edge">+4.8% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">BOS +2.5</span><span class="tick-line">O/U 212</span><span class="tick-edge">Line moved -1.5</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">DEN -6</span><span class="tick-line">ML -250</span><span class="tick-edge">+7.1% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">PHI +110</span><span class="tick-line">O/U 44</span><span class="tick-line">Public: 28%</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">GSW +3</span><span class="tick-line">ML +140</span><span class="tick-up">↑ Line Move</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">MIA -1.5</span><span class="tick-line">O/U 218</span><span class="tick-edge">+5.5% Edge</span></div>
+    <div class="tick-dot"></div>
+    <!-- Duplicate -->
+    <div class="tick-item"><span class="tick-team">LAL -4.5</span><span class="tick-line">ML -190</span><span class="tick-edge">+6.2% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">KC -3</span><span class="tick-line">O/U 47.5</span><span class="tick-up">↑ Sharp Money</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">NYY ML</span><span class="tick-line">-145</span><span class="tick-edge">+4.8% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">BOS +2.5</span><span class="tick-line">O/U 212</span><span class="tick-edge">Line moved -1.5</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">DEN -6</span><span class="tick-line">ML -250</span><span class="tick-edge">+7.1% Edge</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">PHI +110</span><span class="tick-line">O/U 44</span><span class="tick-line">Public: 28%</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">GSW +3</span><span class="tick-line">ML +140</span><span class="tick-up">↑ Line Move</span></div>
+    <div class="tick-dot"></div>
+    <div class="tick-item"><span class="tick-team">MIA -1.5</span><span class="tick-line">O/U 218</span><span class="tick-edge">+5.5% Edge</span></div>
+    <div class="tick-dot"></div>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip reveal-stagger">
+  <div class="stat-item">
+    <div class="stat-num" data-count="38" data-suffix="+">0+</div>
+    <div class="stat-label">Sportsbooks Tracked</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">NFL</div>
+    <div class="stat-label">NBA · MLB Covered</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-count="247" data-suffix="">0</div>
+    <div class="stat-label">Games Analyzed Today</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-count="68" data-suffix="%">0%</div>
+    <div class="stat-label">AI Pick Win Rate</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="features">
+  <div class="section">
+    <div class="section-label reveal">What You Get</div>
+    <div class="section-title reveal">DATA THAT<br /><em>HITS DIFFERENT</em></div>
+    <div class="features-grid reveal-stagger">
+      <div class="feature-card">
+        <span class="feature-icon">📈</span>
+        <div class="feature-name">Line Movement</div>
+        <p class="feature-desc">Watch lines shift in real time across 38+ sportsbooks. See where sharp money is moving before the public catches on.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-name">AI Picks</div>
+        <p class="feature-desc">Every game gets a model-generated pick with an edge score. Know when to bet and when to sit it out.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏥</span>
+        <div class="feature-name">Injury Intel</div>
+        <p class="feature-desc">Injury reports the second they drop. Know who's out before the line moves and the value disappears.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <div class="feature-name">Team & Player Stats</div>
+        <p class="feature-desc">Deep historical matchup data, splits, trends, and player props — everything you need to build your own read.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <div class="feature-name">Public vs. Sharp</div>
+        <p class="feature-desc">See where public money is going vs. where sharp bettors are hitting. Fade the public. Follow the sharp.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-name">Live Game Feed</div>
+        <p class="feature-desc">Live scores, real-time odds, and in-game line moves. Never miss a live betting window again.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PICKS PREVIEW -->
+<div id="picks" class="picks-section">
+  <div class="picks-inner">
+    <div class="section-label reveal">Today's Picks</div>
+    <div class="section-title reveal">THE <em>MODEL</em><br />ALREADY KNOWS</div>
+    <div class="picks-grid reveal-stagger">
+      <div class="pick-card">
+        <div class="pick-header">
+          <span class="pick-sport">NBA · Tonight</span>
+          <span class="pick-confidence">87% Conf.</span>
+        </div>
+        <div class="pick-matchup">LAL VS DEN</div>
+        <div class="pick-detail">Nuggets -6 · O/U 224.5 · 9:00 PM ET</div>
+        <div class="pick-call">
+          <span class="pick-call-label">AI Pick</span>
+          <span class="pick-call-value">DEN -6 ✓</span>
+        </div>
+      </div>
+      <div class="pick-card picks-locked">
+        <div class="pick-header">
+          <span class="pick-sport">NFL · Sunday</span>
+          <span class="pick-confidence">79% Conf.</span>
+        </div>
+        <div class="pick-matchup">KC VS BUF</div>
+        <div class="pick-detail">Chiefs -3 · O/U 47.5 · 4:25 PM ET</div>
+        <div class="pick-call">
+          <span class="pick-call-label">AI Pick</span>
+          <span class="pick-call-value">— Unlock Pro</span>
+        </div>
+        <div class="blur-overlay">
+          <a href="login.html" class="btn-primary" style="font-size:12px;padding:10px 22px;">Unlock All Picks</a>
+        </div>
+      </div>
+      <div class="pick-card picks-locked">
+        <div class="pick-header">
+          <span class="pick-sport">MLB · Tonight</span>
+          <span class="pick-confidence">74% Conf.</span>
+        </div>
+        <div class="pick-matchup">NYY VS BOS</div>
+        <div class="pick-detail">Yankees ML -145 · O/U 8.5 · 7:10 PM ET</div>
+        <div class="pick-call">
+          <span class="pick-call-label">AI Pick</span>
+          <span class="pick-call-value">— Unlock Pro</span>
+        </div>
+        <div class="blur-overlay">
+          <a href="login.html" class="btn-primary" style="font-size:12px;padding:10px 22px;">Unlock All Picks</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing">
+  <div class="section">
+    <div class="section-label reveal">Pricing</div>
+    <div class="section-title reveal">NO FLUFF.<br /><em>JUST ACCESS.</em></div>
+    <div class="pricing-grid reveal-stagger">
+      <div class="price-card">
+        <div class="price-tier">Free</div>
+        <div class="price-amount"><sup>$</sup>0</div>
+        <div class="price-period">forever</div>
+        <ul class="price-features">
+          <li>Live odds from 10 books</li>
+          <li>Basic line movement</li>
+          <li>1 AI pick per day</li>
+          <li>Game scores &amp; schedules</li>
+          <li class="locked">Full AI pick slate</li>
+          <li class="locked">Sharp vs. public data</li>
+          <li class="locked">Injury alerts</li>
+        </ul>
+        <a href="login.html" class="btn-secondary" style="display:block;text-align:center;">Start Free</a>
+      </div>
+      <div class="price-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount"><sup>$</sup>29</div>
+        <div class="price-period">per month</div>
+        <ul class="price-features">
+          <li>Live odds from 38+ books</li>
+          <li>Real-time line movement</li>
+          <li>All AI picks, every game</li>
+          <li>Sharp vs. public breakdowns</li>
+          <li>Instant injury alerts</li>
+          <li>NFL, NBA &amp; MLB full coverage</li>
+          <li>Player props &amp; trends</li>
+        </ul>
+        <a href="login.html" class="btn-primary" style="display:block;text-align:center;">Get Pro Access</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section reveal">
+  <h2>READY TO<br /><span>BEAT THE BOOK?</span></h2>
+  <p>Join thousands of bettors who stopped guessing and started winning.</p>
+  <a href="login.html" class="btn-primary">Get Free Access Now</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">OddsGod</div>
+  <div class="footer-note">For entertainment purposes. Must be 21+. Please bet responsibly.</div>
+</footer>
+
+<script>
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, dots = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  class Dot {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = rand(0, W);
+      this.y  = rand(0, H);
+      this.r  = rand(0.6, 1.8);
+      this.vx = rand(-0.18, 0.18);
+      this.vy = rand(-0.18, 0.18);
+      this.alpha = rand(0.15, 0.55);
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(201,168,76,${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 110; i++) dots.push(new Dot());
+
+  // Draw connections
+  function drawLines() {
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const dx = dots[i].x - dots[j].x;
+        const dy = dots[i].y - dots[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = `rgba(201,168,76,${0.07 * (1 - dist/100)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    dots.forEach(d => { d.update(); d.draw(); });
+    drawLines();
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => observer.observe(el));
+
+// ── COUNT-UP NUMBERS ──
+function countUp(el, target, suffix, duration) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start) + suffix;
+  }, 16);
+}
+
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const els = e.target.querySelectorAll('[data-count]');
+      els.forEach(el => {
+        const target = parseInt(el.dataset.count);
+        const suffix = el.dataset.suffix || '';
+        countUp(el, target, suffix, 1400);
+      });
+      countObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.stats-strip').forEach(el => countObserver.observe(el));
+</script>
+</body>
+</html>

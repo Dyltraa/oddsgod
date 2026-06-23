@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OddsGod — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --black:#080808;--dark:#0d0d0d;--card:#111;--card2:#141414;
+      --border:#1e1e1e;--border2:#252525;
+      --gold:#C9A84C;--gold-lt:#E8C96A;--gold-dim:#7A6330;
+      --white:#F0F0F0;--muted:#666;--muted2:#888;
+      --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;
+      --sidebar:220px;
+    }
+
+    html,body{height:100%;margin:0}
+    body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;display:flex;height:100vh;overflow:hidden}
+
+    /* ── SIDEBAR (desktop only) ── */
+    .sidebar{width:var(--sidebar);flex-shrink:0;background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow-y:auto;position:relative;z-index:10}
+    .sidebar-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.08em;color:var(--gold);padding:20px 20px 0;text-decoration:none;display:block}
+    .sidebar-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);padding:2px 20px 18px;border-bottom:1px solid var(--border)}
+    .nav-section{padding:18px 12px 6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:5px;margin:1px 6px;color:var(--muted2);font-size:13px;font-weight:500;cursor:pointer;transition:background 0.18s,color 0.18s;text-decoration:none;border:none;background:none;width:calc(100% - 12px);text-align:left}
+    .nav-item:hover{background:#161616;color:var(--white)}
+    .nav-item.active{background:rgba(201,168,76,0.1);color:var(--gold);font-weight:600}
+    .nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+    .nav-badge{margin-left:auto;background:var(--green);color:#000;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;font-family:'JetBrains Mono',monospace}
+    .nav-badge.red{background:var(--red);color:#fff}
+    .sidebar-footer{margin-top:auto;padding:14px 10px;border-top:1px solid var(--border)}
+    .user-pill{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;background:var(--card2);border:1px solid var(--border)}
+    .user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--black);flex-shrink:0}
+    .user-name{font-size:12px;font-weight:600;color:var(--white)}
+    .user-plan{font-size:10px;color:var(--gold);font-family:'JetBrains Mono',monospace;letter-spacing:0.08em}
+
+    /* ── MAIN ── */
+    .main{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
+
+    /* ── TOPBAR ── */
+    .topbar{height:52px;flex-shrink:0;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.95);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:10px;position:relative;z-index:5}
+    .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .page-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.06em;color:var(--white);white-space:nowrap}
+    .live-pill{display:flex;align-items:center;gap:5px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:20px;padding:3px 9px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;color:var(--green);white-space:nowrap}
+    .ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:lping 1.6s ease-out infinite;flex-shrink:0}
+    @keyframes lping{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.6)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+    .topbar-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .sport-tab{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:5px 10px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.18s;white-space:nowrap}
+    .sport-tab.active{background:rgba(201,168,76,0.12);border-color:var(--gold-dim);color:var(--gold)}
+    .clock{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);border-left:1px solid var(--border);padding-left:10px;white-space:nowrap}
+
+    /* ── SCROLLABLE CONTENT ── */
+    .content{flex:1;overflow-y:auto;padding:14px 14px 80px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
+    .content::-webkit-scrollbar{width:3px}
+    .content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+    /* ── KPI ROW ── */
+    .kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
+    .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+    .kpi-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .kpi-val{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;letter-spacing:0.02em;color:var(--white)}
+    .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .kpi-sub .up{color:var(--green);font-weight:600}
+    .kpi-sub .dn{color:var(--red);font-weight:600}
+
+    /* ── PANEL ── */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+    .panel-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.06em;color:var(--white)}
+    .panel-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+
+    /* ── PICKS TABLE ── */
+    .pick-row{display:grid;grid-template-columns:54px 1fr 60px 60px;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border)}
+    .pick-row:last-child{border-bottom:none}
+    .pick-row.flash{animation:rowFlash 0.6s ease}
+    @keyframes rowFlash{0%,100%{background:transparent}50%{background:rgba(201,168,76,0.07)}}
+    .sport-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:2px 5px;border-radius:3px;text-align:center}
+    .b-nba{background:rgba(59,130,246,0.15);color:#60a5fa}
+    .b-nfl{background:rgba(201,168,76,0.15);color:var(--gold)}
+    .b-mlb{background:rgba(46,204,113,0.12);color:var(--green)}
+    .pick-teams{font-weight:600;font-size:12px;color:var(--white);line-height:1.3}
+    .pick-time{font-size:10px;color:var(--muted);margin-top:1px;font-family:'JetBrains Mono',monospace}
+    .pick-line-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2)}
+    .pick-call{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--gold)}
+    .conf-wrap{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 0 2px}
+    .conf-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+    .conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 0.8s ease}
+    .conf-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);width:28px;text-align:right;flex-shrink:0}
+
+    /* ── ODDS TABLE ── */
+    .odds-head-row{display:grid;grid-template-columns:1fr 56px 56px 56px 60px;gap:6px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)}
+    .oh{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-align:center}
+    .oh:first-child{text-align:left}
+    .odds-row{display:grid;grid-template-columns:1fr 56px 56px 56px 60px;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid var(--border);transition:background 0.15s}
+    .odds-row:last-child{border-bottom:none}
+    .odds-row.flash{animation:rowFlash 0.7s ease}
+    .odds-team{font-size:12px;font-weight:600;color:var(--white)}
+    .odds-game{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:1px}
+    .odds-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);text-align:center;transition:color 0.3s}
+    .up{color:var(--green)!important;font-weight:700}
+    .dn{color:var(--red)!important;font-weight:700}
+    .edge-pill{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;text-align:center}
+    .e-pos{background:rgba(46,204,113,0.12);color:var(--green)}
+    .e-neg{background:rgba(231,76,60,0.12);color:var(--red)}
+
+    /* ── INJURY FEED ── */
+    .inj-item{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+    .inj-item:last-child{border-bottom:none}
+    .inj-item.flash{animation:rowFlash 0.6s ease}
+    .inj-dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:4px}
+    .dot-out{background:var(--red);box-shadow:0 0 6px rgba(231,76,60,0.6)}
+    .dot-q{background:#F59E0B;box-shadow:0 0 5px rgba(245,158,11,0.4)}
+    .dot-p{background:var(--green)}
+    .inj-name{font-size:12px;font-weight:600;color:var(--white)}
+    .inj-meta{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:1px}
+    .inj-lbl{font-size:10px;font-weight:600;margin-top:2px}
+    .lbl-out{color:var(--red)}
+    .lbl-q{color:#F59E0B}
+    .lbl-p{color:var(--green)}
+
+    /* ── PUBLIC vs SHARP ── */
+    .ps-row{padding:12px 14px;border-bottom:1px solid var(--border)}
+    .ps-row:last-child{border-bottom:none}
+    .ps-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .ps-match{font-size:12px;font-weight:600;color:var(--white)}
+    .ps-sport{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+    .ps-bars{display:flex;flex-direction:column;gap:5px}
+    .ps-bar-row{display:flex;align-items:center;gap:8px}
+    .ps-lbl{font-size:10px;color:var(--muted);width:38px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+    .ps-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .ps-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
+    .fill-pub{background:linear-gradient(90deg,#2563EB,#60a5fa)}
+    .fill-shp{background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+    .ps-pct{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;width:28px;text-align:right;flex-shrink:0}
+    .pct-pub{color:#60a5fa}
+    .pct-shp{color:var(--gold)}
+
+    /* ── SCHEDULE ── */
+    .sched-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+    .sched-row:last-child{border-bottom:none}
+    .sched-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:52px;flex-shrink:0}
+    .sched-match{flex:1}
+    .sched-teams{font-size:12px;font-weight:600;color:var(--white)}
+    .sched-line{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px}
+    .sched-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.08em;padding:2px 6px;border-radius:3px;flex-shrink:0}
+
+    /* ── BOTTOM TICKER ── */
+    .dash-ticker{height:30px;flex-shrink:0;background:var(--dark);border-top:1px solid var(--border);overflow:hidden;position:relative;display:flex;align-items:center}
+    .dash-ticker::before,.dash-ticker::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
+    .dash-ticker::before{left:0;background:linear-gradient(to right,var(--dark),transparent)}
+    .dash-ticker::after{right:0;background:linear-gradient(to left,var(--dark),transparent)}
+    .ticker-track{display:flex;gap:36px;animation:ticker 18s linear infinite;white-space:nowrap;padding:0 40px}
+    @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .ti{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;flex-shrink:0}
+    .ti-team{color:var(--white);font-weight:600}
+    .ti-odds{color:var(--muted)}
+    .ti-edge{color:var(--gold);font-weight:600}
+    .ti-up{color:var(--green);font-weight:700}
+    .ti-dn{color:var(--red);font-weight:700}
+
+    /* ── TOAST ── */
+    .toast-wrap{position:fixed;top:60px;right:12px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:calc(100vw - 24px)}
+    .toast{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:11px 14px;display:flex;gap:10px;align-items:flex-start;animation:toastIn 0.35s ease forwards;pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+    .toast.out{animation:toastOut 0.35s ease forwards}
+    @keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(16px)}}
+    .toast-icon{font-size:15px;flex-shrink:0}
+    .toast-title{font-size:12px;font-weight:600;color:var(--white)}
+    .toast-body{font-size:10px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+    .t-gold{border-left:3px solid var(--gold)}
+    .t-red{border-left:3px solid var(--red)}
+    .t-green{border-left:3px solid var(--green)}
+
+    /* ── AI EXPLAINER MODAL ── */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.25s}
+    .modal-backdrop.open{opacity:1;pointer-events:all}
+    .modal{background:var(--card2);border:1px solid var(--border);border-radius:12px 12px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:translateY(30px);transition:transform 0.3s ease;padding-bottom:24px}
+    .modal-backdrop.open .modal{transform:translateY(0)}
+    .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
+    .modal-head{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 0}
+    .modal-matchup{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;color:var(--white);line-height:1}
+    .modal-sport-row{display:flex;align-items:center;gap:8px;margin-top:4px}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1;transition:color 0.2s;flex-shrink:0;margin-top:2px}
+    .modal-close:hover{color:var(--white)}
+    .modal-pick-box{margin:16px 20px 0;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+    .modal-pick-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace}
+    .modal-pick-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:0.04em}
+    .modal-conf-ring{width:52px;height:52px;flex-shrink:0}
+    .modal-section{padding:16px 20px 0}
+    .modal-section-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+    .modal-explain{font-size:13px;color:var(--muted2);line-height:1.75}
+    .modal-explain strong{color:var(--white);font-weight:600}
+    .modal-factors{display:flex;flex-direction:column;gap:8px}
+    .factor-row{display:flex;align-items:center;gap:10px}
+    .factor-label{font-size:12px;color:var(--muted2);width:130px;flex-shrink:0}
+    .factor-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .factor-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+    .fb-pos{background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+    .fb-neg{background:linear-gradient(90deg,#7f1d1d,var(--red))}
+    .factor-val{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;width:32px;text-align:right;flex-shrink:0}
+    .modal-add-btn{display:block;width:calc(100% - 40px);margin:20px 20px 0;padding:13px;background:linear-gradient(135deg,#C9A84C,#E8C96A,#C9A84C);background-size:200%;color:var(--black);font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s,transform 0.15s;animation:gradShift 3s ease infinite}
+    @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .modal-add-btn:hover{box-shadow:0 6px 20px rgba(201,168,76,0.35);transform:translateY(-1px)}
+    .modal-add-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+    /* ── BET TRACKER ── */
+    .tracker-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--border)}
+    .ts-item{text-align:center;padding:12px 8px;border-right:1px solid var(--border)}
+    .ts-item:last-child{border-right:none}
+    .ts-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.02em;line-height:1}
+    .ts-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+    .tracker-add-row{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .tracker-input{background:#0a0a0a;border:1px solid var(--border);border-radius:4px;padding:7px 10px;color:var(--white);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;transition:border-color 0.2s}
+    .tracker-input:focus{border-color:var(--gold-dim)}
+    .tracker-input::placeholder{color:#333}
+    .ti-game{flex:1;min-width:100px}
+    .ti-pick2{flex:1;min-width:80px}
+    .ti-odds2{width:68px}
+    .ti-stake{width:68px}
+    .tracker-add-btn{background:var(--gold);color:var(--black);border:none;border-radius:4px;padding:7px 14px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:background 0.2s,transform 0.15s;white-space:nowrap;flex-shrink:0}
+    .tracker-add-btn:hover{background:var(--gold-lt);transform:translateY(-1px)}
+    .bet-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);transition:background 0.15s}
+    .bet-row:last-child{border-bottom:none}
+    .bet-row:hover{background:#161616}
+    .bet-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .bs-pending{background:var(--muted);border:1px solid #444}
+    .bs-won{background:var(--green);box-shadow:0 0 5px rgba(46,204,113,0.5)}
+    .bs-lost{background:var(--red)}
+    .bet-game{flex:1;min-width:0}
+    .bet-game-name{font-size:12px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bet-pick-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);margin-top:1px}
+    .bet-odds-cell{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);width:44px;text-align:center;flex-shrink:0}
+    .bet-stake-cell{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);width:44px;text-align:center;flex-shrink:0}
+    .bet-result{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;width:52px;text-align:right;flex-shrink:0}
+    .br-won{color:var(--green)}
+    .br-lost{color:var(--red)}
+    .br-pending{color:var(--muted)}
+    .bet-del{background:none;border:none;color:#333;cursor:pointer;font-size:13px;padding:0 2px;transition:color 0.2s;flex-shrink:0}
+    .bet-del:hover{color:var(--red)}
+    .bet-status-btn{background:none;border:1px solid var(--border);border-radius:3px;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted);padding:2px 5px;cursor:pointer;transition:all 0.2s;flex-shrink:0}
+    .bet-status-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+    .tracker-empty{text-align:center;padding:28px 14px;color:var(--muted);font-size:13px}
+    .tracker-empty span{display:block;font-size:24px;margin-bottom:8px}
+
+    /* ── DESKTOP GRID (sidebar + 2-col content) ── */
+    @media(min-width:901px){
+      .kpi-row{grid-template-columns:repeat(4,1fr)}
+      .dash-grid{display:grid;grid-template-columns:1fr 310px;gap:14px}
+      .right-col{display:flex;flex-direction:column;gap:14px}
+    }
+
+    /* ── MOBILE: hide sidebar, stack everything ── */
+    @media(max-width:900px){
+      .sidebar{display:none}
+      .dash-grid{display:flex;flex-direction:column;gap:14px}
+      .right-col{display:contents}
+      .clock{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-logo">OddsGod</a>
+  <div class="sidebar-sub">Pro Dashboard</div>
+  <div class="nav-section">Main</div>
+  <a class="nav-item active" href="#"><span class="nav-icon">⚡</span> Dashboard</a>
+  <a class="nav-item" href="#"><span class="nav-icon">🤖</span> AI Picks <span class="nav-badge" id="picks-badge">12</span></a>
+  <a class="nav-item" href="#"><span class="nav-icon">📈</span> Line Movement</a>
+  <a class="nav-item" href="#"><span class="nav-icon">🎯</span> Sharp Action</a>
+  <div class="nav-section">Research</div>
+  <a class="nav-item" href="#"><span class="nav-icon">📊</span> Team Stats</a>
+  <a class="nav-item" href="#"><span class="nav-icon">👤</span> Player Props</a>
+  <a class="nav-item" href="#"><span class="nav-icon">🏥</span> Injuries <span class="nav-badge red" id="inj-badge">3</span></a>
+  <a class="nav-item" href="#"><span class="nav-icon">📅</span> Schedule</a>
+  <div class="nav-section">Account</div>
+  <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Settings</a>
+  <a class="nav-item" href="login.html"><span class="nav-icon">🚪</span> Sign Out</a>
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">D</div>
+      <div><div class="user-name">Dylan</div><div class="user-plan">PRO PLAN</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Dashboard</div>
+      <div class="live-pill"><span class="ldot"></span> LIVE</div>
+    </div>
+    <div class="topbar-right">
+      <button class="sport-tab active" onclick="setTab(this)">ALL</button>
+      <button class="sport-tab" onclick="setTab(this)">NFL</button>
+      <button class="sport-tab" onclick="setTab(this)">NBA</button>
+      <button class="sport-tab" onclick="setTab(this)">MLB</button>
+      <div class="clock" id="clock">--:--</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">Today's AI Picks</div>
+        <div class="kpi-val" id="kpi-picks" style="color:var(--gold)">0</div>
+        <div class="kpi-sub"><span class="up" id="kpi-games">12</span> games analyzed</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Win Rate (7-Day)</div>
+        <div class="kpi-val" id="kpi-wr" style="color:var(--green)">0%</div>
+        <div class="kpi-sub"><span class="up">↑ 4%</span> vs last week</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Line Moves Today</div>
+        <div class="kpi-val" id="kpi-moves">0</div>
+        <div class="kpi-sub"><span class="up" id="kpi-sharp">8</span> sharp-triggered</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Injury Alerts</div>
+        <div class="kpi-val" id="kpi-inj" style="color:var(--red)">0</div>
+        <div class="kpi-sub">since last check</div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dash-grid">
+
+      <!-- LEFT COL -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- AI PICKS -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">🤖 Today's AI Picks</div>
+            <div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> <span id="picks-ts">Just now</span></div>
+          </div>
+          <!-- picks header -->
+          <div style="display:grid;grid-template-columns:54px 1fr 60px 60px;gap:8px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)">
+            <span class="oh" style="text-align:left">Sport</span>
+            <span class="oh" style="text-align:left">Matchup</span>
+            <span class="oh">Line</span>
+            <span class="oh">Pick</span>
+          </div>
+          <div id="picks-body"></div>
+        </div>
+
+        <!-- LIVE ODDS -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">📈 Live Odds & Line Movement</div>
+            <div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> Updating</div>
+          </div>
+          <div class="odds-head-row">
+            <div class="oh" style="text-align:left">Game</div>
+            <div class="oh">Spread</div>
+            <div class="oh">ML</div>
+            <div class="oh">O/U</div>
+            <div class="oh">Edge</div>
+          </div>
+          <div id="odds-body"></div>
+        </div>
+
+        <!-- BET TRACKER -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">💰 Bet Tracker</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="panel-tag" id="tracker-record">0-0-0</div>
+            </div>
+          </div>
+          <!-- Stats bar -->
+          <div class="tracker-stats">
+            <div class="ts-item"><div class="ts-val" id="ts-bets" style="color:var(--white)">0</div><div class="ts-lbl">Bets</div></div>
+            <div class="ts-item"><div class="ts-val" id="ts-roi" style="color:var(--green)">0%</div><div class="ts-lbl">ROI</div></div>
+            <div class="ts-item"><div class="ts-val" id="ts-wagered" style="color:var(--muted2)">$0</div><div class="ts-lbl">Wagered</div></div>
+            <div class="ts-item"><div class="ts-val" id="ts-profit" style="color:var(--green)">$0</div><div class="ts-lbl">Profit</div></div>
+          </div>
+          <!-- Manual add row -->
+          <div class="tracker-add-row">
+            <input class="tracker-input ti-game" id="ti-game" placeholder="Game (e.g. DEN vs LAL)"/>
+            <input class="tracker-input ti-pick2" id="ti-pick" placeholder="Pick (e.g. DEN -6)"/>
+            <input class="tracker-input ti-odds2" id="ti-odds" placeholder="Odds"/>
+            <input class="tracker-input ti-stake" id="ti-stake" placeholder="$Stake"/>
+            <button class="tracker-add-btn" onclick="addBetManual()">+ Add</button>
+          </div>
+          <!-- Bet list -->
+          <div id="bet-list"></div>
+        </div>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT COL -->
+      <div class="right-col">
+
+        <!-- INJURY FEED -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">🏥 Injury Feed</div>
+            <div class="panel-tag" style="color:var(--red)" id="inj-new-lbl">3 NEW</div>
+          </div>
+          <div id="inj-body"></div>
+        </div>
+
+        <!-- PUBLIC vs SHARP -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">🎯 Public vs Sharp</div>
+            <div class="panel-tag">Bet % Splits</div>
+          </div>
+          <div id="ps-body"></div>
+        </div>
+
+        <!-- SCHEDULE -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">📅 Today's Schedule</div>
+            <div class="panel-tag" id="sched-date">Mon Jun 22</div>
+          </div>
+          <div id="sched-body"></div>
+        </div>
+
+      </div><!-- /right -->
+    </div><!-- /dash-grid -->
+  </div><!-- /content -->
+
+  <!-- TICKER -->
+  <div class="dash-ticker">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- AI EXPLAINER MODAL -->
+<div class="modal-backdrop" id="explainer-backdrop" onclick="closeExplainer(event)">
+  <div class="modal" id="explainer-modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <div>
+        <div class="modal-matchup" id="ex-matchup">DEN vs LAL</div>
+        <div class="modal-sport-row">
+          <div class="sport-badge b-nba" id="ex-sport">NBA</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)" id="ex-time">9:00 PM ET</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeExplainer()">✕</button>
+    </div>
+
+    <div class="modal-pick-box">
+      <div>
+        <div class="modal-pick-label">AI Pick</div>
+        <div class="modal-pick-val" id="ex-pick">DEN -6</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px" id="ex-line">Spread: -6 · ML: -250 · O/U: 224.5</div>
+      </div>
+      <svg class="modal-conf-ring" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#1e1e1e" stroke-width="4"/>
+        <circle id="ex-conf-arc" cx="26" cy="26" r="22" fill="none" stroke="#C9A84C" stroke-width="4"
+          stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round"
+          transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1s ease"/>
+        <text x="26" y="30" text-anchor="middle" fill="#C9A84C" font-family="Bebas Neue" font-size="13" id="ex-conf-text">87%</text>
+      </svg>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Why the AI picked this</div>
+      <div class="modal-explain" id="ex-explain">Loading analysis...</div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Key Factors</div>
+      <div class="modal-factors" id="ex-factors"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Risk Assessment</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="ex-risks"></div>
+    </div>
+
+    <button class="modal-add-btn" id="ex-add-btn" onclick="addFromExplainer()">+ Add to Bet Tracker</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ── DATA ──
+const GAMES = [
+  { id:'g1', sport:'NBA', home:'LAL', away:'DEN', time:'9:00 PM',  spread:-6,   ml:-250, ou:224.5, pick:'DEN -6',    conf:87, favored:'DEN' },
+  { id:'g2', sport:'NFL', home:'BUF', away:'KC',  time:'4:25 PM',  spread:-3,   ml:-168, ou:47.5,  pick:'BUF +3',    conf:79, favored:'KC'  },
+  { id:'g3', sport:'MLB', home:'BOS', away:'NYY', time:'7:10 PM',  spread:-1.5, ml:-145, ou:8.5,   pick:'NYY ML',    conf:74, favored:'NYY' },
+  { id:'g4', sport:'NBA', home:'PHX', away:'GSW', time:'10:00 PM', spread:3,    ml:130,  ou:228.5, pick:'OVER 229',  conf:71, favored:'PHX' },
+  { id:'g5', sport:'MLB', home:'SF',  away:'LAD', time:'9:40 PM',  spread:-1.5, ml:-165, ou:7.5,   pick:'LAD ML',    conf:68, favored:'LAD' },
+  { id:'g6', sport:'NFL', home:'DAL', away:'PHI', time:'8:20 PM',  spread:2.5,  ml:115,  ou:46,    pick:'PHI -2.5',  conf:63, favored:'PHI' },
+];
+
+const INJURIES = [
+  { name:'LeBron James',    team:'LAL', pos:'SF', status:'out',          note:'Ankle',     age:0   },
+  { name:'Patrick Mahomes', team:'KC',  pos:'QB', status:'questionable', note:'Knee',      age:34  },
+  { name:'Aaron Judge',     team:'NYY', pos:'RF', status:'out',          note:'Hamstring', age:60  },
+  { name:'Stephen Curry',   team:'GSW', pos:'PG', status:'probable',     note:'Rest',      age:120 },
+  { name:'Mookie Betts',    team:'LAD', pos:'SS', status:'questionable', note:'Wrist',     age:180 },
+  { name:'Dak Prescott',    team:'DAL', pos:'QB', status:'out',          note:'Shoulder',  age:210 },
+];
+
+let liveOdds = GAMES.map(g => ({
+  ...g,
+  spreadLive: g.spread,
+  mlLive:     g.ml,
+  ouLive:     g.ou,
+  edgeLive:   +(Math.random() * 8 - 1).toFixed(1),
+  spreadDir: 0, mlDir: 0, ouDir: 0,
+}));
+
+let livePS = GAMES.slice(0,5).map(g => ({
+  id: g.id, sport: g.sport,
+  match: `${g.away} vs ${g.home}`,
+  pub: Math.floor(Math.random()*55+20),
+  shp: Math.floor(Math.random()*55+25),
+}));
+
+let kpi = { picks:12, wr:68, moves:24, inj:3, sharp:8 };
+
+// ── HELPERS ──
+function bc(s){ return s==='NBA'?'b-nba':s==='NFL'?'b-nfl':'b-mlb' }
+function fmtSpread(v){ return (v>0?'+':'')+v }
+function fmtML(v){ return (v>0?'+':'')+v }
+function arrow(d){ return d>0?' ↑':d<0?' ↓':'' }
+function cls(d){ return d>0?' up':d<0?' dn':'' }
+function jitter(v,m){ return +(v+(Math.random()-.5)*m).toFixed(1) }
+function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)) }
+
+// ── RENDER PICKS (clickable) ──
+function renderPicks(){
+  document.getElementById('picks-body').innerHTML = liveOdds.map(g=>`
+    <div class="pick-row" id="pr-${g.id}" onclick="openExplainer('${g.id}')" style="cursor:pointer">
+      <div><div class="sport-badge ${bc(g.sport)}">${g.sport}</div></div>
+      <div>
+        <div class="pick-teams">${g.away} vs ${g.home}</div>
+        <div class="pick-time">${g.time} ET</div>
+      </div>
+      <div class="pick-line-val">${fmtSpread(g.spreadLive)}</div>
+      <div class="pick-call">${g.pick} →</div>
+      <div class="conf-wrap">
+        <div class="conf-bar"><div class="conf-fill" style="width:${g.conf}%"></div></div>
+        <div class="conf-pct">${g.conf}%</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderOdds(){
+  document.getElementById('odds-body').innerHTML = liveOdds.map(g=>{
+    const ep = g.edgeLive>=0?'e-pos':'e-neg';
+    const es = g.edgeLive>=0?'+':'';
+    return `
+    <div class="odds-row" id="or-${g.id}">
+      <div><div class="odds-team">${g.away} vs ${g.home}</div><div class="odds-game">${g.sport} · ${g.time}</div></div>
+      <div class="odds-num${cls(g.spreadDir)}">${fmtSpread(g.spreadLive)}${arrow(g.spreadDir)}</div>
+      <div class="odds-num${cls(g.mlDir)}">${fmtML(g.mlLive)}${arrow(g.mlDir)}</div>
+      <div class="odds-num${cls(g.ouDir)}">${g.ouLive}${arrow(g.ouDir)}</div>
+      <div><div class="edge-pill ${ep}">${es}${g.edgeLive}%</div></div>
+    </div>`
+  }).join('');
+}
+
+function renderInjuries(){
+  document.getElementById('inj-body').innerHTML = INJURIES.map((p,i)=>{
+    const dc = p.status==='out'?'dot-out':p.status==='questionable'?'dot-q':'dot-p';
+    const lc = p.status==='out'?'lbl-out':p.status==='questionable'?'lbl-q':'lbl-p';
+    const lt = p.status==='out'?'OUT':p.status==='questionable'?'QUESTIONABLE':'PROBABLE';
+    const ago = p.age<2?'Just now':p.age<60?`${p.age}m ago`:`${Math.floor(p.age/60)}h ago`;
+    return `
+    <div class="inj-item" id="inj-${i}">
+      <div class="inj-dot ${dc}"></div>
+      <div>
+        <div class="inj-name">${p.name}</div>
+        <div class="inj-meta">${p.team} · ${p.pos} · ${ago}</div>
+        <div class="inj-lbl ${lc}">${lt} — ${p.note}</div>
+      </div>
+    </div>`
+  }).join('');
+}
+
+function renderPS(){
+  document.getElementById('ps-body').innerHTML = livePS.map(g=>`
+    <div class="ps-row">
+      <div class="ps-top"><span class="ps-match">${g.match}</span><span class="ps-sport">${g.sport}</span></div>
+      <div class="ps-bars">
+        <div class="ps-bar-row">
+          <div class="ps-lbl">Public</div>
+          <div class="ps-track"><div class="ps-fill fill-pub" style="width:${g.pub}%"></div></div>
+          <div class="ps-pct pct-pub">${g.pub}%</div>
+        </div>
+        <div class="ps-bar-row">
+          <div class="ps-lbl">Sharp</div>
+          <div class="ps-track"><div class="ps-fill fill-shp" style="width:${g.shp}%"></div></div>
+          <div class="ps-pct pct-shp">${g.shp}%</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSchedule(){
+  document.getElementById('sched-body').innerHTML = GAMES.map(g=>`
+    <div class="sched-row">
+      <div class="sched-time">${g.time}</div>
+      <div class="sched-match">
+        <div class="sched-teams">${g.away} vs ${g.home}</div>
+        <div class="sched-line">${g.favored} ${fmtSpread(g.spread)} · O/U ${g.ou}</div>
+      </div>
+      <div class="sched-badge ${bc(g.sport)}">${g.sport}</div>
+    </div>
+  `).join('');
+}
+
+function renderTicker(){
+  const items = liveOdds.map(g=>{
+    const ec = g.edgeLive>=0?'ti-edge':'ti-dn';
+    const es = g.edgeLive>=0?'+':'';
+    return `<div class="ti"><span class="ti-team">${g.away} vs ${g.home}</span><span class="ti-odds">${fmtSpread(g.spreadLive)}</span><span class="${ec}">${es}${g.edgeLive}%</span></div><span style="color:#222;padding:0 4px">·</span>`;
+  }).join('');
+  document.getElementById('ticker-track').innerHTML = items+items;
+}
+
+function renderKPIs(){
+  document.getElementById('kpi-picks').textContent = kpi.picks;
+  document.getElementById('kpi-wr').textContent    = kpi.wr+'%';
+  document.getElementById('kpi-moves').textContent = kpi.moves;
+  document.getElementById('kpi-inj').textContent   = kpi.inj;
+  document.getElementById('kpi-sharp').textContent = kpi.sharp;
+  document.getElementById('picks-badge').textContent = kpi.picks;
+  document.getElementById('inj-badge').textContent   = kpi.inj;
+  document.getElementById('inj-new-lbl').textContent = kpi.inj+' NEW';
+}
+
+// ── INITIAL RENDER ──
+renderPicks(); renderOdds(); renderInjuries(); renderPS(); renderSchedule(); renderTicker(); renderKPIs();
+
+// count-up on load
+function countUp(id, target, suffix, dur){
+  const el = document.getElementById(id);
+  let v=0, step=target/(dur/16);
+  const t=setInterval(()=>{ v+=step; if(v>=target){v=target;clearInterval(t)} el.textContent=Math.floor(v)+suffix; },16);
+}
+setTimeout(()=>{
+  countUp('kpi-picks', kpi.picks, '',  800);
+  countUp('kpi-wr',    kpi.wr,    '%', 1000);
+  countUp('kpi-moves', kpi.moves, '',  900);
+  countUp('kpi-inj',   kpi.inj,   '',  600);
+}, 120);
+
+// ── FLASH ──
+function flash(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+// ── LIVE ODDS TICK (every 3s) ──
+setInterval(()=>{
+  const idxs=[...Array(liveOdds.length).keys()].sort(()=>Math.random()-.5).slice(0,2);
+  idxs.forEach(i=>{
+    const g=liveOdds[i];
+    const ns=clamp(jitter(g.spreadLive,.5),g.spread-3,g.spread+3);
+    const nm=clamp(jitter(g.mlLive,5),g.ml-30,g.ml+30);
+    const no=clamp(jitter(g.ouLive,.5),g.ou-3,g.ou+3);
+    const ne=clamp(jitter(g.edgeLive,.8),-4,12);
+    g.spreadDir=ns>g.spreadLive?1:ns<g.spreadLive?-1:0;
+    g.mlDir=nm>g.mlLive?1:nm<g.mlLive?-1:0;
+    g.ouDir=no>g.ouLive?1:no<g.ouLive?-1:0;
+    g.spreadLive=ns; g.mlLive=Math.round(nm); g.ouLive=no; g.edgeLive=+ne.toFixed(1);
+    flash('or-'+g.id);
+  });
+  renderOdds(); renderTicker();
+  if(Math.random()<.35){ kpi.moves++; if(Math.random()<.5) kpi.sharp++; renderKPIs(); }
+},3000);
+
+// ── PUBLIC/SHARP TICK (every 5s) ──
+setInterval(()=>{
+  livePS.forEach(g=>{
+    g.pub=clamp(g.pub+Math.round((Math.random()-.5)*8),10,90);
+    g.shp=clamp(g.shp+Math.round((Math.random()-.5)*10),10,95);
+  });
+  renderPS();
+},5000);
+
+// ── CONFIDENCE DRIFT (every 6s) ──
+setInterval(()=>{
+  const i=Math.floor(Math.random()*liveOdds.length);
+  liveOdds[i].conf=clamp(liveOdds[i].conf+Math.round((Math.random()-.5)*4),50,97);
+  renderPicks();
+  flash('pr-'+liveOdds[i].id);
+  document.getElementById('picks-ts').textContent='Just now';
+},6000);
+
+// ── TOASTS ──
+const TOASTS=[
+  g=>({type:'gold', icon:'📈', title:`Line Move — ${g.away} vs ${g.home}`, body:`Spread shifted to ${fmtSpread(g.spreadLive)}`}),
+  g=>({type:'green',icon:'🤖', title:`AI Pick Updated`,                    body:`${g.pick} — ${g.conf}% confidence`}),
+  g=>({type:'red',  icon:'🏥', title:`Injury Alert`,                       body:`${INJURIES[Math.floor(Math.random()*3)].name} — status updated`}),
+  g=>({type:'gold', icon:'🎯', title:`Sharp Money Alert`,                  body:`${g.away} vs ${g.home}: sharp at ${livePS[0]?.shp||72}%`}),
+];
+
+function showToast(tpl,game){
+  const d=tpl(game);
+  const wrap=document.getElementById('toast-wrap');
+  const el=document.createElement('div');
+  el.className=`toast t-${d.type}`;
+  el.innerHTML=`<div class="toast-icon">${d.icon}</div><div><div class="toast-title">${d.title}</div><div class="toast-body">${d.body}</div></div>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),400); },4500);
+}
+
+function scheduleToast(){
+  setTimeout(()=>{
+    const g=liveOdds[Math.floor(Math.random()*liveOdds.length)];
+    showToast(TOASTS[Math.floor(Math.random()*TOASTS.length)],g);
+    scheduleToast();
+  }, 7000+Math.random()*6000);
+}
+scheduleToast();
+
+// ── NEW INJURY (every 45s) ──
+setInterval(()=>{
+  if(Math.random()<.6){
+    kpi.inj++;
+    INJURIES.unshift({name:['J. Tatum','T. Hill','F. Freeman','N. Ayton'][Math.floor(Math.random()*4)],team:['BOS','MIA','LAD','PHX'][Math.floor(Math.random()*4)],pos:['SF','WR','1B','C'][Math.floor(Math.random()*4)],status:'out',note:['Quad','Hip','Thumb','Calf'][Math.floor(Math.random()*4)],age:0});
+    INJURIES.pop();
+    renderInjuries(); renderKPIs();
+    flash('inj-0');
+  }
+},45000);
+
+// ── AI EXPLAINER ──
+const EXPLANATIONS = {
+  g1: {
+    explain: `The model is backing <strong>Denver -6</strong> with high conviction. Denver has covered this spread in 7 of their last 9 home games, and with <strong>LeBron James ruled OUT</strong> with an ankle injury, LA's offensive ceiling drops significantly. Sharp bettors moved this line from -4.5 to -6 in the last 4 hours — that's a major signal.`,
+    factors: [
+      { label:'Sharp Money %',   val:72, dir:'pos' },
+      { label:'ATS Trend (10g)', val:80, dir:'pos' },
+      { label:'Injury Impact',   val:85, dir:'pos' },
+      { label:'Home Advantage',  val:60, dir:'pos' },
+      { label:'Public Fade',     val:38, dir:'neg' },
+    ],
+    risks: ['LeBron listed as OUT — verify before game time','Line moved 1.5 pts — some steam may be priced in','LAL historically covers as big dogs'],
+  },
+  g2: {
+    explain: `The model likes <strong>Buffalo +3</strong> as a value play. Kansas City opened as -4.5 favorites, but sharp money has been hammering Buffalo all week, moving the line to -3. <strong>Patrick Mahomes is listed as Questionable</strong> with a knee issue — that uncertainty is significant. Buffalo's defense ranks top-3 in the league against the run.`,
+    factors: [
+      { label:'Line Movement',   val:78, dir:'pos' },
+      { label:'QB Uncertainty',  val:70, dir:'pos' },
+      { label:'DEF Matchup',     val:65, dir:'pos' },
+      { label:'Sharp Money %',   val:58, dir:'pos' },
+      { label:'Public vs Sharp', val:29, dir:'neg' },
+    ],
+    risks: ['Mahomes may still play — monitor injury report','KC offense elite even with backup','Weather could favor KC run game'],
+  },
+  g3: {
+    explain: `<strong>NYY Moneyline</strong> at -145 is the play here. Aaron Judge is out with a hamstring strain which hurts, but New York's rotation advantage is massive tonight — they're sending their ace against Boston's #4 starter. The model sees +4.8% edge on this line versus the market consensus.`,
+    factors: [
+      { label:'Pitching Edge',   val:82, dir:'pos' },
+      { label:'Edge vs Market',  val:70, dir:'pos' },
+      { label:'Sharp Money %',   val:81, dir:'pos' },
+      { label:'Recent Form',     val:65, dir:'pos' },
+      { label:'Judge OUT',       val:40, dir:'neg' },
+    ],
+    risks:['Judge OUT significantly hurts lineup depth','Fenway Park favors lefty hitters','Weather: potential rain delay'],
+  },
+  g4: {
+    explain: `The model is on the <strong>OVER 229</strong> for GSW vs PHX. Both teams are top-10 in pace this season, and Phoenix's defense has given up 230+ in 4 of their last 6 games. The total opened at 224.5 and has been bet up 4.5 points — the market clearly agrees this one will be a track meet.`,
+    factors: [
+      { label:'Pace Rating',     val:88, dir:'pos' },
+      { label:'DEF Weakness',    val:74, dir:'pos' },
+      { label:'Line Movement',   val:80, dir:'pos' },
+      { label:'Public Lean',     val:66, dir:'pos' },
+      { label:'Curry probable',  val:30, dir:'neg' },
+    ],
+    risks:['Stephen Curry listed as Probable — if he sits, pace drops','GSW can control tempo if they get a big lead early','Total already bet up 4.5 pts from open'],
+  },
+  g5: {
+    explain: `<strong>LAD Moneyline</strong> is a strong lean. The Dodgers send a top-3 ERA starter against San Francisco's struggling bullpen. <strong>Mookie Betts is listed as Questionable</strong> but the lineup still has Ohtani, Freeman, and Bellinger. LAD has won 8 of their last 10 road games at Oracle Park.`,
+    factors: [
+      { label:'Pitching Edge',   val:77, dir:'pos' },
+      { label:'Road Record',     val:80, dir:'pos' },
+      { label:'Sharp Money %',   val:73, dir:'pos' },
+      { label:'Lineup Depth',    val:68, dir:'pos' },
+      { label:'Betts Questionable', val:35, dir:'neg' },
+    ],
+    risks:['Betts questionable — lineup changes possible','SF bullpen has been stronger at home','Oracle Park suppresses offense'],
+  },
+  g6: {
+    explain: `The model is taking <strong>PHI -2.5</strong> on the road at Dallas. Dak Prescott is listed as OUT with a shoulder injury, and without him Dallas becomes a below-average offense. Philadelphia's pass rush has been dominant and will feast against a backup QB. Sharp money has been consistent on Philly all week.`,
+    factors: [
+      { label:'Prescott OUT',    val:90, dir:'pos' },
+      { label:'Pass Rush Edge',  val:78, dir:'pos' },
+      { label:'Sharp Money %',   val:69, dir:'pos' },
+      { label:'ATS Road Trend',  val:60, dir:'pos' },
+      { label:'DAL Home Field',  val:45, dir:'neg' },
+    ],
+    risks:['DAL backup QB may manage game effectively','Home crowd factor at AT&T Stadium','PHI has injury concerns of own on OL'],
+  },
+};
+
+let currentExplainerGame = null;
+
+function openExplainer(gameId){
+  const g = liveOdds.find(x=>x.id===gameId);
+  if(!g) return;
+  currentExplainerGame = g;
+  const ex = EXPLANATIONS[gameId] || EXPLANATIONS.g1;
+
+  document.getElementById('ex-matchup').textContent = `${g.away} vs ${g.home}`;
+  document.getElementById('ex-sport').textContent   = g.sport;
+  document.getElementById('ex-sport').className     = `sport-badge ${bc(g.sport)}`;
+  document.getElementById('ex-time').textContent    = `${g.time} ET`;
+  document.getElementById('ex-pick').textContent    = g.pick;
+  document.getElementById('ex-line').textContent    = `Spread: ${fmtSpread(g.spreadLive)} · ML: ${fmtML(g.mlLive)} · O/U: ${g.ouLive}`;
+  document.getElementById('ex-explain').innerHTML   = ex.explain;
+
+  // Confidence ring
+  const circ = 138.2;
+  const offset = circ - (g.conf/100)*circ;
+  document.getElementById('ex-conf-arc').style.strokeDashoffset = circ; // reset
+  document.getElementById('ex-conf-text').textContent = g.conf+'%';
+  setTimeout(()=>{ document.getElementById('ex-conf-arc').style.strokeDashoffset = offset; },50);
+
+  // Factors
+  document.getElementById('ex-factors').innerHTML = ex.factors.map(f=>`
+    <div class="factor-row">
+      <div class="factor-label">${f.label}</div>
+      <div class="factor-bar-track"><div class="factor-bar-fill ${f.dir==='pos'?'fb-pos':'fb-neg'}" style="width:0%" data-w="${f.val}%"></div></div>
+      <div class="factor-val" style="color:${f.dir==='pos'?'var(--gold)':'var(--red)'}">${f.val}%</div>
+    </div>
+  `).join('');
+  setTimeout(()=>{
+    document.querySelectorAll('.factor-bar-fill').forEach(el=>{
+      el.style.width = el.dataset.w;
+    });
+  }, 80);
+
+  // Risk tags
+  document.getElementById('ex-risks').innerHTML = ex.risks.map(r=>`
+    <div style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.2);border-radius:4px;padding:6px 10px;font-size:11px;color:var(--muted2);display:flex;align-items:flex-start;gap:6px;flex:1;min-width:140px">
+      <span style="color:var(--red);flex-shrink:0">⚠</span>${r}
+    </div>
+  `).join('');
+
+  // Check if already in tracker
+  const already = bets.some(b=>b.gameId===gameId);
+  const btn = document.getElementById('ex-add-btn');
+  btn.disabled = already;
+  btn.textContent = already ? '✓ Already in Tracker' : '+ Add to Bet Tracker';
+
+  document.getElementById('explainer-backdrop').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeExplainer(e){
+  if(e && e.target !== document.getElementById('explainer-backdrop')) return;
+  document.getElementById('explainer-backdrop').classList.remove('open');
+  document.body.style.overflow='';
+  currentExplainerGame = null;
+}
+
+// ── BET TRACKER ──
+let bets = [];
+let betIdCounter = 1;
+
+function calcPayout(odds, stake){
+  if(!odds || !stake) return 0;
+  const o = parseFloat(odds), s = parseFloat(stake);
+  if(isNaN(o)||isNaN(s)) return 0;
+  return o > 0 ? +(s * o/100).toFixed(2) : +(s * 100/Math.abs(o)).toFixed(2);
+}
+
+function addBet(gameId, gameName, pick, odds, stake){
+  const payout = calcPayout(odds, stake);
+  bets.unshift({ id: betIdCounter++, gameId, game: gameName, pick, odds, stake: parseFloat(stake)||0, payout, status:'pending' });
+  renderBets();
+  renderTrackerStats();
+}
+
+function addBetManual(){
+  const game  = document.getElementById('ti-game').value.trim();
+  const pick  = document.getElementById('ti-pick').value.trim();
+  const odds  = document.getElementById('ti-odds').value.trim();
+  const stake = document.getElementById('ti-stake').value.replace('$','').trim();
+  if(!game || !pick){ showToast(()=>({type:'red',icon:'⚠️',title:'Missing fields',body:'Fill in game and pick at minimum'}),{}); return; }
+  addBet(null, game, pick, odds, stake);
+  document.getElementById('ti-game').value='';
+  document.getElementById('ti-pick').value='';
+  document.getElementById('ti-odds').value='';
+  document.getElementById('ti-stake').value='';
+  showToast(()=>({type:'green',icon:'✅',title:'Bet added',body:`${pick} — ${game}`}),{});
+}
+
+function addFromExplainer(){
+  if(!currentExplainerGame) return;
+  const g = currentExplainerGame;
+  addBet(g.id, `${g.away} vs ${g.home}`, g.pick, String(g.mlLive), '25');
+  document.getElementById('ex-add-btn').disabled = true;
+  document.getElementById('ex-add-btn').textContent = '✓ Added to Tracker';
+  showToast(()=>({type:'green',icon:'✅',title:'Added to Tracker',body:`${g.pick} · ${g.away} vs ${g.home}`}),{});
+  setTimeout(closeExplainer, 900);
+}
+
+function cycleBetStatus(id){
+  const b = bets.find(x=>x.id===id);
+  if(!b) return;
+  const cycle = {pending:'won', won:'lost', lost:'pending'};
+  b.status = cycle[b.status];
+  renderBets();
+  renderTrackerStats();
+}
+
+function deleteBet(id){
+  bets = bets.filter(x=>x.id!==id);
+  renderBets();
+  renderTrackerStats();
+}
+
+function renderBets(){
+  const el = document.getElementById('bet-list');
+  if(!bets.length){
+    el.innerHTML=`<div class="tracker-empty"><span>📋</span>No bets tracked yet.<br/>Click any AI pick above or add manually.</div>`;
+    return;
+  }
+  el.innerHTML = bets.map(b=>{
+    const dotClass = b.status==='won'?'bs-won':b.status==='lost'?'bs-lost':'bs-pending';
+    const resVal   = b.status==='won'?`+$${b.payout.toFixed(0)}`:b.status==='lost'?`-$${b.stake.toFixed(0)}`:'Pending';
+    const resClass = b.status==='won'?'br-won':b.status==='lost'?'br-lost':'br-pending';
+    return `
+    <div class="bet-row">
+      <div class="bet-status ${dotClass}"></div>
+      <div class="bet-game">
+        <div class="bet-game-name">${b.game}</div>
+        <div class="bet-pick-label">${b.pick}</div>
+      </div>
+      <div class="bet-odds-cell">${b.odds||'—'}</div>
+      <div class="bet-stake-cell">$${b.stake||'—'}</div>
+      <div class="bet-result ${resClass}">${resVal}</div>
+      <button class="bet-status-btn" onclick="cycleBetStatus(${b.id})" title="Change status">${b.status.toUpperCase()}</button>
+      <button class="bet-del" onclick="deleteBet(${b.id})" title="Remove">✕</button>
+    </div>`
+  }).join('');
+}
+
+function renderTrackerStats(){
+  const won    = bets.filter(b=>b.status==='won').length;
+  const lost   = bets.filter(b=>b.status==='lost').length;
+  const push   = 0;
+  const total  = bets.length;
+  const wagered= bets.reduce((s,b)=>s+b.stake,0);
+  const profit = bets.reduce((s,b)=>b.status==='won'?s+b.payout:b.status==='lost'?s-b.stake:s,0);
+  const roi    = wagered>0?(profit/wagered*100).toFixed(1):0;
+
+  document.getElementById('tracker-record').textContent = `${won}W-${lost}L-${push}P`;
+  document.getElementById('ts-bets').textContent    = total;
+  document.getElementById('ts-roi').textContent     = roi+'%';
+  document.getElementById('ts-roi').style.color     = profit>=0?'var(--green)':'var(--red)';
+  document.getElementById('ts-wagered').textContent = '$'+wagered.toFixed(0);
+  document.getElementById('ts-profit').textContent  = (profit>=0?'+':'')+profit.toFixed(0).replace(/^-/,'-$').replace(/^\+/,'+$');
+  document.getElementById('ts-profit').style.color  = profit>=0?'var(--green)':'var(--red)';
+}
+
+// initial render
+renderBets();
+renderTrackerStats();
+
+function tick(){
+  const n=new Date(); let h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  document.getElementById('clock').textContent=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;
+}
+tick(); setInterval(tick,1000);
+
+// ── SPORT TABS ──
+function setTab(el){ document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+
+// ── SCHEDULE DATE ──
+const D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],nd=new Date();
+document.getElementById('sched-date').textContent=`${D[nd.getDay()]} ${M[nd.getMonth()]} ${nd.getDate()}`;
+</script>
+</body>
+</html>
