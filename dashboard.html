@@ -247,6 +247,79 @@
     .tracker-empty{text-align:center;padding:28px 14px;color:var(--muted);font-size:13px}
     .tracker-empty span{display:block;font-size:24px;margin-bottom:8px}
 
+    /* ── TAB VIEWS ── */
+    .view{display:none;flex-direction:column;gap:14px}
+    .view.active{display:flex}
+
+    /* shared table styles for detail views */
+    .detail-table{width:100%;border-collapse:collapse}
+    .detail-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);padding:8px 14px;text-align:left;background:var(--dark);border-bottom:1px solid var(--border);white-space:nowrap}
+    .detail-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted2);vertical-align:middle}
+    .detail-table tr:last-child td{border-bottom:none}
+    .detail-table tr:hover td{background:#161616}
+    .detail-table td.bright{color:var(--white);font-weight:600}
+    .detail-table td.gold{color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:600}
+    .detail-table td.green{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:600}
+    .detail-table td.red{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:600}
+
+    /* stat cards row */
+    .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+    .stat-card-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .stat-card-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:0.02em}
+    .stat-card-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+    /* filter bar */
+    .filter-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+    .filter-btn{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:3px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.18s}
+    .filter-btn:hover{color:var(--white);border-color:#333}
+    .filter-btn.active{background:rgba(201,168,76,0.12);border-color:var(--gold-dim);color:var(--gold)}
+    .filter-search{background:#0a0a0a;border:1px solid var(--border);border-radius:4px;padding:5px 10px;color:var(--white);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;margin-left:auto;width:160px;transition:border-color 0.2s}
+    .filter-search:focus{border-color:var(--gold-dim)}
+    .filter-search::placeholder{color:#333}
+
+    /* prop card */
+    .prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:14px}
+    .prop-card{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:16px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
+    .prop-card:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
+    .prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+    .prop-player{font-size:13px;font-weight:700;color:var(--white)}
+    .prop-team-pos{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px}
+    .prop-type{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin:10px 0 4px}
+    .prop-line{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white);line-height:1}
+    .prop-ou-row{display:flex;gap:8px;margin-top:10px}
+    .prop-btn{flex:1;padding:7px;border-radius:4px;border:1px solid var(--border);background:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.18s;text-align:center}
+    .prop-btn-over{color:var(--green)}
+    .prop-btn-over:hover,.prop-btn-over.active{background:rgba(46,204,113,0.12);border-color:var(--green)}
+    .prop-btn-under{color:var(--red)}
+    .prop-btn-under:hover,.prop-btn-under.active{background:rgba(231,76,60,0.12);border-color:var(--red)}
+    .prop-ai{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--muted)}
+    .prop-ai-lean{font-weight:600}
+    .lean-over{color:var(--green)}
+    .lean-under{color:var(--red)}
+
+    /* schedule calendar */
+    .sched-day-header{padding:10px 14px;background:var(--dark);border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold)}
+    .sched-game-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background 0.15s}
+    .sched-game-row:hover{background:#161616}
+    .sched-game-row:last-child{border-bottom:none}
+    .sg-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:58px;flex-shrink:0}
+    .sg-teams{flex:1}
+    .sg-matchup{font-size:13px;font-weight:600;color:var(--white)}
+    .sg-venue{font-size:11px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+    .sg-odds{display:flex;gap:8px;flex-shrink:0}
+    .sg-odd-pill{background:var(--card2);border:1px solid var(--border);border-radius:3px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2);text-align:center;min-width:56px}
+    .sg-odd-pill span{display:block;font-size:8px;color:var(--muted);margin-bottom:1px;text-transform:uppercase;letter-spacing:0.08em}
+    .sg-weather{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;flex-shrink:0;width:80px}
+
+    /* steam/sharp move tags */
+    .move-tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:0.08em}
+    .tag-steam{background:rgba(231,76,60,0.15);color:var(--red)}
+    .tag-sharp{background:rgba(201,168,76,0.15);color:var(--gold)}
+    .tag-reverse{background:rgba(59,130,246,0.15);color:#60a5fa}
+    .tag-public{background:rgba(107,114,128,0.15);color:var(--muted2)}
+
     /* ── DESKTOP GRID (sidebar + 2-col content) ── */
     @media(min-width:901px){
       .kpi-row{grid-template-columns:repeat(4,1fr)}
@@ -270,15 +343,15 @@
   <a href="/" class="sidebar-logo">OddsGod</a>
   <div class="sidebar-sub">Pro Dashboard</div>
   <div class="nav-section">Main</div>
-  <a class="nav-item active" href="#"><span class="nav-icon">⚡</span> Dashboard</a>
-  <a class="nav-item" href="#"><span class="nav-icon">🤖</span> AI Picks <span class="nav-badge" id="picks-badge">12</span></a>
-  <a class="nav-item" href="#"><span class="nav-icon">📈</span> Line Movement</a>
-  <a class="nav-item" href="#"><span class="nav-icon">🎯</span> Sharp Action</a>
+  <a class="nav-item active" onclick="showView('dashboard')" href="#"><span class="nav-icon">⚡</span> Dashboard</a>
+  <a class="nav-item" onclick="showView('picks')" href="#"><span class="nav-icon">🤖</span> AI Picks <span class="nav-badge" id="picks-badge">12</span></a>
+  <a class="nav-item" onclick="showView('lines')" href="#"><span class="nav-icon">📈</span> Line Movement</a>
+  <a class="nav-item" onclick="showView('sharp')" href="#"><span class="nav-icon">🎯</span> Sharp Action</a>
   <div class="nav-section">Research</div>
-  <a class="nav-item" href="#"><span class="nav-icon">📊</span> Team Stats</a>
-  <a class="nav-item" href="#"><span class="nav-icon">👤</span> Player Props</a>
-  <a class="nav-item" href="#"><span class="nav-icon">🏥</span> Injuries <span class="nav-badge red" id="inj-badge">3</span></a>
-  <a class="nav-item" href="#"><span class="nav-icon">📅</span> Schedule</a>
+  <a class="nav-item" onclick="showView('teams')" href="#"><span class="nav-icon">📊</span> Team Stats</a>
+  <a class="nav-item" onclick="showView('props')" href="#"><span class="nav-icon">👤</span> Player Props</a>
+  <a class="nav-item" onclick="showView('injuries')" href="#"><span class="nav-icon">🏥</span> Injuries <span class="nav-badge red" id="inj-badge">3</span></a>
+  <a class="nav-item" onclick="showView('schedule')" href="#"><span class="nav-icon">📅</span> Schedule</a>
   <div class="nav-section">Account</div>
   <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Settings</a>
   <a class="nav-item" href="/login"><span class="nav-icon">🚪</span> Sign Out</a>
@@ -310,6 +383,7 @@
 
   <!-- CONTENT -->
   <div class="content">
+  <div id="view-dashboard" class="view active">
 
     <!-- KPIs -->
     <div class="kpi-row">
@@ -434,6 +508,160 @@
 
       </div><!-- /right -->
     </div><!-- /dash-grid -->
+  </div><!-- /view-dashboard -->
+
+  <!-- ── AI PICKS VIEW ── -->
+  <div id="view-picks" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Total Picks Today</div><div class="stat-card-val" style="color:var(--gold)">12</div><div class="stat-card-sub">Across NFL, NBA, MLB</div></div>
+      <div class="stat-card"><div class="stat-card-label">Avg Confidence</div><div class="stat-card-val" style="color:var(--green)">74%</div><div class="stat-card-sub">↑ 3% vs yesterday</div></div>
+      <div class="stat-card"><div class="stat-card-label">High Confidence (80%+)</div><div class="stat-card-val" style="color:var(--gold)">4</div><div class="stat-card-sub">Strong plays today</div></div>
+      <div class="stat-card"><div class="stat-card-label">Model Win Rate</div><div class="stat-card-val" style="color:var(--green)">68%</div><div class="stat-card-sub">Last 30 days</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">🤖 All AI Picks</div><div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> Live</div></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterPicks(this,'ALL')">ALL</button>
+        <button class="filter-btn" onclick="filterPicks(this,'NFL')">NFL</button>
+        <button class="filter-btn" onclick="filterPicks(this,'NBA')">NBA</button>
+        <button class="filter-btn" onclick="filterPicks(this,'MLB')">MLB</button>
+        <button class="filter-btn" onclick="filterPicks(this,'80+')">80%+ Conf</button>
+        <input class="filter-search" placeholder="Search matchup..."/>
+      </div>
+      <div style="display:grid;grid-template-columns:54px 1fr 60px 60px;gap:8px;padding:7px 14px;background:var(--dark);border-bottom:1px solid var(--border)">
+        <span class="oh" style="text-align:left">Sport</span><span class="oh" style="text-align:left">Matchup</span><span class="oh">Pick</span><span class="oh">Conf</span>
+      </div>
+      <div id="picks-full-body"></div>
+    </div>
+  </div>
+
+  <!-- ── LINE MOVEMENT VIEW ── -->
+  <div id="view-lines" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Line Moves Today</div><div class="stat-card-val" style="color:var(--white)" id="lm-total">24</div><div class="stat-card-sub">Across all games</div></div>
+      <div class="stat-card"><div class="stat-card-label">Sharp-Triggered</div><div class="stat-card-val" style="color:var(--gold)" id="lm-sharp">8</div><div class="stat-card-sub">Follow the money</div></div>
+      <div class="stat-card"><div class="stat-card-label">Biggest Move</div><div class="stat-card-val" style="color:var(--green)">2.5</div><div class="stat-card-sub">PHI -2.5 → -5</div></div>
+      <div class="stat-card"><div class="stat-card-label">Steam Moves</div><div class="stat-card-val" style="color:var(--red)">3</div><div class="stat-card-sub">Last 2 hours</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📈 Line Movement History</div><div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> Updating</div></div>
+      <table class="detail-table" style="width:100%">
+        <thead><tr><th>Game</th><th>Type</th><th>Open</th><th>Current</th><th>Move</th><th>Trigger</th><th>Time</th></tr></thead>
+        <tbody id="lines-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SHARP ACTION VIEW ── -->
+  <div id="view-sharp" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Sharp Bets Today</div><div class="stat-card-val" style="color:var(--gold)">47</div><div class="stat-card-sub">Verified sharp accounts</div></div>
+      <div class="stat-card"><div class="stat-card-label">Reverse Line Moves</div><div class="stat-card-val" style="color:var(--blue)">5</div><div class="stat-card-sub">Line moving vs public</div></div>
+      <div class="stat-card"><div class="stat-card-label">Steam Moves</div><div class="stat-card-val" style="color:var(--red)">3</div><div class="stat-card-sub">Syndicate action</div></div>
+      <div class="stat-card"><div class="stat-card-label">Sharp Win Rate</div><div class="stat-card-val" style="color:var(--green)">61%</div><div class="stat-card-sub">Season to date</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">🎯 Sharp vs Public Splits</div><div class="panel-tag">All games today</div></div>
+      <div id="sharp-body"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">⚡ Steam & Reverse Line Moves</div><div class="panel-tag">Last 4 hours</div></div>
+      <table class="detail-table" style="width:100%">
+        <thead><tr><th>Game</th><th>Side</th><th>Type</th><th>Line Move</th><th>Public %</th><th>Sharp %</th><th>Alert</th></tr></thead>
+        <tbody id="steam-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── TEAM STATS VIEW ── -->
+  <div id="view-teams" class="view">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📊 Team Stats & Betting Records</div><div class="panel-tag">Current Season</div></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterTeams(this,'ALL')">ALL</button>
+        <button class="filter-btn" onclick="filterTeams(this,'NFL')">NFL</button>
+        <button class="filter-btn" onclick="filterTeams(this,'NBA')">NBA</button>
+        <button class="filter-btn" onclick="filterTeams(this,'MLB')">MLB</button>
+        <input class="filter-search" placeholder="Search team..."/>
+      </div>
+      <table class="detail-table" style="width:100%">
+        <thead><tr><th>Team</th><th>Sport</th><th>W-L</th><th>ATS Record</th><th>ATS%</th><th>O/U Record</th><th>Home ATS</th><th>Away ATS</th><th>Streak</th></tr></thead>
+        <tbody id="teams-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PLAYER PROPS VIEW ── -->
+  <div id="view-props" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Props Available</div><div class="stat-card-val" style="color:var(--gold)">84</div><div class="stat-card-sub">Tonight's games</div></div>
+      <div class="stat-card"><div class="stat-card-label">AI Over Leans</div><div class="stat-card-val" style="color:var(--green)">51</div><div class="stat-card-sub">60%+ confidence</div></div>
+      <div class="stat-card"><div class="stat-card-label">AI Under Leans</div><div class="stat-card-val" style="color:var(--red)">33</div><div class="stat-card-sub">60%+ confidence</div></div>
+      <div class="stat-card"><div class="stat-card-label">Injury-Affected</div><div class="stat-card-val" style="color:var(--red)">12</div><div class="stat-card-sub">Lines may shift</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">👤 Player Props — Tonight</div><div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> Live</div></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterProps(this,'ALL')">ALL</button>
+        <button class="filter-btn" onclick="filterProps(this,'PTS')">Points</button>
+        <button class="filter-btn" onclick="filterProps(this,'REB')">Rebounds</button>
+        <button class="filter-btn" onclick="filterProps(this,'AST')">Assists</button>
+        <button class="filter-btn" onclick="filterProps(this,'PASS')">Pass Yds</button>
+        <button class="filter-btn" onclick="filterProps(this,'REC')">Receiving</button>
+        <input class="filter-search" placeholder="Search player..."/>
+      </div>
+      <div class="prop-grid" id="props-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── INJURIES VIEW ── -->
+  <div id="view-injuries" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Total Injuries</div><div class="stat-card-val" style="color:var(--red)" id="inj-total">6</div><div class="stat-card-sub">Active reports</div></div>
+      <div class="stat-card"><div class="stat-card-label">Out</div><div class="stat-card-val" style="color:var(--red)">3</div><div class="stat-card-sub">Confirmed out</div></div>
+      <div class="stat-card"><div class="stat-card-label">Questionable</div><div class="stat-card-val" style="color:#F59E0B">2</div><div class="stat-card-sub">Game-time decision</div></div>
+      <div class="stat-card"><div class="stat-card-label">Probable</div><div class="stat-card-val" style="color:var(--green)">1</div><div class="stat-card-sub">Expected to play</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">🏥 Full Injury Report</div><div class="panel-tag" style="color:var(--red)" id="inj-full-new">3 NEW</div></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterInj(this,'ALL')">ALL</button>
+        <button class="filter-btn" onclick="filterInj(this,'OUT')">Out</button>
+        <button class="filter-btn" onclick="filterInj(this,'Q')">Questionable</button>
+        <button class="filter-btn" onclick="filterInj(this,'P')">Probable</button>
+        <button class="filter-btn" onclick="filterInj(this,'NFL')">NFL</button>
+        <button class="filter-btn" onclick="filterInj(this,'NBA')">NBA</button>
+        <button class="filter-btn" onclick="filterInj(this,'MLB')">MLB</button>
+      </div>
+      <table class="detail-table" style="width:100%">
+        <thead><tr><th>Player</th><th>Team</th><th>Position</th><th>Injury</th><th>Status</th><th>Betting Impact</th><th>Updated</th></tr></thead>
+        <tbody id="inj-full-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SCHEDULE VIEW ── -->
+  <div id="view-schedule" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Games Today</div><div class="stat-card-val" style="color:var(--gold)">6</div><div class="stat-card-sub">NFL · NBA · MLB</div></div>
+      <div class="stat-card"><div class="stat-card-label">Games This Week</div><div class="stat-card-val" style="color:var(--white)">38</div><div class="stat-card-sub">Across all leagues</div></div>
+      <div class="stat-card"><div class="stat-card-label">Live Right Now</div><div class="stat-card-val" style="color:var(--green)">2</div><div class="stat-card-sub">In progress</div></div>
+      <div class="stat-card"><div class="stat-card-label">Starting Soon</div><div class="stat-card-val" style="color:var(--red)">1</div><div class="stat-card-sub">Within 1 hour</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📅 Full Schedule</div><div class="panel-tag" id="sched-full-date">This Week</div></div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterSched(this,'TODAY')">Today</button>
+        <button class="filter-btn" onclick="filterSched(this,'TOMORROW')">Tomorrow</button>
+        <button class="filter-btn" onclick="filterSched(this,'WEEK')">This Week</button>
+        <button class="filter-btn" onclick="filterSched(this,'NFL')">NFL</button>
+        <button class="filter-btn" onclick="filterSched(this,'NBA')">NBA</button>
+        <button class="filter-btn" onclick="filterSched(this,'MLB')">MLB</button>
+      </div>
+      <div id="sched-full-body"></div>
+    </div>
+  </div>
+
   </div><!-- /content -->
 
   <!-- TICKER -->
@@ -995,6 +1223,265 @@ function setTab(el){ document.querySelectorAll('.sport-tab').forEach(t=>t.classL
 // ── SCHEDULE DATE ──
 const D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],nd=new Date();
 document.getElementById('sched-date').textContent=`${D[nd.getDay()]} ${M[nd.getMonth()]} ${nd.getDate()}`;
+
+// ── VIEW SWITCHER ──
+const VIEW_TITLES = {
+  dashboard:'Dashboard', picks:'AI Picks', lines:'Line Movement',
+  sharp:'Sharp Action', teams:'Team Stats', props:'Player Props',
+  injuries:'Injury Report', schedule:'Schedule'
+};
+
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el = document.getElementById('view-'+name);
+  if(el) el.classList.add('active');
+  document.querySelector('.page-title').textContent = VIEW_TITLES[name]||name;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(event && event.currentTarget) event.currentTarget.classList.add('active');
+  document.querySelector('.content').scrollTop=0;
+  if(name==='picks')    renderPicksFull();
+  if(name==='lines')    renderLines();
+  if(name==='sharp')    renderSharpFull();
+  if(name==='teams')    renderTeams();
+  if(name==='props')    renderProps();
+  if(name==='injuries') renderInjFull();
+  if(name==='schedule') renderSchedFull();
+}
+
+// ── LINE MOVEMENT DATA ──
+const LINE_MOVES=[
+  {game:'DEN vs LAL',sport:'NBA',type:'Spread',open:'-4.5',current:'-6',  move:'+1.5',trigger:'Sharp',time:'14m ago'},
+  {game:'PHI vs DAL',sport:'NFL',type:'Spread',open:'-2.5',current:'-5',  move:'+2.5',trigger:'Steam',time:'28m ago'},
+  {game:'NYY vs BOS',sport:'MLB',type:'ML',    open:'-130',current:'-145',move:'+15', trigger:'Sharp',time:'41m ago'},
+  {game:'KC vs BUF', sport:'NFL',type:'Spread',open:'-4.5',current:'-3',  move:'-1.5',trigger:'Public',time:'1h ago'},
+  {game:'GSW vs PHX',sport:'NBA',type:'Total', open:'224.5',current:'229',move:'+4.5',trigger:'Sharp',time:'1h ago'},
+  {game:'LAD vs SF', sport:'MLB',type:'ML',    open:'-150',current:'-165',move:'+15', trigger:'Sharp',time:'2h ago'},
+  {game:'DEN vs LAL',sport:'NBA',type:'Total', open:'222', current:'224.5',move:'+2.5',trigger:'Public',time:'3h ago'},
+  {game:'KC vs BUF', sport:'NFL',type:'Total', open:'49.5',current:'47.5',move:'-2',  trigger:'Sharp',time:'3h ago'},
+];
+
+function renderLines(){
+  document.getElementById('lines-tbody').innerHTML=LINE_MOVES.map(m=>{
+    const mv=parseFloat(m.move);
+    const mc=mv>0?'green':mv<0?'red':'';
+    const tt=m.trigger==='Sharp'?'tag-sharp':m.trigger==='Steam'?'tag-steam':'tag-public';
+    return `<tr>
+      <td class="bright">${m.game} <span class="sport-badge ${bc(m.sport)}" style="margin-left:6px">${m.sport}</span></td>
+      <td>${m.type}</td><td class="gold">${m.open}</td><td class="gold">${m.current}</td>
+      <td class="${mc}">${m.move}</td>
+      <td><span class="move-tag ${tt}">${m.trigger}</span></td>
+      <td style="color:var(--muted);font-size:11px">${m.time}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── SHARP ACTION DATA ──
+const STEAM_MOVES=[
+  {game:'PHI vs DAL',side:'PHI -5',  type:'Steam',  move:'-2.5→-5',   pub:22,shp:88,tag:'tag-steam'},
+  {game:'DEN vs LAL',side:'DEN -6',  type:'Sharp',  move:'-4.5→-6',   pub:38,shp:72,tag:'tag-sharp'},
+  {game:'GSW vs PHX',side:'OVER',    type:'Reverse',move:'224.5→229', pub:44,shp:78,tag:'tag-reverse'},
+  {game:'NYY vs BOS',side:'NYY ML',  type:'Sharp',  move:'-130→-145', pub:55,shp:81,tag:'tag-sharp'},
+  {game:'KC vs BUF', side:'BUF +3',  type:'Reverse',move:'-4.5→-3',  pub:71,shp:29,tag:'tag-reverse'},
+];
+
+function renderSharpFull(){
+  document.getElementById('sharp-body').innerHTML=liveOdds.map(g=>{
+    const ps=livePS.find(p=>p.id===g.id)||{pub:50,shp:50};
+    return `<div class="ps-row">
+      <div class="ps-top"><span class="ps-match">${g.away} vs ${g.home}</span><span class="ps-sport">${g.sport}</span></div>
+      <div class="ps-bars">
+        <div class="ps-bar-row"><div class="ps-lbl">Public</div><div class="ps-track"><div class="ps-fill fill-pub" style="width:${ps.pub}%"></div></div><div class="ps-pct pct-pub">${ps.pub}%</div></div>
+        <div class="ps-bar-row"><div class="ps-lbl">Sharp</div><div class="ps-track"><div class="ps-fill fill-shp" style="width:${ps.shp}%"></div></div><div class="ps-pct pct-shp">${ps.shp}%</div></div>
+      </div></div>`;
+  }).join('');
+  document.getElementById('steam-tbody').innerHTML=STEAM_MOVES.map(m=>`
+    <tr>
+      <td class="bright">${m.game}</td><td class="gold">${m.side}</td>
+      <td><span class="move-tag ${m.tag}">${m.type}</span></td>
+      <td class="green">${m.move}</td>
+      <td style="color:#60a5fa;font-family:'JetBrains Mono',monospace">${m.pub}%</td>
+      <td class="gold">${m.shp}%</td>
+      <td><span class="move-tag ${m.tag}">${m.type==='Steam'?'🔥 Hot':'⚡ Alert'}</span></td>
+    </tr>`).join('');
+}
+
+// ── TEAM STATS ──
+const TEAMS_DATA=[
+  {team:'Kansas City Chiefs', sport:'NFL',wl:'9-2', ats:'7-4', atsPct:64,ou:'5-6',homeAts:'4-1',awayAts:'3-3',streak:'W3'},
+  {team:'Philadelphia Eagles',sport:'NFL',wl:'8-3', ats:'8-3', atsPct:73,ou:'6-5',homeAts:'4-1',awayAts:'4-2',streak:'W5'},
+  {team:'Buffalo Bills',      sport:'NFL',wl:'7-4', ats:'6-5', atsPct:55,ou:'7-4',homeAts:'3-2',awayAts:'3-3',streak:'L1'},
+  {team:'Dallas Cowboys',     sport:'NFL',wl:'4-7', ats:'4-7', atsPct:36,ou:'5-6',homeAts:'2-3',awayAts:'2-4',streak:'L4'},
+  {team:'Denver Nuggets',     sport:'NBA',wl:'18-7',ats:'14-11',atsPct:56,ou:'12-13',homeAts:'8-4',awayAts:'6-7',streak:'W2'},
+  {team:'LA Lakers',          sport:'NBA',wl:'13-12',ats:'11-14',atsPct:44,ou:'14-11',homeAts:'5-7',awayAts:'6-7',streak:'L2'},
+  {team:'Golden State Warriors',sport:'NBA',wl:'11-14',ats:'13-12',atsPct:52,ou:'16-9',homeAts:'6-6',awayAts:'7-6',streak:'W1'},
+  {team:'Phoenix Suns',       sport:'NBA',wl:'10-15',ats:'10-15',atsPct:40,ou:'13-12',homeAts:'5-7',awayAts:'5-8',streak:'L3'},
+  {team:'New York Yankees',   sport:'MLB',wl:'52-31',ats:'46-37',atsPct:55,ou:'42-41',homeAts:'24-17',awayAts:'22-20',streak:'W4'},
+  {team:'LA Dodgers',         sport:'MLB',wl:'58-25',ats:'50-33',atsPct:60,ou:'40-43',homeAts:'26-14',awayAts:'24-19',streak:'W7'},
+  {team:'Boston Red Sox',     sport:'MLB',wl:'38-45',ats:'37-46',atsPct:45,ou:'44-39',homeAts:'18-23',awayAts:'19-23',streak:'L2'},
+  {team:'SF Giants',          sport:'MLB',wl:'35-48',ats:'36-47',atsPct:43,ou:'38-45',homeAts:'16-25',awayAts:'20-22',streak:'L1'},
+];
+
+function renderTeams(filter='ALL'){
+  const data=filter==='ALL'?TEAMS_DATA:TEAMS_DATA.filter(t=>t.sport===filter);
+  document.getElementById('teams-tbody').innerHTML=data.map(t=>{
+    const sc=t.streak.startsWith('W')?'green':'red';
+    const ac=t.atsPct>=55?'green':t.atsPct<=44?'red':'';
+    return `<tr>
+      <td class="bright">${t.team}</td>
+      <td><span class="sport-badge ${bc(t.sport)}">${t.sport}</span></td>
+      <td>${t.wl}</td><td class="gold">${t.ats}</td>
+      <td class="${ac}">${t.atsPct}%</td>
+      <td>${t.ou}</td><td>${t.homeAts}</td><td>${t.awayAts}</td>
+      <td class="${sc}">${t.streak}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTeams(el,f){
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); renderTeams(f);
+}
+
+// ── PLAYER PROPS ──
+const PROPS_DATA=[
+  {player:'LeBron James',   team:'LAL',pos:'SF', type:'PTS', line:22.5,odds:'-115/-105',lean:'under',leanConf:71,inj:true},
+  {player:'Nikola Jokic',   team:'DEN',pos:'C',  type:'PTS', line:28.5,odds:'-110/-110',lean:'over', leanConf:78,inj:false},
+  {player:'Nikola Jokic',   team:'DEN',pos:'C',  type:'REB', line:12.5,odds:'-120/-100',lean:'over', leanConf:74,inj:false},
+  {player:'Stephen Curry',  team:'GSW',pos:'PG', type:'PTS', line:26.5,odds:'-108/-112',lean:'under',leanConf:65,inj:true},
+  {player:'Devin Booker',   team:'PHX',pos:'SG', type:'PTS', line:27.5,odds:'-110/-110',lean:'over', leanConf:69,inj:false},
+  {player:'Patrick Mahomes',team:'KC', pos:'QB', type:'PASS',line:284.5,odds:'-115/-105',lean:'under',leanConf:72,inj:true},
+  {player:'Jalen Hurts',    team:'PHI',pos:'QB', type:'PASS',line:241.5,odds:'-110/-110',lean:'over', leanConf:67,inj:false},
+  {player:'Davante Adams',  team:'KC', pos:'WR', type:'REC', line:72.5, odds:'-112/-108',lean:'over', leanConf:71,inj:false},
+  {player:'Aaron Judge',    team:'NYY',pos:'RF', type:'HR',  line:0.5,  odds:'+140/-175',lean:'under',leanConf:85,inj:true},
+  {player:'Mookie Betts',   team:'LAD',pos:'SS', type:'H',   line:1.5,  odds:'-130/+110',lean:'under',leanConf:68,inj:true},
+  {player:'Shohei Ohtani',  team:'LAD',pos:'DH', type:'HR',  line:0.5,  odds:'+120/-145',lean:'over', leanConf:73,inj:false},
+  {player:'Freddie Freeman', team:'LAD',pos:'1B',type:'RBI', line:0.5,  odds:'-105/-115',lean:'over', leanConf:62,inj:false},
+];
+
+const PROP_LABELS={PTS:'Points',REB:'Rebounds',AST:'Assists',PASS:'Pass Yards',REC:'Rec Yards',HR:'Home Runs',H:'Hits',RBI:'RBIs'};
+const PROP_SPORT={PASS:'b-nfl',REC:'b-nfl',H:'b-mlb',HR:'b-mlb',RBI:'b-mlb'};
+
+function renderProps(filter='ALL'){
+  const data=filter==='ALL'?PROPS_DATA:PROPS_DATA.filter(p=>p.type===filter);
+  document.getElementById('props-grid').innerHTML=data.map(p=>{
+    const lc=p.lean==='over'?'lean-over':'lean-under';
+    const li=p.lean==='over'?'↑ OVER':'↓ UNDER';
+    const sb=PROP_SPORT[p.type]||'b-nba';
+    return `<div class="prop-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="prop-player">${p.player}${p.inj?' <span style="color:var(--red);font-size:10px">⚠</span>':''}</div>
+          <div class="prop-team-pos">${p.team} · ${p.pos}</div>
+        </div>
+        <div class="sport-badge ${sb}">${p.type}</div>
+      </div>
+      <div class="prop-type">${PROP_LABELS[p.type]||p.type} Line</div>
+      <div class="prop-line">${p.line}</div>
+      <div class="prop-ou-row">
+        <button class="prop-btn prop-btn-over ${p.lean==='over'?'active':''}">OVER ${p.odds.split('/')[0]}</button>
+        <button class="prop-btn prop-btn-under ${p.lean==='under'?'active':''}">UNDER ${p.odds.split('/')[1]}</button>
+      </div>
+      <div class="prop-ai">🤖 AI: <span class="prop-ai-lean ${lc}">${li} (${p.leanConf}%)</span></div>
+    </div>`;
+  }).join('');
+}
+
+function filterProps(el,f){
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); renderProps(f==='ALL'?'ALL':f);
+}
+
+function filterPicks(el,f){
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderPicksFull(){
+  document.getElementById('picks-full-body').innerHTML=liveOdds.map(g=>`
+    <div class="pick-row" onclick="openExplainer('${g.id}')">
+      <div><div class="sport-badge ${bc(g.sport)}">${g.sport}</div></div>
+      <div><div class="pick-teams">${g.away} vs ${g.home}</div><div class="pick-time">${g.time} ET · ${fmtSpread(g.spreadLive)} · O/U ${g.ouLive}</div></div>
+      <div class="pick-call">${g.pick} →</div>
+      <div class="conf-wrap"><div class="conf-bar"><div class="conf-fill" style="width:${g.conf}%"></div></div><div class="conf-pct">${g.conf}%</div></div>
+    </div>`).join('');
+}
+
+// ── FULL INJURY TABLE ──
+const INJ_IMPACT={
+  'LeBron James':'HIGH — LAL ML moves +25',
+  'Patrick Mahomes':'HIGH — KC spread widens',
+  'Aaron Judge':'MED — NYY lineup weakened',
+  'Stephen Curry':'MED — Watch game-time',
+  'Mookie Betts':'MED — LAD prop lines shift',
+  'Dak Prescott':'HIGH — DAL becomes big dog',
+};
+
+function renderInjFull(){
+  document.getElementById('inj-full-tbody').innerHTML=INJURIES.map((p,i)=>{
+    const dc=p.status==='out'?'dot-out':p.status==='questionable'?'dot-q':'dot-p';
+    const lc=p.status==='out'?'lbl-out':p.status==='questionable'?'lbl-q':'lbl-p';
+    const lt=p.status==='out'?'OUT':p.status==='questionable'?'QUESTIONABLE':'PROBABLE';
+    const ago=p.age<2?'Just now':p.age<60?`${p.age}m ago`:`${Math.floor(p.age/60)}h ago`;
+    const impact=INJ_IMPACT[p.name]||'LOW — Minimal impact';
+    const ic=impact.startsWith('HIGH')?'color:var(--red)':impact.startsWith('MED')?'color:#F59E0B':'color:var(--muted)';
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="inj-dot ${dc}"></div><span style="color:var(--white);font-weight:600">${p.name}</span></div></td>
+      <td>${p.team}</td><td>${p.pos}</td><td>${p.note}</td>
+      <td class="${lc}">${lt}</td>
+      <td style="font-size:11px;${ic}">${impact}</td>
+      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px">${ago}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterInj(el,f){
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── FULL SCHEDULE ──
+const SCHED_FULL=[
+  {day:'TODAY',   time:'1:05 PM', away:'CHC',home:'MIL',sport:'MLB',spread:'MIL -130',ou:'8',   venue:'American Family Field',weather:'72°F ⛅'},
+  {day:'TODAY',   time:'4:25 PM', away:'KC', home:'BUF',sport:'NFL',spread:'KC -3',   ou:'47.5',venue:'Highmark Stadium',    weather:'58°F 🌧'},
+  {day:'TODAY',   time:'7:10 PM', away:'NYY',home:'BOS',sport:'MLB',spread:'NYY -145',ou:'8.5', venue:'Fenway Park',         weather:'68°F 🌤'},
+  {day:'TODAY',   time:'8:20 PM', away:'PHI',home:'DAL',sport:'NFL',spread:'PHI -5',  ou:'46',  venue:'AT&T Stadium',        weather:'Indoor'},
+  {day:'TODAY',   time:'9:00 PM', away:'DEN',home:'LAL',sport:'NBA',spread:'DEN -6',  ou:'224.5',venue:'Crypto.com Arena',   weather:'Indoor'},
+  {day:'TODAY',   time:'10:00 PM',away:'GSW',home:'PHX',sport:'NBA',spread:'PHX -3',  ou:'228.5',venue:'Footprint Center',   weather:'Indoor'},
+  {day:'TOMORROW',time:'1:10 PM', away:'LAD',home:'SF', sport:'MLB',spread:'LAD -165',ou:'7.5', venue:'Oracle Park',         weather:'65°F 🌫'},
+  {day:'TOMORROW',time:'7:30 PM', away:'BOS',home:'MIL',sport:'NBA',spread:'MIL -4',  ou:'221', venue:'Fiserv Forum',        weather:'Indoor'},
+  {day:'TOMORROW',time:'8:00 PM', away:'MIN',home:'DEN',sport:'NBA',spread:'DEN -7',  ou:'218', venue:'Ball Arena',          weather:'Indoor'},
+  {day:'TOMORROW',time:'10:10 PM',away:'ATL',home:'LAD',sport:'MLB',spread:'LAD -200',ou:'8',   venue:'Dodger Stadium',      weather:'72°F ☀️'},
+];
+
+function renderSchedFull(filter='TODAY'){
+  const data=['NFL','NBA','MLB'].includes(filter)?SCHED_FULL.filter(g=>g.sport===filter)
+    :filter==='TOMORROW'?SCHED_FULL.filter(g=>g.day==='TOMORROW')
+    :filter==='WEEK'?SCHED_FULL
+    :SCHED_FULL.filter(g=>g.day==='TODAY');
+  const grouped={};
+  data.forEach(g=>{if(!grouped[g.day])grouped[g.day]=[];grouped[g.day].push(g);});
+  document.getElementById('sched-full-body').innerHTML=Object.entries(grouped).map(([day,games])=>`
+    <div class="sched-day-header">${day}</div>
+    ${games.map(g=>`
+    <div class="sched-game-row">
+      <div class="sg-time">${g.time}</div>
+      <div class="sg-teams">
+        <div class="sg-matchup">${g.away} <span style="color:var(--muted)">@</span> ${g.home} <span class="sport-badge ${bc(g.sport)}" style="margin-left:6px">${g.sport}</span></div>
+        <div class="sg-venue">${g.venue}</div>
+      </div>
+      <div class="sg-odds">
+        <div class="sg-odd-pill"><span>Spread</span>${g.spread}</div>
+        <div class="sg-odd-pill"><span>O/U</span>${g.ou}</div>
+      </div>
+      <div class="sg-weather">${g.weather}</div>
+    </div>`).join('')}`).join('');
+}
+
+function filterSched(el,f){
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); renderSchedFull(f);
+}
+
 </script>
 </body>
 </html>
