@@ -1391,7 +1391,7 @@ function renderTeams(filter='ALL'){
     const sc=t.streak.startsWith('W')?'green':'red';
     const ac=t.atsPct>=55?'green':t.atsPct<=44?'red':'';
     const teamSlug=slugify(t.team);
-    return `<tr style="cursor:pointer" onclick="window.location.href='/team?id=${teamSlug}'">
+    return `<tr style="cursor:pointer" onclick="goToTeam('${teamSlug}')">
       <td class="bright" style="color:var(--gold-lt)">${t.team} ↗</td>
       <td><span class="sport-badge ${bc(t.sport)}">${t.sport}</span></td>
       <td>${t.wl}</td><td class="gold">${t.ats}</td>
@@ -1427,6 +1427,8 @@ const PROP_LABELS={PTS:'Points',REB:'Rebounds',AST:'Assists',PASS:'Pass Yards',R
 const PROP_SPORT={PASS:'b-nfl',REC:'b-nfl',H:'b-mlb',HR:'b-mlb',RBI:'b-mlb'};
 
 function slugify(name){ return name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+function goToTeam(slug){ window.location.href='/team?id='+slug+'&t='+Date.now(); }
+function goToPlayer(slug){ window.location.href='/player?id='+slug+'&t='+Date.now(); }
 
 function renderProps(filter='ALL'){
   const data=filter==='ALL'?PROPS_DATA:PROPS_DATA.filter(p=>p.type===filter);
@@ -1439,10 +1441,10 @@ function renderProps(filter='ALL'){
     return `<div class="prop-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <a href="/player?id=${playerSlug}" style="text-decoration:none">
+          <a href="#" onclick="goToPlayer('${playerSlug}');return false;" style="text-decoration:none">
             <div class="prop-player" style="cursor:pointer;transition:color 0.2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">${p.player}${p.inj?' <span style="color:var(--red);font-size:10px">⚠</span>':''}</div>
           </a>
-          <a href="/team?id=${teamSlug}" style="text-decoration:none">
+          <a href="#" onclick="goToTeam('${teamSlug}');return false;" style="text-decoration:none">
             <div class="prop-team-pos" style="cursor:pointer;transition:color 0.2s" onmouseover="this.style.color='var(--gold-lt)'" onmouseout="this.style.color=''">${p.team} · ${p.pos} ↗</div>
           </a>
         </div>

@@ -115,7 +115,7 @@
 
 <nav>
   <a href="/dashboard" class="nav-logo">OddsGod</a>
-  <a href="/dashboard" class="nav-back">← Back to Dashboard</a>
+  <a href="#" onclick="history.back();return false;" class="nav-back">← Back</a>
   <div class="live-pill"><span class="ldot"></span> LIVE DATA</div>
 </nav>
 
@@ -513,7 +513,7 @@ function renderTeam(id) {
     };
     const photoSrc = playerPhotos[slug];
     const imgHtml = photoSrc ? `<img src="${photoSrc}" alt="${p.name}" onerror="this.style.display='none'"/>` : '';
-    return `<a href="/player?id=${slug}" class="player-row">
+    return `<a href="#" onclick="window.location.href='/player?id=${slug}&t='+Date.now();return false;" class="player-row">
       <div class="player-avatar-sm">${imgHtml}<span class="sm-fallback">${p.initials}</span></div>
       <div class="player-info">
         <div class="player-name-link">${p.name}</div>
@@ -562,6 +562,16 @@ function showTab(name) {
 }
 
 renderTeam(getTeamId());
+
+// Re-render if user navigates back/forward to this page
+window.addEventListener('pageshow', function(e) {
+  renderTeam(getTeamId());
+});
+
+// Also re-render if the URL query string changes (spa-style navigation)
+window.addEventListener('popstate', function() {
+  renderTeam(getTeamId());
+});
 </script>
 </body>
 </html>
