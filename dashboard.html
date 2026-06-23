@@ -320,6 +320,32 @@
     .tag-reverse{background:rgba(59,130,246,0.15);color:#60a5fa}
     .tag-public{background:rgba(107,114,128,0.15);color:var(--muted2)}
 
+    /* ── NEWS FEED ── */
+    .news-item{padding:14px 16px;border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer}
+    .news-item:last-child{border-bottom:none}
+    .news-item:hover{background:#161616}
+    .news-item.loading{opacity:0.5;pointer-events:none}
+    .news-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+    .news-source{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)}
+    .news-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)}
+    .news-headline{font-size:13px;font-weight:600;color:var(--white);line-height:1.45;margin-bottom:6px}
+    .news-summary{font-size:12px;color:var(--muted2);line-height:1.65;margin-bottom:8px}
+    .news-summary.skeleton{height:36px;background:linear-gradient(90deg,var(--border) 25%,#222 50%,var(--border) 75%);background-size:200%;animation:skeletonPulse 1.4s ease infinite;border-radius:3px}
+    @keyframes skeletonPulse{0%{background-position:200% center}100%{background-position:-200% center}}
+    .news-tags{display:flex;gap:6px;flex-wrap:wrap}
+    .news-impact{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:2px 8px;border-radius:3px;letter-spacing:0.06em}
+    .impact-high{background:rgba(231,76,60,0.15);color:var(--red)}
+    .impact-med{background:rgba(245,158,11,0.15);color:#F59E0B}
+    .impact-low{background:rgba(107,114,128,0.15);color:var(--muted2)}
+    .impact-pos{background:rgba(46,204,113,0.12);color:var(--green)}
+    .news-game-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:rgba(201,168,76,0.1);color:var(--gold)}
+    .news-expand{display:none;font-size:12px;color:var(--muted2);line-height:1.65;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+    .news-item.expanded .news-expand{display:block}
+    .news-refresh-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.1em;color:var(--muted);cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+    .news-refresh-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+    .news-refresh-btn.spinning{animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
     /* ── DESKTOP GRID (sidebar + 2-col content) ── */
     @media(min-width:901px){
       .kpi-row{grid-template-columns:repeat(4,1fr)}
@@ -352,6 +378,7 @@
   <a class="nav-item" onclick="showView('props')" href="#"><span class="nav-icon">👤</span> Player Props</a>
   <a class="nav-item" onclick="showView('injuries')" href="#"><span class="nav-icon">🏥</span> Injuries <span class="nav-badge red" id="inj-badge">3</span></a>
   <a class="nav-item" onclick="showView('schedule')" href="#"><span class="nav-icon">📅</span> Schedule</a>
+  <a class="nav-item" onclick="showView('news')" href="#"><span class="nav-icon">📰</span> News Feed</a>
   <div class="nav-section">Account</div>
   <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Settings</a>
   <a class="nav-item" href="/login"><span class="nav-icon">🚪</span> Sign Out</a>
@@ -504,6 +531,15 @@
             <div class="panel-tag" id="sched-date">Mon Jun 22</div>
           </div>
           <div id="sched-body"></div>
+        </div>
+
+        <!-- NEWS PANEL -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">📰 Breaking News</div>
+            <button class="news-refresh-btn" id="dash-news-refresh" onclick="loadNews('dash-news-body','dash-news-refresh',4)">↻ Refresh</button>
+          </div>
+          <div id="dash-news-body"></div>
         </div>
 
       </div><!-- /right -->
@@ -659,6 +695,33 @@
         <button class="filter-btn" onclick="filterSched(this,'MLB')">MLB</button>
       </div>
       <div id="sched-full-body"></div>
+    </div>
+  </div>
+
+  <!-- ── NEWS FEED VIEW ── -->
+  <div id="view-news" class="view">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-label">Sources Monitored</div><div class="stat-card-val" style="color:var(--gold)">8</div><div class="stat-card-sub">ESPN, NFL.com, NBA.com + more</div></div>
+      <div class="stat-card"><div class="stat-card-label">Stories Today</div><div class="stat-card-val" style="color:var(--white)" id="news-count">—</div><div class="stat-card-sub">AI summarized</div></div>
+      <div class="stat-card"><div class="stat-card-label">High Impact</div><div class="stat-card-val" style="color:var(--red)" id="news-high">—</div><div class="stat-card-sub">Betting line movers</div></div>
+      <div class="stat-card"><div class="stat-card-label">Last Refresh</div><div class="stat-card-val" style="color:var(--muted);font-size:20px" id="news-last-refresh">—</div><div class="stat-card-sub">Auto-refreshes every 10min</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">📰 Sports News Feed</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> AI Powered</div>
+          <button class="news-refresh-btn" id="full-news-refresh" onclick="loadNews('full-news-body','full-news-refresh',12)">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterNews(this,'ALL')">ALL</button>
+        <button class="filter-btn" onclick="filterNews(this,'NFL')">NFL</button>
+        <button class="filter-btn" onclick="filterNews(this,'NBA')">NBA</button>
+        <button class="filter-btn" onclick="filterNews(this,'MLB')">MLB</button>
+        <button class="filter-btn" onclick="filterNews(this,'HIGH')">🔴 High Impact</button>
+      </div>
+      <div id="full-news-body"></div>
     </div>
   </div>
 
@@ -1228,7 +1291,7 @@ document.getElementById('sched-date').textContent=`${D[nd.getDay()]} ${M[nd.getM
 const VIEW_TITLES = {
   dashboard:'Dashboard', picks:'AI Picks', lines:'Line Movement',
   sharp:'Sharp Action', teams:'Team Stats', props:'Player Props',
-  injuries:'Injury Report', schedule:'Schedule'
+  injuries:'Injury Report', schedule:'Schedule', news:'News Feed'
 };
 
 function showView(name) {
@@ -1246,6 +1309,7 @@ function showView(name) {
   if(name==='props')    renderProps();
   if(name==='injuries') renderInjFull();
   if(name==='schedule') renderSchedFull();
+  if(name==='news')     loadNews('full-news-body','full-news-refresh',12);
 }
 
 // ── LINE MOVEMENT DATA ──
@@ -1477,10 +1541,162 @@ function renderSchedFull(filter='TODAY'){
     </div>`).join('')}`).join('');
 }
 
-function filterSched(el,f){
-  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active'); renderSchedFull(f);
+// ── NEWS FEED ENGINE ──
+const NEWS_SOURCES = [
+  { name:'ESPN',       sport:'NFL', headline:'Patrick Mahomes listed as questionable with knee injury ahead of Sunday showdown vs Bills', age:'12m' },
+  { name:'NFL.com',    sport:'NFL', headline:'Eagles offensive line suffers blow as star guard ruled out for Monday Night Football',      age:'28m' },
+  { name:'ESPN',       sport:'NBA', headline:'LeBron James officially ruled out tonight vs Nuggets, ankle injury worse than reported',    age:'41m' },
+  { name:'NBA.com',    sport:'NBA', headline:'Stephen Curry upgraded to probable after missing last two games with left knee soreness',   age:'1h'  },
+  { name:'MLB.com',    sport:'MLB', headline:'Aaron Judge placed on 10-day IL with hamstring strain, out indefinitely for Yankees',      age:'1h'  },
+  { name:'The Athletic',sport:'NBA',headline:'Nuggets roll into LA as heavy favorites, Jokic expected to play full minutes tonight',     age:'2h'  },
+  { name:'ESPN',       sport:'MLB', headline:'Dodgers ace confirmed as starter tonight vs Giants at Oracle Park, bullpen fully rested',  age:'2h'  },
+  { name:'NFL.com',    sport:'NFL', headline:'Cowboys backup QB takes over as starter with Prescott on IR, reshaping Dallas line',       age:'3h'  },
+  { name:'Bleacher Report',sport:'NBA',headline:'Warriors sharp money surging on over total, public split shifting dramatically',       age:'3h'  },
+  { name:'MLB.com',    sport:'MLB', headline:'Weather alert: Fenway Park wind gusting 18mph out to left, could affect NYY vs BOS total',age:'4h'  },
+  { name:'The Athletic',sport:'NFL',headline:'Bills defense ranked top-3 against run this week, KC faces stiff challenge without Mahomes',age:'4h'},
+  { name:'ESPN',       sport:'MLB', headline:'Mookie Betts returns to Dodgers lineup after wrist evaluation, expected to play tonight',  age:'5h'  },
+];
+
+let newsCache = {};
+let newsFilter = 'ALL';
+
+async function loadNews(bodyId, btnId, count) {
+  const btn = document.getElementById(btnId);
+  const body = document.getElementById(bodyId);
+  if(!body) return;
+
+  // spinner
+  if(btn){ btn.classList.add('spinning'); btn.disabled=true; }
+
+  // show skeleton loading state
+  const items = NEWS_SOURCES.slice(0, count);
+  body.innerHTML = items.map((n,i)=>`
+    <div class="news-item loading" id="ni-${bodyId}-${i}">
+      <div class="news-meta">
+        <span class="news-source">${n.name}</span>
+        <span class="news-sport-badge sport-badge ${bc(n.sport)}">${n.sport}</span>
+        <span class="news-time">${n.age} ago</span>
+      </div>
+      <div class="news-headline">${n.headline}</div>
+      <div class="news-summary skeleton"></div>
+      <div class="news-tags" style="margin-top:8px">
+        <span class="news-impact impact-low">Analyzing...</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Call Claude API for each item (batched prompt for all)
+  const prompt = `You are a sports betting analyst. For each of these ${items.length} sports news headlines, provide:
+1. A 1-2 sentence plain-English summary written for bettors (not generic fans)
+2. A betting impact level: HIGH, MEDIUM, or LOW
+3. A specific betting impact note (e.g. "Affects LAL spread by +1.5", "NYY ML moves from -130 to -145", "OVER total likely to drop 2 pts")
+4. The main game/team tag affected
+
+Headlines:
+${items.map((n,i)=>`${i+1}. [${n.sport}] ${n.headline}`).join('\n')}
+
+Respond ONLY with a JSON array of ${items.length} objects, each with keys: summary, impact (HIGH/MEDIUM/LOW), impactNote, gameTag. No markdown, no extra text.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        messages:[{role:'user', content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(c=>c.type==='text')?.text || '[]';
+    const clean = text.replace(/```json|```/g,'').trim();
+    const analyses = JSON.parse(clean);
+
+    // render each item with AI analysis
+    analyses.forEach((a, i) => {
+      const n = items[i];
+      const el = document.getElementById(`ni-${bodyId}-${i}`);
+      if(!el) return;
+      const impactCls = a.impact==='HIGH'?'impact-high':a.impact==='MEDIUM'?'impact-med':'impact-low';
+      const impactIcon = a.impact==='HIGH'?'🔴':a.impact==='MEDIUM'?'🟡':'⚪';
+      el.classList.remove('loading');
+      el.innerHTML = `
+        <div class="news-meta">
+          <span class="news-source">${n.name}</span>
+          <span class="sport-badge ${bc(n.sport)}">${n.sport}</span>
+          <span class="news-time">${n.age} ago</span>
+        </div>
+        <div class="news-headline">${n.headline}</div>
+        <div class="news-summary">${a.summary}</div>
+        <div class="news-tags">
+          <span class="news-impact ${impactCls}">${impactIcon} ${a.impact} IMPACT</span>
+          <span class="news-game-tag">📌 ${a.gameTag}</span>
+          <span class="news-impact impact-pos" style="background:rgba(201,168,76,0.08);color:var(--muted2);font-weight:400">${a.impactNote}</span>
+        </div>`;
+      el.onclick = () => el.classList.toggle('expanded');
+      // store in cache
+      newsCache[`${bodyId}-${i}`] = { ...n, ...a };
+    });
+
+    // update stats if full view
+    if(bodyId==='full-news-body'){
+      const high = analyses.filter(a=>a.impact==='HIGH').length;
+      const countEl = document.getElementById('news-count');
+      const highEl  = document.getElementById('news-high');
+      const lastEl  = document.getElementById('news-last-refresh');
+      if(countEl) countEl.textContent = analyses.length;
+      if(highEl)  highEl.textContent  = high;
+      if(lastEl){ const n=new Date(); lastEl.textContent=`${n.getHours()%12||12}:${String(n.getMinutes()).padStart(2,'0')} ${n.getHours()>=12?'PM':'AM'}`; }
+    }
+
+  } catch(err) {
+    body.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">
+      <div style="font-size:24px;margin-bottom:8px">📡</div>
+      News feed unavailable — using cached headlines.<br>
+      <button class="news-refresh-btn" style="margin-top:12px" onclick="loadNews('${bodyId}','${btnId}',${count})">Try Again</button>
+    </div>`;
+    // fallback: render without AI analysis
+    body.innerHTML = items.map(n=>`
+      <div class="news-item">
+        <div class="news-meta">
+          <span class="news-source">${n.name}</span>
+          <span class="sport-badge ${bc(n.sport)}">${n.sport}</span>
+          <span class="news-time">${n.age} ago</span>
+        </div>
+        <div class="news-headline">${n.headline}</div>
+        <div class="news-summary" style="color:var(--muted);font-style:italic">AI analysis unavailable</div>
+        <div class="news-tags"><span class="news-impact impact-low">⚪ PENDING</span></div>
+      </div>`).join('');
+  } finally {
+    if(btn){ btn.classList.remove('spinning'); btn.disabled=false; }
+  }
 }
+
+function filterNews(el, filter) {
+  el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  newsFilter = filter;
+  document.querySelectorAll('#full-news-body .news-item').forEach(item => {
+    const sport = item.querySelector('.sport-badge')?.textContent;
+    const impact = item.querySelector('.news-impact')?.textContent;
+    if(filter==='ALL') { item.style.display=''; return; }
+    if(filter==='HIGH') { item.style.display = impact?.includes('HIGH') ? '' : 'none'; return; }
+    item.style.display = sport===filter ? '' : 'none';
+  });
+}
+
+// auto-load dashboard news panel on page load
+window.addEventListener('load', () => {
+  setTimeout(() => loadNews('dash-news-body','dash-news-refresh',4), 800);
+});
+
+// auto-refresh every 10 min
+setInterval(() => {
+  loadNews('dash-news-body','dash-news-refresh',4);
+  const newsView = document.getElementById('view-news');
+  if(newsView?.classList.contains('active')) loadNews('full-news-body','full-news-refresh',12);
+}, 600000);
+
 
 </script>
 </body>
