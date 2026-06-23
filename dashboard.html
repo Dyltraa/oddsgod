@@ -1571,15 +1571,23 @@ function sportBadge(sport) {
   return `<span class="sport-badge ${bc(sport)}">${sport}</span>`;
 }
 
-function renderArticles(articles, bodyId) {
+let newsOffset = 0;
+const NEWS_PAGE_SIZE = 20;
+
+function renderArticles(articles, bodyId, append=false) {
   const body = document.getElementById(bodyId);
   if(!body) return;
-  if(!articles.length) {
+  if(!articles.length && !append) {
     body.innerHTML = `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">
       <div style="font-size:24px;margin-bottom:8px">📡</div>No articles found.</div>`;
     return;
   }
-  body.innerHTML = articles.map((a, i) => `
+
+  // remove existing load more button if present
+  const existing = body.querySelector('.load-more-btn');
+  if(existing) existing.remove();
+
+  const html = articles.map(a => `
     <a href="${a.link}" target="_blank" rel="noopener noreferrer" class="news-item" style="display:block;text-decoration:none" data-sport="${a.sport}">
       <div class="news-meta">
         <span class="news-source">${a.source}</span>
@@ -1587,12 +1595,31 @@ function renderArticles(articles, bodyId) {
         <span class="news-time">${timeAgo(a.pubDate)}</span>
       </div>
       <div class="news-headline">${a.title}</div>
-      ${a.description ? `<div class="news-summary">${a.description.replace(/<[^>]*>/g,'').slice(0,140)}...</div>` : ''}
+      ${a.description ? `<div class="news-summary">${a.description.replace(/<[^>]*>/g,'').slice(0,160)}...</div>` : ''}
       <div class="news-tags" style="margin-top:6px">
         <span class="news-impact impact-low" style="background:rgba(201,168,76,0.08);color:var(--muted2)">↗ Read Full Article</span>
       </div>
     </a>
   `).join('');
+
+  if(append) {
+    body.insertAdjacentHTML('beforeend', html);
+  } else {
+    body.innerHTML = html;
+  }
+
+  // add load more button if there are more articles
+  const currentCount = body.querySelectorAll('.news-item').length;
+  const filteredArticles = newsFilter==='ALL' ? allArticles : allArticles.filter(a=>a.sport===newsFilter);
+  if(currentCount < filteredArticles.length) {
+    body.insertAdjacentHTML('beforeend', `
+      <div class="load-more-btn" style="padding:16px;text-align:center;border-top:1px solid var(--border)">
+        <button onclick="loadMoreNews()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:9px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+          Load More — ${filteredArticles.length - currentCount} remaining
+        </button>
+      </div>
+    `);
+  }
 }
 
 async function loadNews(bodyId, btnId, count) {
@@ -1601,33 +1628,33 @@ async function loadNews(bodyId, btnId, count) {
   if(!body) return;
 
   if(btn){ btn.classList.add('spinning'); btn.disabled=true; }
+  newsOffset = 0;
 
   // skeleton
-  body.innerHTML = Array(count).fill(0).map(()=>`
+  body.innerHTML = Array(Math.min(count, 6)).fill(0).map(()=>`
     <div class="news-item" style="pointer-events:none">
       <div class="news-meta">
         <span class="news-source" style="background:var(--border);color:transparent;border-radius:3px">Loading source</span>
         <span class="news-time" style="background:var(--border);color:transparent;border-radius:3px">0m ago</span>
       </div>
-      <div class="news-headline" style="background:var(--border);color:transparent;border-radius:3px;height:18px;margin-bottom:4px">Loading headline text here...</div>
+      <div class="news-headline" style="background:var(--border);color:transparent;border-radius:3px;height:18px;margin-bottom:4px">Loading headline...</div>
       <div class="news-summary skeleton" style="height:32px"></div>
     </div>
   `).join('');
 
   try {
-    // fetch all feeds in parallel
     const fetches = RSS_FEEDS.map(feed =>
       fetch(`${RSS2JSON}${encodeURIComponent(feed.url)}`)
         .then(r => r.json())
         .then(data => {
           if(data.status !== 'ok') return [];
-          return (data.items || []).slice(0, 5).map(item => ({
-            title:      item.title || '',
-            link:       item.link  || '#',
-            description:item.description || item.content || '',
-            pubDate:    item.pubDate || new Date().toISOString(),
-            source:     feed.name,
-            sport:      feed.sport,
+          return (data.items || []).slice(0, 10).map(item => ({
+            title:       item.title || '',
+            link:        item.link  || '#',
+            description: item.description || item.content || '',
+            pubDate:     item.pubDate || new Date().toISOString(),
+            source:      feed.name,
+            sport:       feed.sport,
           }));
         })
         .catch(() => [])
@@ -1638,10 +1665,10 @@ async function loadNews(bodyId, btnId, count) {
       .filter(a => a.title)
       .sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-    const toShow = allArticles.slice(0, count);
-    renderArticles(toShow, bodyId);
+    newsOffset = NEWS_PAGE_SIZE;
+    const filtered = newsFilter==='ALL' ? allArticles : allArticles.filter(a=>a.sport===newsFilter);
+    renderArticles(filtered.slice(0, newsOffset), bodyId);
 
-    // update stats
     const countEl = document.getElementById('news-count');
     const lastEl  = document.getElementById('news-last-refresh');
     if(countEl) countEl.textContent = allArticles.length;
@@ -1650,7 +1677,7 @@ async function loadNews(bodyId, btnId, count) {
   } catch(err) {
     body.innerHTML = `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">
       <div style="font-size:24px;margin-bottom:8px">📡</div>
-      Couldn't load news feed right now.<br>
+      Couldn't load news right now.<br>
       <button class="news-refresh-btn" style="margin-top:12px" onclick="loadNews('${bodyId}','${btnId}',${count})">Try Again</button>
     </div>`;
   } finally {
@@ -1658,14 +1685,22 @@ async function loadNews(bodyId, btnId, count) {
   }
 }
 
+function loadMoreNews() {
+  const bodyId = document.getElementById('view-news')?.classList.contains('active') ? 'full-news-body' : 'dash-news-body';
+  const filtered = newsFilter==='ALL' ? allArticles : allArticles.filter(a=>a.sport===newsFilter);
+  const next = filtered.slice(newsOffset, newsOffset + NEWS_PAGE_SIZE);
+  if(!next.length) return;
+  newsOffset += NEWS_PAGE_SIZE;
+  renderArticles(next, bodyId, true);
+}
+
 function filterNews(el, filter) {
   el.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   newsFilter = filter;
-  const body = document.getElementById('full-news-body');
-  if(!body) return;
+  newsOffset = NEWS_PAGE_SIZE;
   const filtered = filter==='ALL' ? allArticles : allArticles.filter(a=>a.sport===filter);
-  renderArticles(filtered.slice(0,20), 'full-news-body');
+  renderArticles(filtered.slice(0, newsOffset), 'full-news-body');
 }
 
 // auto-load dashboard news panel on page load
