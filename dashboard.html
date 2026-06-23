@@ -1371,18 +1371,18 @@ function renderSharpFull(){
 
 // ── TEAM STATS ──
 const TEAMS_DATA=[
-  {team:'Kansas City Chiefs', sport:'NFL',wl:'9-2', ats:'7-4', atsPct:64,ou:'5-6',homeAts:'4-1',awayAts:'3-3',streak:'W3'},
-  {team:'Philadelphia Eagles',sport:'NFL',wl:'8-3', ats:'8-3', atsPct:73,ou:'6-5',homeAts:'4-1',awayAts:'4-2',streak:'W5'},
-  {team:'Buffalo Bills',      sport:'NFL',wl:'7-4', ats:'6-5', atsPct:55,ou:'7-4',homeAts:'3-2',awayAts:'3-3',streak:'L1'},
-  {team:'Dallas Cowboys',     sport:'NFL',wl:'4-7', ats:'4-7', atsPct:36,ou:'5-6',homeAts:'2-3',awayAts:'2-4',streak:'L4'},
-  {team:'Denver Nuggets',     sport:'NBA',wl:'18-7',ats:'14-11',atsPct:56,ou:'12-13',homeAts:'8-4',awayAts:'6-7',streak:'W2'},
-  {team:'LA Lakers',          sport:'NBA',wl:'13-12',ats:'11-14',atsPct:44,ou:'14-11',homeAts:'5-7',awayAts:'6-7',streak:'L2'},
+  {team:'Kansas City Chiefs',   sport:'NFL',wl:'9-2', ats:'7-4', atsPct:64,ou:'5-6',homeAts:'4-1',awayAts:'3-3',streak:'W3'},
+  {team:'Philadelphia Eagles',  sport:'NFL',wl:'8-3', ats:'8-3', atsPct:73,ou:'6-5',homeAts:'4-1',awayAts:'4-2',streak:'W5'},
+  {team:'Buffalo Bills',        sport:'NFL',wl:'7-4', ats:'6-5', atsPct:55,ou:'7-4',homeAts:'3-2',awayAts:'3-3',streak:'L1'},
+  {team:'Dallas Cowboys',       sport:'NFL',wl:'4-7', ats:'4-7', atsPct:36,ou:'5-6',homeAts:'2-3',awayAts:'2-4',streak:'L4'},
+  {team:'Denver Nuggets',       sport:'NBA',wl:'18-7',ats:'14-11',atsPct:56,ou:'12-13',homeAts:'8-4',awayAts:'6-7',streak:'W2'},
+  {team:'Los Angeles Lakers',   sport:'NBA',wl:'13-12',ats:'11-14',atsPct:44,ou:'14-11',homeAts:'5-7',awayAts:'6-7',streak:'L2'},
   {team:'Golden State Warriors',sport:'NBA',wl:'11-14',ats:'13-12',atsPct:52,ou:'16-9',homeAts:'6-6',awayAts:'7-6',streak:'W1'},
-  {team:'Phoenix Suns',       sport:'NBA',wl:'10-15',ats:'10-15',atsPct:40,ou:'13-12',homeAts:'5-7',awayAts:'5-8',streak:'L3'},
-  {team:'New York Yankees',   sport:'MLB',wl:'52-31',ats:'46-37',atsPct:55,ou:'42-41',homeAts:'24-17',awayAts:'22-20',streak:'W4'},
-  {team:'LA Dodgers',         sport:'MLB',wl:'58-25',ats:'50-33',atsPct:60,ou:'40-43',homeAts:'26-14',awayAts:'24-19',streak:'W7'},
-  {team:'Boston Red Sox',     sport:'MLB',wl:'38-45',ats:'37-46',atsPct:45,ou:'44-39',homeAts:'18-23',awayAts:'19-23',streak:'L2'},
-  {team:'SF Giants',          sport:'MLB',wl:'35-48',ats:'36-47',atsPct:43,ou:'38-45',homeAts:'16-25',awayAts:'20-22',streak:'L1'},
+  {team:'Phoenix Suns',         sport:'NBA',wl:'10-15',ats:'10-15',atsPct:40,ou:'13-12',homeAts:'5-7',awayAts:'5-8',streak:'L3'},
+  {team:'New York Yankees',     sport:'MLB',wl:'52-31',ats:'46-37',atsPct:55,ou:'42-41',homeAts:'24-17',awayAts:'22-20',streak:'W4'},
+  {team:'Los Angeles Dodgers',  sport:'MLB',wl:'58-25',ats:'50-33',atsPct:60,ou:'40-43',homeAts:'26-14',awayAts:'24-19',streak:'W7'},
+  {team:'Boston Red Sox',       sport:'MLB',wl:'38-45',ats:'37-46',atsPct:45,ou:'44-39',homeAts:'18-23',awayAts:'19-23',streak:'L2'},
+  {team:'San Francisco Giants', sport:'MLB',wl:'35-48',ats:'36-47',atsPct:43,ou:'38-45',homeAts:'16-25',awayAts:'20-22',streak:'L1'},
 ];
 
 function renderTeams(filter='ALL'){
@@ -1427,8 +1427,14 @@ const PROP_LABELS={PTS:'Points',REB:'Rebounds',AST:'Assists',PASS:'Pass Yards',R
 const PROP_SPORT={PASS:'b-nfl',REC:'b-nfl',H:'b-mlb',HR:'b-mlb',RBI:'b-mlb'};
 
 function slugify(name){ return name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
-function goToTeam(slug){ window.location.href='/team?id='+slug+'&t='+Date.now(); }
-function goToPlayer(slug){ window.location.href='/player?id='+slug+'&t='+Date.now(); }
+function goToTeam(slug){
+  sessionStorage.setItem('og_referrer', window.location.pathname + window.location.search + window.location.hash);
+  window.location.href='/team?id='+slug;
+}
+function goToPlayer(slug){
+  sessionStorage.setItem('og_referrer', window.location.pathname + window.location.search + window.location.hash);
+  window.location.href='/player?id='+slug;
+}
 
 function renderProps(filter='ALL'){
   const data=filter==='ALL'?PROPS_DATA:PROPS_DATA.filter(p=>p.type===filter);
