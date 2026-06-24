@@ -785,25 +785,13 @@
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
+<script src="/js/curated-data.js"></script>
+<script src="/js/data.js"></script>
 <script>
-// ── DATA ──
-const GAMES = [
-  { id:'g1', sport:'NBA', home:'LAL', away:'DEN', time:'9:00 PM',  spread:-6,   ml:-250, ou:224.5, pick:'DEN -6',    conf:87, favored:'DEN' },
-  { id:'g2', sport:'NFL', home:'BUF', away:'KC',  time:'4:25 PM',  spread:-3,   ml:-168, ou:47.5,  pick:'BUF +3',    conf:79, favored:'KC'  },
-  { id:'g3', sport:'MLB', home:'BOS', away:'NYY', time:'7:10 PM',  spread:-1.5, ml:-145, ou:8.5,   pick:'NYY ML',    conf:74, favored:'NYY' },
-  { id:'g4', sport:'NBA', home:'PHX', away:'GSW', time:'10:00 PM', spread:3,    ml:130,  ou:228.5, pick:'OVER 229',  conf:71, favored:'PHX' },
-  { id:'g5', sport:'MLB', home:'SF',  away:'LAD', time:'9:40 PM',  spread:-1.5, ml:-165, ou:7.5,   pick:'LAD ML',    conf:68, favored:'LAD' },
-  { id:'g6', sport:'NFL', home:'DAL', away:'PHI', time:'8:20 PM',  spread:2.5,  ml:115,  ou:46,    pick:'PHI -2.5',  conf:63, favored:'PHI' },
-];
+// ── DATA (sourced from shared engine: js/data.js) ──
+const GAMES = OG.games;
 
-const INJURIES = [
-  { name:'LeBron James',    team:'LAL', pos:'SF', status:'out',          note:'Ankle',     age:0   },
-  { name:'Patrick Mahomes', team:'KC',  pos:'QB', status:'questionable', note:'Knee',      age:34  },
-  { name:'Aaron Judge',     team:'NYY', pos:'RF', status:'out',          note:'Hamstring', age:60  },
-  { name:'Stephen Curry',   team:'GSW', pos:'PG', status:'probable',     note:'Rest',      age:120 },
-  { name:'Mookie Betts',    team:'LAD', pos:'SS', status:'questionable', note:'Wrist',     age:180 },
-  { name:'Dak Prescott',    team:'DAL', pos:'QB', status:'out',          note:'Shoulder',  age:210 },
-];
+const INJURIES = OG.injuries; // full league injury report (side feed shows a slice)
 
 let liveOdds = GAMES.map(g => ({
   ...g,
@@ -814,14 +802,20 @@ let liveOdds = GAMES.map(g => ({
   spreadDir: 0, mlDir: 0, ouDir: 0,
 }));
 
-let livePS = GAMES.slice(0,5).map(g => ({
+let livePS = GAMES.slice(0,6).map(g => ({
   id: g.id, sport: g.sport,
   match: `${g.away} vs ${g.home}`,
-  pub: Math.floor(Math.random()*55+20),
-  shp: Math.floor(Math.random()*55+25),
+  pub: g.pub,
+  shp: g.shp,
 }));
 
-let kpi = { picks:12, wr:68, moves:24, inj:3, sharp:8 };
+let kpi = {
+  picks: GAMES.length,
+  wr: 68,
+  moves: OG.lineMoves.length,
+  inj: OG.injuries.filter(p => p.age < 60).length,
+  sharp: OG.lineMoves.filter(m => m.trigger === 'Sharp').length
+};
 
 // ── HELPERS ──
 function bc(s){ return s==='NBA'?'b-nba':s==='NFL'?'b-nfl':'b-mlb' }
@@ -867,7 +861,7 @@ function renderOdds(){
 }
 
 function renderInjuries(){
-  document.getElementById('inj-body').innerHTML = INJURIES.map((p,i)=>{
+  document.getElementById('inj-body').innerHTML = INJURIES.slice(0,6).map((p,i)=>{
     const dc = p.status==='out'?'dot-out':p.status==='questionable'?'dot-q':'dot-p';
     const lc = p.status==='out'?'lbl-out':p.status==='questionable'?'lbl-q':'lbl-p';
     const lt = p.status==='out'?'OUT':p.status==='questionable'?'QUESTIONABLE':'PROBABLE';
@@ -1113,7 +1107,7 @@ function openExplainer(gameId){
   const g = liveOdds.find(x=>x.id===gameId);
   if(!g) return;
   currentExplainerGame = g;
-  const ex = EXPLANATIONS[gameId] || EXPLANATIONS.g1;
+  const ex = OG.explainerFor(g);
 
   document.getElementById('ex-matchup').textContent = `${g.away} vs ${g.home}`;
   document.getElementById('ex-sport').textContent   = g.sport;
@@ -1313,16 +1307,7 @@ function showView(name) {
 }
 
 // ── LINE MOVEMENT DATA ──
-const LINE_MOVES=[
-  {game:'DEN vs LAL',sport:'NBA',type:'Spread',open:'-4.5',current:'-6',  move:'+1.5',trigger:'Sharp',time:'14m ago'},
-  {game:'PHI vs DAL',sport:'NFL',type:'Spread',open:'-2.5',current:'-5',  move:'+2.5',trigger:'Steam',time:'28m ago'},
-  {game:'NYY vs BOS',sport:'MLB',type:'ML',    open:'-130',current:'-145',move:'+15', trigger:'Sharp',time:'41m ago'},
-  {game:'KC vs BUF', sport:'NFL',type:'Spread',open:'-4.5',current:'-3',  move:'-1.5',trigger:'Public',time:'1h ago'},
-  {game:'GSW vs PHX',sport:'NBA',type:'Total', open:'224.5',current:'229',move:'+4.5',trigger:'Sharp',time:'1h ago'},
-  {game:'LAD vs SF', sport:'MLB',type:'ML',    open:'-150',current:'-165',move:'+15', trigger:'Sharp',time:'2h ago'},
-  {game:'DEN vs LAL',sport:'NBA',type:'Total', open:'222', current:'224.5',move:'+2.5',trigger:'Public',time:'3h ago'},
-  {game:'KC vs BUF', sport:'NFL',type:'Total', open:'49.5',current:'47.5',move:'-2',  trigger:'Sharp',time:'3h ago'},
-];
+const LINE_MOVES = OG.lineMoves;
 
 function renderLines(){
   document.getElementById('lines-tbody').innerHTML=LINE_MOVES.map(m=>{
@@ -1340,13 +1325,7 @@ function renderLines(){
 }
 
 // ── SHARP ACTION DATA ──
-const STEAM_MOVES=[
-  {game:'PHI vs DAL',side:'PHI -5',  type:'Steam',  move:'-2.5→-5',   pub:22,shp:88,tag:'tag-steam'},
-  {game:'DEN vs LAL',side:'DEN -6',  type:'Sharp',  move:'-4.5→-6',   pub:38,shp:72,tag:'tag-sharp'},
-  {game:'GSW vs PHX',side:'OVER',    type:'Reverse',move:'224.5→229', pub:44,shp:78,tag:'tag-reverse'},
-  {game:'NYY vs BOS',side:'NYY ML',  type:'Sharp',  move:'-130→-145', pub:55,shp:81,tag:'tag-sharp'},
-  {game:'KC vs BUF', side:'BUF +3',  type:'Reverse',move:'-4.5→-3',  pub:71,shp:29,tag:'tag-reverse'},
-];
+const STEAM_MOVES = OG.steamMoves;
 
 function renderSharpFull(){
   document.getElementById('sharp-body').innerHTML=liveOdds.map(g=>{
@@ -1370,27 +1349,18 @@ function renderSharpFull(){
 }
 
 // ── TEAM STATS ──
-const TEAMS_DATA=[
-  {team:'Kansas City Chiefs',   sport:'NFL',wl:'9-2', ats:'7-4', atsPct:64,ou:'5-6',homeAts:'4-1',awayAts:'3-3',streak:'W3'},
-  {team:'Philadelphia Eagles',  sport:'NFL',wl:'8-3', ats:'8-3', atsPct:73,ou:'6-5',homeAts:'4-1',awayAts:'4-2',streak:'W5'},
-  {team:'Buffalo Bills',        sport:'NFL',wl:'7-4', ats:'6-5', atsPct:55,ou:'7-4',homeAts:'3-2',awayAts:'3-3',streak:'L1'},
-  {team:'Dallas Cowboys',       sport:'NFL',wl:'4-7', ats:'4-7', atsPct:36,ou:'5-6',homeAts:'2-3',awayAts:'2-4',streak:'L4'},
-  {team:'Denver Nuggets',       sport:'NBA',wl:'18-7',ats:'14-11',atsPct:56,ou:'12-13',homeAts:'8-4',awayAts:'6-7',streak:'W2'},
-  {team:'Los Angeles Lakers',   sport:'NBA',wl:'13-12',ats:'11-14',atsPct:44,ou:'14-11',homeAts:'5-7',awayAts:'6-7',streak:'L2'},
-  {team:'Golden State Warriors',sport:'NBA',wl:'11-14',ats:'13-12',atsPct:52,ou:'16-9',homeAts:'6-6',awayAts:'7-6',streak:'W1'},
-  {team:'Phoenix Suns',         sport:'NBA',wl:'10-15',ats:'10-15',atsPct:40,ou:'13-12',homeAts:'5-7',awayAts:'5-8',streak:'L3'},
-  {team:'New York Yankees',     sport:'MLB',wl:'52-31',ats:'46-37',atsPct:55,ou:'42-41',homeAts:'24-17',awayAts:'22-20',streak:'W4'},
-  {team:'Los Angeles Dodgers',  sport:'MLB',wl:'58-25',ats:'50-33',atsPct:60,ou:'40-43',homeAts:'26-14',awayAts:'24-19',streak:'W7'},
-  {team:'Boston Red Sox',       sport:'MLB',wl:'38-45',ats:'37-46',atsPct:45,ou:'44-39',homeAts:'18-23',awayAts:'19-23',streak:'L2'},
-  {team:'San Francisco Giants', sport:'MLB',wl:'35-48',ats:'36-47',atsPct:43,ou:'38-45',homeAts:'16-25',awayAts:'20-22',streak:'L1'},
-];
+const TEAMS_DATA = OG.teams.map(t => ({
+  team: t.name, slug: t.slug, sport: t.sport,
+  wl: t.wl, ats: t.ats, atsPct: t.atsPct, ou: t.ou,
+  homeAts: t.homeAts, awayAts: t.awayAts, streak: t.streak
+}));
 
 function renderTeams(filter='ALL'){
   const data=filter==='ALL'?TEAMS_DATA:TEAMS_DATA.filter(t=>t.sport===filter);
   document.getElementById('teams-tbody').innerHTML=data.map(t=>{
     const sc=t.streak.startsWith('W')?'green':'red';
     const ac=t.atsPct>=55?'green':t.atsPct<=44?'red':'';
-    const teamSlug=slugify(t.team);
+    const teamSlug=t.slug||slugify(t.team);
     return `<tr style="cursor:pointer" onclick="goToTeam('${teamSlug}')">
       <td class="bright" style="color:var(--gold-lt)">${t.team} ↗</td>
       <td><span class="sport-badge ${bc(t.sport)}">${t.sport}</span></td>
@@ -1408,23 +1378,8 @@ function filterTeams(el,f){
 }
 
 // ── PLAYER PROPS ──
-const PROPS_DATA=[
-  {player:'LeBron James',   team:'LAL',pos:'SF', type:'PTS', line:22.5,odds:'-115/-105',lean:'under',leanConf:71,inj:true},
-  {player:'Nikola Jokic',   team:'DEN',pos:'C',  type:'PTS', line:28.5,odds:'-110/-110',lean:'over', leanConf:78,inj:false},
-  {player:'Nikola Jokic',   team:'DEN',pos:'C',  type:'REB', line:12.5,odds:'-120/-100',lean:'over', leanConf:74,inj:false},
-  {player:'Stephen Curry',  team:'GSW',pos:'PG', type:'PTS', line:26.5,odds:'-108/-112',lean:'under',leanConf:65,inj:true},
-  {player:'Devin Booker',   team:'PHX',pos:'SG', type:'PTS', line:27.5,odds:'-110/-110',lean:'over', leanConf:69,inj:false},
-  {player:'Patrick Mahomes',team:'KC', pos:'QB', type:'PASS',line:284.5,odds:'-115/-105',lean:'under',leanConf:72,inj:true},
-  {player:'Jalen Hurts',    team:'PHI',pos:'QB', type:'PASS',line:241.5,odds:'-110/-110',lean:'over', leanConf:67,inj:false},
-  {player:'Davante Adams',  team:'KC', pos:'WR', type:'REC', line:72.5, odds:'-112/-108',lean:'over', leanConf:71,inj:false},
-  {player:'Aaron Judge',    team:'NYY',pos:'RF', type:'HR',  line:0.5,  odds:'+140/-175',lean:'under',leanConf:85,inj:true},
-  {player:'Mookie Betts',   team:'LAD',pos:'SS', type:'H',   line:1.5,  odds:'-130/+110',lean:'under',leanConf:68,inj:true},
-  {player:'Shohei Ohtani',  team:'LAD',pos:'DH', type:'HR',  line:0.5,  odds:'+120/-145',lean:'over', leanConf:73,inj:false},
-  {player:'Freddie Freeman', team:'LAD',pos:'1B',type:'RBI', line:0.5,  odds:'-105/-115',lean:'over', leanConf:62,inj:false},
-];
-
-const PROP_LABELS={PTS:'Points',REB:'Rebounds',AST:'Assists',PASS:'Pass Yards',REC:'Rec Yards',HR:'Home Runs',H:'Hits',RBI:'RBIs'};
-const PROP_SPORT={PASS:'b-nfl',REC:'b-nfl',H:'b-mlb',HR:'b-mlb',RBI:'b-mlb'};
+const PROPS_DATA = OG.props.slice(0, 60);
+const PROP_LABELS = OG.propLabels;
 
 function slugify(name){ return name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
 function goToTeam(slug){
@@ -1441,22 +1396,21 @@ function renderProps(filter='ALL'){
   document.getElementById('props-grid').innerHTML=data.map(p=>{
     const lc=p.lean==='over'?'lean-over':'lean-under';
     const li=p.lean==='over'?'↑ OVER':'↓ UNDER';
-    const sb=PROP_SPORT[p.type]||'b-nba';
-    const playerSlug=slugify(p.player);
-    const teamSlug=slugify(p.team==='LAL'?'los-angeles-lakers':p.team==='DEN'?'denver-nuggets':p.team==='KC'?'kansas-city-chiefs':p.team==='NYY'?'new-york-yankees':p.team==='LAD'?'los-angeles-dodgers':p.team);
+    const sb=OG.badgeClass(p.sport);
+    const label=(PROP_LABELS&&PROP_LABELS[p.type])||p.type;
     return `<div class="prop-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <a href="#" onclick="goToPlayer('${playerSlug}');return false;" style="text-decoration:none">
+          <a href="#" onclick="goToPlayer('${p.playerSlug}');return false;" style="text-decoration:none">
             <div class="prop-player" style="cursor:pointer;transition:color 0.2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''">${p.player}${p.inj?' <span style="color:var(--red);font-size:10px">⚠</span>':''}</div>
           </a>
-          <a href="#" onclick="goToTeam('${teamSlug}');return false;" style="text-decoration:none">
+          <a href="#" onclick="goToTeam('${p.teamSlug}');return false;" style="text-decoration:none">
             <div class="prop-team-pos" style="cursor:pointer;transition:color 0.2s" onmouseover="this.style.color='var(--gold-lt)'" onmouseout="this.style.color=''">${p.team} · ${p.pos} ↗</div>
           </a>
         </div>
         <div class="sport-badge ${sb}">${p.type}</div>
       </div>
-      <div class="prop-type">${PROP_LABELS[p.type]||p.type} Line</div>
+      <div class="prop-type">${label} Line</div>
       <div class="prop-line">${p.line}</div>
       <div class="prop-ou-row">
         <button class="prop-btn prop-btn-over ${p.lean==='over'?'active':''}">OVER ${p.odds.split('/')[0]}</button>
@@ -1498,12 +1452,15 @@ const INJ_IMPACT={
 };
 
 function renderInjFull(){
+  const fn=document.getElementById('inj-full-new'); if(fn) fn.textContent=kpi.inj+' NEW';
+  const it=document.getElementById('inj-total'); if(it) it.textContent=OG.injuries.length;
   document.getElementById('inj-full-tbody').innerHTML=INJURIES.map((p,i)=>{
     const dc=p.status==='out'?'dot-out':p.status==='questionable'?'dot-q':'dot-p';
     const lc=p.status==='out'?'lbl-out':p.status==='questionable'?'lbl-q':'lbl-p';
     const lt=p.status==='out'?'OUT':p.status==='questionable'?'QUESTIONABLE':'PROBABLE';
     const ago=p.age<2?'Just now':p.age<60?`${p.age}m ago`:`${Math.floor(p.age/60)}h ago`;
-    const impact=INJ_IMPACT[p.name]||'LOW — Minimal impact';
+    const impMap={HIGH:'HIGH — Significant line impact',MED:'MED — Moderate impact',LOW:'LOW — Minimal impact'};
+    const impact=INJ_IMPACT[p.name]||impMap[p.impact]||'LOW — Minimal impact';
     const ic=impact.startsWith('HIGH')?'color:var(--red)':impact.startsWith('MED')?'color:#F59E0B':'color:var(--muted)';
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:8px"><div class="inj-dot ${dc}"></div><span style="color:var(--white);font-weight:600">${p.name}</span></div></td>
@@ -1521,18 +1478,30 @@ function filterInj(el,f){
 }
 
 // ── FULL SCHEDULE ──
-const SCHED_FULL=[
-  {day:'TODAY',   time:'1:05 PM', away:'CHC',home:'MIL',sport:'MLB',spread:'MIL -130',ou:'8',   venue:'American Family Field',weather:'72°F ⛅'},
-  {day:'TODAY',   time:'4:25 PM', away:'KC', home:'BUF',sport:'NFL',spread:'KC -3',   ou:'47.5',venue:'Highmark Stadium',    weather:'58°F 🌧'},
-  {day:'TODAY',   time:'7:10 PM', away:'NYY',home:'BOS',sport:'MLB',spread:'NYY -145',ou:'8.5', venue:'Fenway Park',         weather:'68°F 🌤'},
-  {day:'TODAY',   time:'8:20 PM', away:'PHI',home:'DAL',sport:'NFL',spread:'PHI -5',  ou:'46',  venue:'AT&T Stadium',        weather:'Indoor'},
-  {day:'TODAY',   time:'9:00 PM', away:'DEN',home:'LAL',sport:'NBA',spread:'DEN -6',  ou:'224.5',venue:'Crypto.com Arena',   weather:'Indoor'},
-  {day:'TODAY',   time:'10:00 PM',away:'GSW',home:'PHX',sport:'NBA',spread:'PHX -3',  ou:'228.5',venue:'Footprint Center',   weather:'Indoor'},
-  {day:'TOMORROW',time:'1:10 PM', away:'LAD',home:'SF', sport:'MLB',spread:'LAD -165',ou:'7.5', venue:'Oracle Park',         weather:'65°F 🌫'},
-  {day:'TOMORROW',time:'7:30 PM', away:'BOS',home:'MIL',sport:'NBA',spread:'MIL -4',  ou:'221', venue:'Fiserv Forum',        weather:'Indoor'},
-  {day:'TOMORROW',time:'8:00 PM', away:'MIN',home:'DEN',sport:'NBA',spread:'DEN -7',  ou:'218', venue:'Ball Arena',          weather:'Indoor'},
-  {day:'TOMORROW',time:'10:10 PM',away:'ATL',home:'LAD',sport:'MLB',spread:'LAD -200',ou:'8',   venue:'Dodger Stadium',      weather:'72°F ☀️'},
-];
+function _schedToday(){
+  return OG.games.map(g=>({
+    day:'TODAY', time:g.time, away:g.away, home:g.home, sport:g.sport,
+    spread:g.favored+' '+OG.fmtSpread(-Math.abs(g.spread)), ou:''+g.ou,
+    venue:g.venue, weather:g.weather
+  }));
+}
+function _schedTomorrow(){
+  const used={}; OG.games.forEach(g=>{used[g.homeSlug]=1;used[g.awaySlug]=1;});
+  const out=[]; const ouBy={NBA:'225.5',NFL:'45.5',MLB:'8.5'};
+  const times=['1:10 PM','7:00 PM','8:30 PM','10:00 PM'];
+  ['NFL','NBA','MLB'].forEach(sport=>{
+    const pool=OG.teamsBySport(sport).filter(t=>!used[t.slug]);
+    for(let k=0;k<2 && pool.length>=2;k++){
+      const a=pool.shift(), h=pool.shift();
+      const fav=h.strength>=a.strength?h.abbr:a.abbr;
+      const sp=sport==='MLB'?1.5:Math.max(1,Math.round(Math.abs(h.strength-a.strength)*13+2));
+      out.push({day:'TOMORROW',time:times[k%4],away:a.abbr,home:h.abbr,sport,
+        spread:fav+' -'+sp,ou:ouBy[sport],venue:h.venue,weather:sport==='MLB'?'72°F ⛅':'Indoor'});
+    }
+  });
+  return out;
+}
+const SCHED_FULL = _schedToday().concat(_schedTomorrow());
 
 function renderSchedFull(filter='TODAY'){
   const data=['NFL','NBA','MLB'].includes(filter)?SCHED_FULL.filter(g=>g.sport===filter)

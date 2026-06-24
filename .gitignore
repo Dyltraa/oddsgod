@@ -1,0 +1,6 @@
+# Local build/distribution artifacts
+oddsgod-site.zip
+
+# Dependencies (not used by this static site, but just in case)
+node_modules/
+.DS_Store

@@ -15,8 +15,6 @@
       --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;
     }
     html,body{min-height:100%;background:var(--black);color:var(--white);font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
-
-    /* NAV */
     nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:rgba(8,8,8,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
     .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.08em;color:var(--gold);text-decoration:none}
     .nav-back{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:none;transition:color 0.2s}
@@ -35,7 +33,8 @@
     .hero-info{flex:1;min-width:200px}
     .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);line-height:0.95;letter-spacing:0.02em;color:var(--white)}
     .hero-sub{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
-    .hero-team{font-size:14px;font-weight:600;color:var(--gold)}
+    .hero-team{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none}
+    .hero-team:hover{color:var(--gold-lt)}
     .hero-pos{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);background:var(--border);padding:3px 8px;border-radius:3px}
     .hero-sport{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
     .b-nba{background:rgba(59,130,246,0.15);color:#60a5fa}
@@ -54,26 +53,19 @@
     .tab-btn:hover{color:var(--white)}
     .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-    /* CONTENT */
     .page-content{max-width:1100px;margin:0 auto;padding:24px}
     .tab-view{display:none;flex-direction:column;gap:20px}
     .tab-view.active{display:flex}
-
-    /* PANELS */
     .panel{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden}
     .panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border)}
     .panel-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.06em;color:var(--white)}
     .panel-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
-
-    /* STAT CARDS */
     .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
     .stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden}
     .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
     .sc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
     .sc-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:0.02em}
     .sc-sub{font-size:11px;color:var(--muted);margin-top:3px}
-
-    /* GAME LOG TABLE */
     .game-table{width:100%;border-collapse:collapse}
     .game-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:8px 14px;text-align:left;background:var(--dark);border-bottom:1px solid var(--border);white-space:nowrap}
     .game-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);vertical-align:middle}
@@ -81,12 +73,8 @@
     .game-table tr:hover td{background:#161616}
     td.bright{color:var(--white);font-weight:600}
     td.gold{color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:600}
-    td.green{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:600}
-    td.red{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:600}
     .result-w{background:rgba(46,204,113,0.15);color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px}
     .result-l{background:rgba(231,76,60,0.15);color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px}
-
-    /* RADAR CHART */
     .radar-wrap{display:flex;align-items:center;justify-content:center;gap:40px;padding:24px;flex-wrap:wrap}
     .radar-labels{display:flex;flex-direction:column;gap:10px}
     .radar-label-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2)}
@@ -94,8 +82,6 @@
     .radar-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;width:100px}
     .radar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 1s ease}
     .radar-score{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--gold);width:24px;text-align:right}
-
-    /* PROP LINES */
     .prop-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)}
     .prop-row:last-child{border-bottom:none}
     .prop-name{flex:1;font-size:13px;color:var(--white);font-weight:600}
@@ -107,8 +93,6 @@
     .prop-btn-u{color:var(--red)}
     .prop-btn-u.active,.prop-btn-u:hover{background:rgba(231,76,60,0.12);border-color:var(--red)}
     .prop-hit-rate{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:70px;text-align:right}
-
-    /* TREND BARS */
     .trend-row{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border)}
     .trend-row:last-child{border-bottom:none}
     .trend-label{font-size:12px;color:var(--muted2);width:140px;flex-shrink:0}
@@ -116,8 +100,6 @@
     .trend-fill-pos{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 1s ease}
     .trend-fill-neg{height:100%;border-radius:3px;background:linear-gradient(90deg,#7f1d1d,var(--red));transition:width 1s ease}
     .trend-val{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;width:36px;text-align:right;flex-shrink:0}
-
-    /* 2-COL GRID */
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
     @media(max-width:700px){.two-col{grid-template-columns:1fr}.hero-stats{width:100%;margin-left:0}}
   </style>
@@ -127,19 +109,16 @@
 <nav>
   <a href="/dashboard" class="nav-logo">OddsGod</a>
   <a href="#" onclick="goBack();return false;" class="nav-back">← Back</a>
-  <div class="nav-right">
-    <div class="live-pill"><span class="ldot"></span> LIVE DATA</div>
-  </div>
+  <div class="nav-right"><div class="live-pill"><span class="ldot"></span> LIVE DATA</div></div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="player-avatar" id="p-avatar"><span class="av-fallback" id="p-avatar-text">LJ</span></div>
+    <div class="player-avatar" id="p-avatar"><span class="fallback" id="p-avatar-text">LJ</span></div>
     <div class="hero-info">
       <div class="hero-name" id="p-name">LeBron James</div>
       <div class="hero-sub">
-        <span class="hero-team" id="p-team">Los Angeles Lakers</span>
+        <a class="hero-team" id="p-team" href="#">Los Angeles Lakers</a>
         <span class="hero-pos" id="p-pos">SF</span>
         <span class="hero-sport b-nba" id="p-sport">NBA</span>
         <span id="p-inj-banner" class="inj-banner">⚠ OUT — Ankle</span>
@@ -149,7 +128,6 @@
   </div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
   <button class="tab-btn" onclick="showTab('gamelog')">Game Log</button>
@@ -157,18 +135,14 @@
   <button class="tab-btn" onclick="showTab('trends')">Trends</button>
 </div>
 
-<!-- PAGE CONTENT -->
 <div class="page-content">
 
-  <!-- OVERVIEW TAB -->
   <div id="tab-overview" class="tab-view active">
     <div class="stat-cards" id="p-season-stats"></div>
     <div class="two-col">
       <div class="panel">
         <div class="panel-head"><div class="panel-title">📊 Attribute Ratings</div><div class="panel-tag">Current Season</div></div>
-        <div class="radar-wrap">
-          <div class="radar-labels" id="p-radar"></div>
-        </div>
+        <div class="radar-wrap"><div class="radar-labels" id="p-radar"></div></div>
       </div>
       <div class="panel">
         <div class="panel-head"><div class="panel-title">🏥 Injury Status</div><div class="panel-tag" id="p-inj-updated">Updated 12m ago</div></div>
@@ -185,7 +159,6 @@
     </div>
   </div>
 
-  <!-- GAME LOG TAB -->
   <div id="tab-gamelog" class="tab-view">
     <div class="panel">
       <div class="panel-head"><div class="panel-title">📋 Full Game Log</div><div class="panel-tag">This Season</div></div>
@@ -193,7 +166,6 @@
     </div>
   </div>
 
-  <!-- PROPS TAB -->
   <div id="tab-props" class="tab-view">
     <div class="panel">
       <div class="panel-head"><div class="panel-title">🎯 Tonight's Prop Lines</div><div class="live-pill" style="padding:3px 8px;font-size:9px"><span class="ldot"></span> Live</div></div>
@@ -201,7 +173,6 @@
     </div>
   </div>
 
-  <!-- TRENDS TAB -->
   <div id="tab-trends" class="tab-view">
     <div class="stat-cards" id="p-trend-stats"></div>
     <div class="panel">
@@ -210,245 +181,54 @@
     </div>
   </div>
 
-</div><!-- /page-content -->
+</div>
 
+<script src="/js/curated-data.js"></script>
+<script src="/js/data.js"></script>
 <script>
-// ── PLAYER DATA ──
-const PLAYERS = {
-  'lebron-james': {
-    name:'LeBron James', initials:'LJ', photoUrl:'https://cdn.nba.com/headshots/nba/latest/1040x760/2544.png', team:'Los Angeles Lakers', pos:'SF', sport:'NBA',
-    injury:{ status:'out', note:'Ankle sprain', detail:'Rolled left ankle in practice Thursday. Expected to miss 1-2 weeks.', impact:'Line impact: LAL ML moves from -110 to +130. Spread shifts from -3 to +4.5. Significant under lean on LAL team total.' },
-    heroStats:[{val:'25.4',lbl:'PPG'},{val:'7.8',lbl:'RPG'},{val:'8.2',lbl:'APG'},{val:'52%',lbl:'FG%'}],
-    seasonStats:[
-      {lbl:'Points Per Game',  val:'25.4', sub:'4th in NBA',       color:'var(--gold)'},
-      {lbl:'Rebounds Per Game',val:'7.8',  sub:'Top 20 forward',   color:'var(--white)'},
-      {lbl:'Assists Per Game', val:'8.2',  sub:'3rd in NBA',       color:'var(--green)'},
-      {lbl:'FG %',             val:'52%',  sub:'Career avg 50.5%', color:'var(--white)'},
-      {lbl:'3PT %',            val:'41%',  sub:'Career best',      color:'var(--green)'},
-      {lbl:'PER',              val:'27.1', sub:'Elite level',      color:'var(--gold)'},
-    ],
-    radar:[
-      {label:'Scoring',    val:88},
-      {label:'Playmaking', val:91},
-      {label:'Rebounding', val:74},
-      {label:'Defense',    val:68},
-      {label:'Athleticism',val:85},
-      {label:'Clutch',     val:93},
-    ],
-    logHeaders:['Date','Matchup','Result','PTS','REB','AST','FG%','MIN'],
-    gameLog:[
-      ['Jun 18','vs DEN','L 108-115','28','9','11','54%','38'],
-      ['Jun 15','@ GSW','W 121-109','32','7','8','61%','40'],
-      ['Jun 12','vs PHX','W 118-112','24','11','9','48%','37'],
-      ['Jun 10','@ SAC','L 105-112','19','6','7','42%','35'],
-      ['Jun 7', 'vs POR','W 131-110','35','8','12','58%','36'],
-      ['Jun 4', '@ UTA','W 122-118','27','10','6','52%','39'],
-      ['Jun 1', 'vs MEM','L 99-104', '22','8','9', '44%','38'],
-      ['May 29','@ OKC','W 115-108','30','7','10','55%','40'],
-      ['May 26','vs MIN','W 119-113','26','9','8', '49%','37'],
-      ['May 23','@ DEN','L 111-117','23','6','7', '46%','36'],
-    ],
-    props:[
-      {name:'Points',    line:24.5, lean:'over',  conf:71, odds:'-112/-108', hitRate:'6/10 OVER'},
-      {name:'Rebounds',  line:7.5,  lean:'over',  conf:65, odds:'-108/-112', hitRate:'7/10 OVER'},
-      {name:'Assists',   line:7.5,  lean:'over',  conf:74, odds:'-115/-105', hitRate:'8/10 OVER'},
-      {name:'Pts+Reb+Ast',line:38.5,lean:'over',  conf:70, odds:'-110/-110', hitRate:'7/10 OVER'},
-      {name:'3-Pointers',line:1.5,  lean:'under', conf:58, odds:'+105/-125', hitRate:'5/10 OVER'},
-    ],
-    trendStats:[
-      {lbl:'Last 10 Avg PTS',val:'26.6',sub:'vs 25.4 season',color:'var(--green)'},
-      {lbl:'Over Rate (PTS)', val:'70%', sub:'Last 10 games', color:'var(--gold)'},
-      {lbl:'Double-Doubles',  val:'4',   sub:'Last 10 games', color:'var(--white)'},
-      {lbl:'Hot Streak',      val:'W3',  sub:'Current',       color:'var(--green)'},
-    ],
-    trendBars:[
-      {label:'PTS Over Rate',  val:70, pos:true},
-      {label:'REB Over Rate',  val:60, pos:true},
-      {label:'AST Over Rate',  val:80, pos:true},
-      {label:'Pts+Reb+Ast OVR',val:70, pos:true},
-      {label:'Cover Rate ATS', val:55, pos:true},
-      {label:'Team Wins',      val:40, pos:false},
-    ],
-  },
-
-  'nikola-jokic': {
-    name:'Nikola Jokic', initials:'NJ', photoUrl:'https://cdn.nba.com/headshots/nba/latest/1040x760/203999.png', team:'Denver Nuggets', pos:'C', sport:'NBA',
-    injury:{ status:'probable', note:'None', detail:'Fully healthy. Expected to play full minutes tonight.', impact:'No line impact. DEN spread of -6 vs LAL reflects full Jokic availability.' },
-    heroStats:[{val:'29.1',lbl:'PPG'},{val:'13.5',lbl:'RPG'},{val:'10.2',lbl:'APG'},{val:'58%',lbl:'FG%'}],
-    seasonStats:[
-      {lbl:'Points Per Game',  val:'29.1',sub:'MVP candidate',   color:'var(--gold)'},
-      {lbl:'Rebounds Per Game',val:'13.5',sub:'1st among C',     color:'var(--gold)'},
-      {lbl:'Assists Per Game', val:'10.2',sub:'Triple-double avg',color:'var(--green)'},
-      {lbl:'FG %',             val:'58%', sub:'Elite efficiency', color:'var(--green)'},
-      {lbl:'True Shooting %',  val:'67%', sub:'Top 5 all-time',  color:'var(--gold)'},
-      {lbl:'PER',              val:'31.8',sub:'Historic level',   color:'var(--gold)'},
-    ],
-    radar:[
-      {label:'Scoring',    val:94},
-      {label:'Playmaking', val:96},
-      {label:'Rebounding', val:97},
-      {label:'Defense',    val:71},
-      {label:'Athleticism',val:72},
-      {label:'Clutch',     val:90},
-    ],
-    logHeaders:['Date','Matchup','Result','PTS','REB','AST','FG%','MIN'],
-    gameLog:[
-      ['Jun 18','@ LAL','W 115-108','32','14','11','62%','38'],
-      ['Jun 15','vs GSW','W 128-110','28','15','9', '57%','36'],
-      ['Jun 12','@ PHX','W 119-104','35','12','12','64%','37'],
-      ['Jun 10','vs SAC','W 122-108','24','16','8', '52%','34'],
-      ['Jun 7', '@ POR','W 138-112','30','11','13','66%','35'],
-      ['Jun 4', 'vs UTA','W 125-115','27','14','10','59%','36'],
-      ['Jun 1', '@ MEM','W 118-107','33','13','9', '61%','38'],
-      ['May 29','vs OKC','W 121-110','26','15','11','55%','37'],
-      ['May 26','@ MIN','L 108-114','22','11','8', '48%','40'],
-      ['May 23','vs LAL','W 117-111','31','14','10','60%','38'],
-    ],
-    props:[
-      {name:'Points',    line:28.5,lean:'over', conf:78,odds:'-118/-102',hitRate:'8/10 OVER'},
-      {name:'Rebounds',  line:12.5,lean:'over', conf:74,odds:'-120/-100',hitRate:'7/10 OVER'},
-      {name:'Assists',   line:9.5, lean:'over', conf:71,odds:'-110/-110',hitRate:'7/10 OVER'},
-      {name:'Pts+Reb+Ast',line:48.5,lean:'over',conf:80,odds:'-125/-95', hitRate:'9/10 OVER'},
-      {name:'Double-Double',line:0.5,lean:'over',conf:92,odds:'-400/+300',hitRate:'10/10 OVER'},
-    ],
-    trendStats:[
-      {lbl:'Last 10 Avg PTS',val:'28.8',sub:'Near season avg',  color:'var(--gold)'},
-      {lbl:'Triple-Doubles',  val:'7',   sub:'Last 10 games',   color:'var(--gold)'},
-      {lbl:'Over Rate (PTS)', val:'80%', sub:'Last 10 games',   color:'var(--green)'},
-      {lbl:'Win Streak',      val:'W9',  sub:'Current',         color:'var(--green)'},
-    ],
-    trendBars:[
-      {label:'PTS Over Rate',  val:80, pos:true},
-      {label:'REB Over Rate',  val:70, pos:true},
-      {label:'AST Over Rate',  val:70, pos:true},
-      {label:'Pts+Reb+Ast OVR',val:90, pos:true},
-      {label:'Cover Rate ATS', val:70, pos:true},
-      {label:'Team Wins',      val:90, pos:true},
-    ],
-  },
-
-  'patrick-mahomes': {
-    name:'Patrick Mahomes', initials:'PM', photoUrl:'https://static.www.nfl.com/image/private/f_auto,q_auto/league/eqhvzrqjvdnqoouoakpw', team:'Kansas City Chiefs', pos:'QB', sport:'NFL',
-    injury:{ status:'questionable', note:'Knee', detail:'Limited in practice Wednesday and Thursday. Game-time decision for Sunday.', impact:'If OUT: KC spread moves from -3 to +3.5. Total drops ~3 pts. Significant sharp action expected on BUF.' },
-    heroStats:[{val:'312',lbl:'Pass Yds'},{val:'2.4',lbl:'TD/G'},{val:'108.2',lbl:'QBR'},{val:'68%',lbl:'Comp%'}],
-    seasonStats:[
-      {lbl:'Pass Yards/Game',val:'312',  sub:'2nd in NFL',      color:'var(--gold)'},
-      {lbl:'Touchdowns',     val:'28',   sub:'Season total',    color:'var(--green)'},
-      {lbl:'QBR',            val:'108.2',sub:'Top 3 all-time',  color:'var(--gold)'},
-      {lbl:'Completion %',   val:'68%',  sub:'Career avg 66.3%',color:'var(--white)'},
-      {lbl:'INT Rate',       val:'1.1%', sub:'Near career best',color:'var(--green)'},
-      {lbl:'Passer Rating',  val:'112.4',sub:'Elite tier',      color:'var(--gold)'},
-    ],
-    radar:[
-      {label:'Arm Strength', val:93},
-      {label:'Accuracy',     val:91},
-      {label:'Decision Make',val:95},
-      {label:'Mobility',     val:84},
-      {label:'Leadership',   val:98},
-      {label:'Clutch',       val:99},
-    ],
-    logHeaders:['Date','Opponent','Result','Pass Yds','TDs','INTs','QBR','Rating'],
-    gameLog:[
-      ['Jun 15','@ BUF','L 24-31','287','2','1','89.4','98.2'],
-      ['Jun 8', 'vs LAR','W 35-17','341','3','0','118.2','122.1'],
-      ['Jun 1', '@ LV', 'W 28-14','298','2','0','104.1','108.8'],
-      ['May 25','vs DEN','W 31-24','352','3','1','112.6','115.4'],
-      ['May 18','@ CLE','W 27-20','276','2','0','98.7','102.3'],
-      ['May 11','vs DAL','W 42-21','388','4','0','128.4','134.2'],
-      ['May 4', '@ PIT','L 17-23','241','1','2','71.2','78.4'],
-      ['Apr 27','vs NE', 'W 38-15','318','3','0','116.8','121.7'],
-      ['Apr 20','@ MIA','W 31-28','361','2','0','102.4','106.1'],
-      ['Apr 13','vs LV', 'W 27-10','284','2','0','108.9','111.2'],
-    ],
-    props:[
-      {name:'Pass Yards',   line:284.5,lean:'under',conf:72,odds:'-115/-105',hitRate:'4/10 OVER'},
-      {name:'Touchdowns',   line:2.5,  lean:'over', conf:65,odds:'-108/-112',hitRate:'6/10 OVER'},
-      {name:'Completions',  line:24.5, lean:'under',conf:60,odds:'-110/-110',hitRate:'5/10 OVER'},
-      {name:'Pass Attempts',line:37.5, lean:'under',conf:55,odds:'+102/-122',hitRate:'4/10 OVER'},
-      {name:'Interceptions',line:0.5,  lean:'under',conf:68,odds:'+120/-145',hitRate:'3/10 OVER'},
-    ],
-    trendStats:[
-      {lbl:'Last 10 Avg Yds',val:'315', sub:'Near season avg',color:'var(--white)'},
-      {lbl:'300+ Yd Games',  val:'7',   sub:'Last 10 games', color:'var(--gold)'},
-      {lbl:'Over Rate (Yds)',val:'40%', sub:'Last 10 games', color:'var(--red)'},
-      {lbl:'Current Streak', val:'Q',   sub:'Questionable',  color:'#F59E0B'},
-    ],
-    trendBars:[
-      {label:'Pass Yds OVER', val:40, pos:false},
-      {label:'TD OVER Rate',  val:60, pos:true},
-      {label:'Cover Rate ATS',val:60, pos:true},
-      {label:'INT Under Rate',val:70, pos:true},
-      {label:'Team Win Rate', val:80, pos:true},
-      {label:'Comp% OVER',    val:50, pos:true},
-    ],
-  },
-};
-
-// ── URL PARSING ──
 function getPlayerId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('id') || 'lebron-james';
+  return new URLSearchParams(window.location.search).get('id') || 'lebron-james';
 }
 
-function slugify(name) {
-  return name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-}
-
-// ── RENDER ──
 function renderPlayer(id) {
-  const p = PLAYERS[id] || PLAYERS['lebron-james'];
-
-  // hero
+  const p = (window.OG && OG.playerProfile(id)) || (window.OG && OG.playerProfile('lebron-james'));
+  if(!p){ document.getElementById('p-name').textContent = 'Player not found'; return; }
   document.title = `OddsGod — ${p.name}`;
-  // Set avatar image
+
   const avatarEl = document.getElementById('p-avatar');
   const fallbackEl = document.getElementById('p-avatar-text');
-  if(fallbackEl) fallbackEl.textContent = p.initials;
+  if(fallbackEl){ fallbackEl.textContent = p.initials; fallbackEl.style.display=''; }
   const oldImg = avatarEl.querySelector('img');
   if(oldImg) oldImg.remove();
   if(p.photoUrl) {
     const img = document.createElement('img');
-    img.src = p.photoUrl;
-    img.alt = p.name;
+    img.src = p.photoUrl; img.alt = p.name;
     img.onerror = function(){ this.style.display='none'; if(fallbackEl) fallbackEl.style.display=''; };
     avatarEl.insertBefore(img, fallbackEl);
   }
-  document.getElementById('p-name').textContent   = p.name;
-  document.getElementById('p-team').textContent   = p.team;
-  document.getElementById('p-pos').textContent    = p.pos;
-  document.getElementById('p-sport').textContent  = p.sport;
-  document.getElementById('p-sport').className    = `hero-sport ${p.sport==='NBA'?'b-nba':p.sport==='NFL'?'b-nfl':'b-mlb'}`;
+  document.getElementById('p-name').textContent = p.name;
+  const teamLink = document.getElementById('p-team');
+  teamLink.textContent = p.team;
+  if(p.teamSlug){ teamLink.onclick = function(){ sessionStorage.setItem('og_referrer',window.location.href); window.location.href='/team?id='+p.teamSlug; return false; }; }
+  document.getElementById('p-pos').textContent = p.pos;
+  document.getElementById('p-sport').textContent = p.sport;
+  document.getElementById('p-sport').className = `hero-sport ${p.sport==='NBA'?'b-nba':p.sport==='NFL'?'b-nfl':'b-mlb'}`;
 
   const injBanner = document.getElementById('p-inj-banner');
   if(p.injury.status==='out'){
-    injBanner.style.display='inline-flex';
-    injBanner.textContent=`⚠ OUT — ${p.injury.note}`;
-    injBanner.style.color='var(--red)';
+    injBanner.style.display='inline-flex'; injBanner.textContent=`⚠ OUT — ${p.injury.note}`;
+    injBanner.style.color='var(--red)'; injBanner.style.borderColor='rgba(231,76,60,0.3)'; injBanner.style.background='rgba(231,76,60,0.1)';
   } else if(p.injury.status==='questionable'){
-    injBanner.style.display='inline-flex';
-    injBanner.textContent=`⚠ QUESTIONABLE — ${p.injury.note}`;
-    injBanner.style.color='#F59E0B';
-    injBanner.style.borderColor='rgba(245,158,11,0.3)';
-    injBanner.style.background='rgba(245,158,11,0.1)';
-  } else {
-    injBanner.style.display='none';
-  }
+    injBanner.style.display='inline-flex'; injBanner.textContent=`⚠ QUESTIONABLE — ${p.injury.note}`;
+    injBanner.style.color='#F59E0B'; injBanner.style.borderColor='rgba(245,158,11,0.3)'; injBanner.style.background='rgba(245,158,11,0.1)';
+  } else { injBanner.style.display='none'; }
 
-  // hero stats
   document.getElementById('p-hero-stats').innerHTML = p.heroStats.map(s=>`
     <div class="hs-item"><div class="hs-val">${s.val}</div><div class="hs-lbl">${s.lbl}</div></div>
   `).join('');
-
-  // season stats
   document.getElementById('p-season-stats').innerHTML = p.seasonStats.map(s=>`
-    <div class="stat-card">
-      <div class="sc-label">${s.lbl}</div>
-      <div class="sc-val" style="color:${s.color}">${s.val}</div>
-      <div class="sc-sub">${s.sub}</div>
-    </div>
+    <div class="stat-card"><div class="sc-label">${s.lbl}</div><div class="sc-val" style="color:${s.color}">${s.val}</div><div class="sc-sub">${s.sub}</div></div>
   `).join('');
-
-  // radar
   document.getElementById('p-radar').innerHTML = p.radar.map(r=>`
     <div class="radar-label-row">
       <div class="radar-dot"></div>
@@ -459,35 +239,25 @@ function renderPlayer(id) {
   `).join('');
   setTimeout(()=>document.querySelectorAll('.radar-fill').forEach(el=>el.style.width=el.dataset.w),50);
 
-  // injury
   const injStatus = document.getElementById('p-inj-status-big');
   const sc = p.injury.status==='out'?'var(--red)':p.injury.status==='questionable'?'#F59E0B':'var(--green)';
   injStatus.style.color = sc;
   injStatus.textContent = p.injury.status.toUpperCase() + (p.injury.note!=='None'?' — '+p.injury.note:'');
   document.getElementById('p-inj-detail').textContent = p.injury.detail;
-  document.getElementById('p-inj-impact').innerHTML   = p.injury.impact;
+  document.getElementById('p-inj-impact').innerHTML = p.injury.impact;
 
-  // game log headers
   const headHtml = `<tr>${p.logHeaders.map(h=>`<th>${h}</th>`).join('')}</tr>`;
-  document.getElementById('p-log-head').innerHTML  = headHtml;
+  document.getElementById('p-log-head').innerHTML = headHtml;
   document.getElementById('p-log-head2').innerHTML = headHtml;
-
-  // game log rows
-  const logRows = p.gameLog.map(row=>`<tr>
+  const logRow = row=>`<tr>
     <td>${row[0]}</td>
     <td class="bright">${row[1]}</td>
     <td><span class="${row[2].startsWith('W')?'result-w':'result-l'}">${row[2].startsWith('W')?'W':'L'}</span> ${row[2].slice(2)}</td>
     ${row.slice(3).map((v,i)=>`<td class="${i===0?'gold':''}">${v}</td>`).join('')}
-  </tr>`).join('');
-  document.getElementById('p-log-short').innerHTML = p.gameLog.slice(0,5).map(row=>`<tr>
-    <td>${row[0]}</td>
-    <td class="bright">${row[1]}</td>
-    <td><span class="${row[2].startsWith('W')?'result-w':'result-l'}">${row[2].startsWith('W')?'W':'L'}</span> ${row[2].slice(2)}</td>
-    ${row.slice(3).map((v,i)=>`<td class="${i===0?'gold':''}">${v}</td>`).join('')}
-  </tr>`).join('');
-  document.getElementById('p-log-full').innerHTML = logRows;
+  </tr>`;
+  document.getElementById('p-log-short').innerHTML = p.gameLog.slice(0,5).map(logRow).join('');
+  document.getElementById('p-log-full').innerHTML = p.gameLog.map(logRow).join('');
 
-  // props
   document.getElementById('p-props-body').innerHTML = p.props.map(pr=>`
     <div class="prop-row">
       <div class="prop-name">${pr.name}</div>
@@ -500,16 +270,9 @@ function renderPlayer(id) {
     </div>
   `).join('');
 
-  // trend stats
   document.getElementById('p-trend-stats').innerHTML = p.trendStats.map(s=>`
-    <div class="stat-card">
-      <div class="sc-label">${s.lbl}</div>
-      <div class="sc-val" style="color:${s.color}">${s.val}</div>
-      <div class="sc-sub">${s.sub}</div>
-    </div>
+    <div class="stat-card"><div class="sc-label">${s.lbl}</div><div class="sc-val" style="color:${s.color}">${s.val}</div><div class="sc-sub">${s.sub}</div></div>
   `).join('');
-
-  // trend bars
   document.getElementById('p-trend-bars').innerHTML = p.trendBars.map(t=>`
     <div class="trend-row">
       <div class="trend-label">${t.label}</div>
@@ -527,27 +290,15 @@ function showTab(name) {
   event.currentTarget.classList.add('active');
 }
 
-// init
-// Store referrer so back button works correctly
-if(document.referrer && document.referrer.includes(window.location.hostname)) {
-  sessionStorage.setItem('playerPageRef', document.referrer);
-}
-
 function goBack() {
-  const ref = sessionStorage.getItem('playerPageRef');
-  sessionStorage.removeItem('playerPageRef');
-  if(ref && ref.includes(window.location.hostname)) {
-    window.location.href = ref;
-  } else {
-    window.location.href = '/dashboard';
-  }
+  const ref = sessionStorage.getItem('og_referrer');
+  if(ref){ sessionStorage.removeItem('og_referrer'); window.location.href = ref; }
+  else { window.location.href = '/dashboard'; }
 }
 
 renderPlayer(getPlayerId());
-
-window.addEventListener('pageshow', function(e) {
-  if(e.persisted) renderPlayer(getPlayerId());
-});
+window.addEventListener('pageshow', function(){ renderPlayer(getPlayerId()); });
+window.addEventListener('popstate', function(){ renderPlayer(getPlayerId()); });
 </script>
 </body>
 </html>
